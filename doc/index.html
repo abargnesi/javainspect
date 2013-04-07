@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JavaInspect</title>
+</head>
+<body>
+	<h1>JavaInspect - Utility to visualize java software</h1>
+	<a
+		href="http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz">Download</a>
+	&nbsp;&nbsp;
+	<a
+		href="http://www2.svjatoslav.eu/gitbrowse/javainspect/doc/index.html">Online
+		homepage</a> &nbsp;&nbsp;
+	<a href="http://svjatoslav.eu/programs.jsp">Other applications
+		hosted on svjatoslav.eu</a>
+	<pre>
+<b>Program author:</b>
+    Svjatoslav Agejenko
+    Homepage: <a href="http://svjatoslav.eu">http://svjatoslav.eu</a>
+    Email: <a href="mailto:svjatoslav@svjatoslav.eu">svjatoslav@svjatoslav.eu</a>
+
+This software is distributed under <a
+			href="http://www.gnu.org/licenses/gpl-2.0.html">GNU GENERAL PUBLIC LICENSE Version 2</a>.
+
+</pre>
+
+	<h2>General</h2>
+
+	JavaInspect is a Java library that you can embed into your Java project
+	with a few lines of Maven configuration and then visualize any part of
+	your Java program structure with few simple JavaInspect API calls at
+	application runtime.
+
+	<br />
+	<br /> JavaInspect uses Java reflection to discover class relations and
+	structure and produces GraphViz dot file that describes your
+	application. Then launches GraphViz to generate bitmap graph in PNG
+	format on your Desktop directory.
+
+
+	<h2>Current status</h2>
+
+	This is simple utility, quickly written. Tested on Linux (can be
+	relatively simply ported to other operating systems too). So far I used
+	it for my own needs. There might be bugs and missing features. Feedback
+	and code contributions are welcome.
+
+
+	<h2>Example graphs</h2>
+
+	Example visualization of
+	<a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a>
+	project:
+	<a
+		href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/architecture%20graphs/index.html">architecture
+		graphs</a>
+
+	<br />
+	<br /> A very simple example:
+	<br />
+	<a href="example.png"><img src="example.resized.png" /></a>
+
+	<br /> Graph legend:
+	<br />
+	<img src="legend.png" />
+
+
+	<h2>Usage example</h2>
+
+	Following example produces graph for JavaInspect itself:
+
+	<pre>
+<code>
+// Create graph
+final Graph graph = new Graph();
+
+// Add some object to the graph.
+graph.addObject(graph);
+
+// Add some class to the graph.
+graph.addClass(Utils.class);
+
+// Produce bitmap image titled "JavaInspect.png" to the user Desktop
+// directory.
+graph.generateGraph("JavaInspect", true);
+</code>
+
+
+Result:
+    Generated DOT file: <a href="JavaInspect.dot">JavaInspect.dot</a>
+    Generated PNG image: <a href="JavaInspect.png">JavaInspect.png</a>
+
+</pre>
+
+
+
+	<h2>Embedding JavaInspect in your project</h2>
+	<pre>
+
+Declare JavaInspect as dependency:
+
+    &lt;dependencies&gt;
+
+        ...
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;eu.svjatoslav&lt;/groupId&gt;
+            &lt;artifactId&gt;javainspect&lt;/artifactId&gt;
+            &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;/dependency&gt;
+ 
+    &lt;/dependencies&gt;
+    
+  
+  
+Add Maven repository to retrieve artifact from:
+  
+    &lt;repositories&gt;
+        &lt;repository&gt;
+            &lt;id&gt;svjatoslav.eu&lt;/id&gt;
+            &lt;name&gt;Svjatoslav repository&lt;/name&gt;
+            &lt;url&gt;http://www2.svjatoslav.eu/maven/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;
+</pre>
+
+
+
+
+	<h2>Requirements</h2>
+
+	<br>
+	<a href="http://www.graphviz.org/">GraphViz</a> - shall be installed on
+	the computer.
+
+
+</body>
+</html>
