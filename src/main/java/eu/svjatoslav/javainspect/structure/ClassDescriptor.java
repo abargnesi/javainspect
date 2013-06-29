@@ -44,7 +44,7 @@ public class ClassDescriptor implements GraphElement {
 
 	boolean isArray;
 
-	private final Graph dump;
+	private final ClassGraph dump;
 
 	List<ClassDescriptor> interfaces = new ArrayList<ClassDescriptor>();
 
@@ -55,7 +55,7 @@ public class ClassDescriptor implements GraphElement {
 	 */
 	private int referenceCount = 0;
 
-	public ClassDescriptor(final Class<? extends Object> clazz, final Graph dump) {
+	public ClassDescriptor(final Class<? extends Object> clazz, final ClassGraph dump) {
 		this.dump = dump;
 
 		fullyQualifiedName = clazz.getName();

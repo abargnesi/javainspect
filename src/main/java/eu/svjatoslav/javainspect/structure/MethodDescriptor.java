@@ -24,7 +24,7 @@ public class MethodDescriptor implements GraphElement {
 	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
 
 	public MethodDescriptor(final Method method, final ClassDescriptor parent,
-			final Graph dump) {
+			final ClassGraph dump) {
 
 		this.parent = parent;
 

@@ -10,12 +10,12 @@
 package eu.svjatoslav.javainspect.example;
 
 import eu.svjatoslav.javainspect.example.structure.SampleClass;
-import eu.svjatoslav.javainspect.structure.Graph;
+import eu.svjatoslav.javainspect.structure.ClassGraph;
 
 public class RenderExampleProject {
 
 	public static void main(final String[] args) {
-		final Graph graph = new Graph();
+		final ClassGraph graph = new ClassGraph();
 
 		graph.addClass(SampleClass.class);
 

@@ -11,7 +11,7 @@ package eu.svjatoslav.javainspect.example;
 
 import java.io.FileNotFoundException;
 
-import eu.svjatoslav.javainspect.structure.Graph;
+import eu.svjatoslav.javainspect.structure.ClassGraph;
 import eu.svjatoslav.javainspect.structure.Utils;
 
 public class RenderJavaInspect {
@@ -19,7 +19,7 @@ public class RenderJavaInspect {
 	public static void main(final String[] args) throws FileNotFoundException {
 
 		// Create graph
-		final Graph graph = new Graph();
+		final ClassGraph graph = new ClassGraph();
 
 		// Add some object to the graph.
 		graph.addObject(graph);

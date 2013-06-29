@@ -17,21 +17,21 @@ import java.util.Map;
 
 import eu.svjatoslav.commons.file.CommonPathResolver;
 
-public class Graph {
+public class ClassGraph {
 
 	/**
 	 * Maps class fully qualified names to class descriptors.
 	 */
 	Map<String, ClassDescriptor> nameToClassMap = new HashMap<String, ClassDescriptor>();
 
-	public Graph() {
+	public ClassGraph() {
 	}
 
-	public Graph(final Class<? extends Object> clazz) {
+	public ClassGraph(final Class<? extends Object> clazz) {
 		addClass(clazz);
 	}
 
-	public Graph(final Object root) {
+	public ClassGraph(final Object root) {
 		addClass(root.getClass());
 	}
 

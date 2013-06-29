@@ -23,7 +23,7 @@ public class FieldDescriptor implements GraphElement {
 	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
 
 	public FieldDescriptor(final Field field, final ClassDescriptor parent,
-			final Graph dump) {
+			final ClassGraph dump) {
 
 		this.parent = parent;
 
