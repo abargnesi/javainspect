@@ -85,18 +85,18 @@
 		<snapshotRepository>
 			<id>svjatoslav.eu</id>
 			<name>svjatoslav.eu</name>
-			<url>scp://svjatoslav.eu:7022/var/www/maven</url>
+			<url>scp://svjatoslav.eu/var/www/svjatoslav.eu/maven</url>
 		</snapshotRepository>
 		<repository>
 			<id>svjatoslav.eu</id>
 			<name>svjatoslav.eu</name>
-			<url>scp://svjatoslav.eu:7022/var/www/maven</url>
+			<url>scp://svjatoslav.eu/var/www/svjatoslav.eu/maven</url>
 		</repository>
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:ssh://git@svjatoslav.eu:7022/home/git/repositories/javainspect.git</connection>
-		<developerConnection>scm:git:ssh://git@svjatoslav.eu:7022/home/git/repositories/javainspect.git</developerConnection>
+		<connection>scm:git:ssh://git@svjatoslav.eu/home/git/repositories/javainspect.git</connection>
+		<developerConnection>scm:git:ssh://git@svjatoslav.eu/home/git/repositories/javainspect.git</developerConnection>
 	</scm>
 
 </project>
