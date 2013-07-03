@@ -7,7 +7,7 @@
  * as published by the Free Software Foundation.
  */
 
-package eu.svjatoslav.javainspect.structure;
+package eu.svjatoslav.inspector.java.structure;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

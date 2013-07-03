@@ -7,12 +7,12 @@
  * as published by the Free Software Foundation.
  */
 
-package eu.svjatoslav.javainspect.example;
+package eu.svjatoslav.inspector.java.structure.example;
 
 import java.io.FileNotFoundException;
 
-import eu.svjatoslav.javainspect.structure.ClassGraph;
-import eu.svjatoslav.javainspect.structure.Utils;
+import eu.svjatoslav.inspector.java.structure.ClassGraph;
+import eu.svjatoslav.inspector.java.structure.Utils;
 
 public class RenderJavaInspect {
 

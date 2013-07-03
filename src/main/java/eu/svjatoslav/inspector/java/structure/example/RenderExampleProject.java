@@ -7,10 +7,10 @@
  * as published by the Free Software Foundation.
  */
 
-package eu.svjatoslav.javainspect.example;
+package eu.svjatoslav.inspector.java.structure.example;
 
-import eu.svjatoslav.javainspect.example.structure.SampleClass;
-import eu.svjatoslav.javainspect.structure.ClassGraph;
+import eu.svjatoslav.inspector.java.structure.ClassGraph;
+import eu.svjatoslav.inspector.java.structure.example.structure.SampleClass;
 
 public class RenderExampleProject {
 

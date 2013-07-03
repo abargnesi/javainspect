@@ -7,7 +7,7 @@
  * as published by the Free Software Foundation.
  */
 
-package eu.svjatoslav.javainspect.structure;
+package eu.svjatoslav.inspector.java.structure;
 
 public interface GraphElement {
 
