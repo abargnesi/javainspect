@@ -44,6 +44,8 @@ public class ClassDescriptor implements GraphElement {
 
 	boolean isArray;
 
+	private boolean isShown = true;
+
 	private final ClassGraph dump;
 
 	List<ClassDescriptor> interfaces = new ArrayList<ClassDescriptor>();
@@ -55,7 +57,8 @@ public class ClassDescriptor implements GraphElement {
 	 */
 	private int referenceCount = 0;
 
-	public ClassDescriptor(final Class<? extends Object> clazz, final ClassGraph dump) {
+	public ClassDescriptor(final Class<? extends Object> clazz,
+			final ClassGraph dump) {
 		this.dump = dump;
 
 		fullyQualifiedName = clazz.getName();
@@ -325,6 +328,10 @@ public class ClassDescriptor implements GraphElement {
 		return superClassColor;
 	}
 
+	public void hide() {
+		isShown = false;
+	}
+
 	public void indexFields(final Field[] fields) {
 		for (final Field field : fields) {
 			if (nameToFieldMap.containsKey(field.getName()))
@@ -353,7 +360,7 @@ public class ClassDescriptor implements GraphElement {
 		if (Utils.isSystemPackage(fullyQualifiedName))
 			return false;
 
-		return true;
+		return isShown;
 	}
 
 	public void registerReference() {
