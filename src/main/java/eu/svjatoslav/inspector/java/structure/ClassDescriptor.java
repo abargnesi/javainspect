@@ -188,8 +188,15 @@ public class ClassDescriptor implements GraphElement {
 		result.append("    // class descriptor header\n");
 		result.append("    <TR><TD colspan=\"2\" PORT=\"f0\">"
 				+ "<FONT POINT-SIZE=\"8.0\" >" + getPackageName()
-				+ "</FONT><br/>" + "<FONT POINT-SIZE=\"25.0\"><B>"
-				+ getClassName(false) + "</B></FONT>" + "</TD></TR>\n");
+				+ "</FONT><br/>");
+
+		final String parentClassesName = getParentClassesName();
+		if (parentClassesName.length() > 0)
+			result.append("<FONT POINT-SIZE=\"12.0\"><B>" + parentClassesName
+					+ "</B></FONT><br/>\n");
+
+		result.append("<FONT POINT-SIZE=\"25.0\"><B>" + getClassName(false)
+				+ "</B></FONT>" + "</TD></TR>\n");
 	}
 
 	public List<FieldDescriptor> getAllFields() {
@@ -222,10 +229,12 @@ public class ClassDescriptor implements GraphElement {
 	}
 
 	public String getClassName(final boolean differentiateArray) {
+		// this is needed for nested classes
+		final String actualClassName = fullyQualifiedName.replace('$', '.');
 
-		final int i = fullyQualifiedName.lastIndexOf('.');
+		final int i = actualClassName.lastIndexOf('.');
 
-		String result = fullyQualifiedName.substring(i + 1);
+		String result = actualClassName.substring(i + 1);
 
 		if (isArray)
 			result = result.substring(0, result.length() - 1);
@@ -235,7 +244,7 @@ public class ClassDescriptor implements GraphElement {
 				result += " []";
 
 		// this is needed for nested classes
-		result = result.replace('$', '.');
+		// result = result.replace('$', '.');
 		return result;
 	}
 
@@ -307,6 +316,17 @@ public class ClassDescriptor implements GraphElement {
 			return "";
 
 		return fullyQualifiedName.substring(0, i).replace("[L", "");
+	}
+
+	public String getParentClassesName() {
+		int i = fullyQualifiedName.lastIndexOf('.');
+		final String fullClassName = fullyQualifiedName.substring(i + 1);
+
+		i = fullClassName.lastIndexOf('$');
+		if (i == -1)
+			return "";
+		final String parentClassesName = fullClassName.substring(0, i);
+		return parentClassesName.replace('$', '.');
 	}
 
 	// public String getReadableName() {
