@@ -234,6 +234,8 @@ public class ClassDescriptor implements GraphElement {
 			if (isArray)
 				result += " []";
 
+		// this is needed for nested classes
+		result = result.replace('$', '.');
 		return result;
 	}
 
@@ -286,7 +288,7 @@ public class ClassDescriptor implements GraphElement {
 	public String getGraphId() {
 		final String result = "class_"
 				+ fullyQualifiedName.replace('.', '_').replace(";", "")
-						.replace("[L", "");
+						.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
