@@ -35,6 +35,12 @@ public class JavaFile {
 		tokenizer.addTerminator("\n", true);
 
 		tokenizer.addTerminator(";", false);
+		tokenizer.addTerminator("{", false);
+		tokenizer.addTerminator("}", false);
+		tokenizer.addTerminator("(", false);
+		tokenizer.addTerminator(")", false);
+		tokenizer.addTerminator("[", false);
+		tokenizer.addTerminator("]", false);
 
 		while (true) {
 			final TokenizerMatch match = tokenizer.getToken();
@@ -43,6 +49,10 @@ public class JavaFile {
 
 			if (match.token.equals("import"))
 				parseImport(tokenizer);
+
+			if (match.token.equals("package"))
+				parsePackage(tokenizer);
+
 		}
 
 	}
@@ -50,7 +60,7 @@ public class JavaFile {
 	private void parseImport(final Tokenizer tokenizer) {
 		final Import imp = new Import();
 
-		final TokenizerMatch match = tokenizer.getToken();
+		TokenizerMatch match = tokenizer.getToken();
 
 		if (match.token.equals("static")) {
 			imp.isStatic = true;
@@ -59,6 +69,19 @@ public class JavaFile {
 			imp.path = match.token;
 
 		imports.add(imp);
+
+		// ;
+		match = tokenizer.getToken();
+	}
+
+	private void parsePackage(final Tokenizer tokenizer) {
+
+		TokenizerMatch match = tokenizer.getToken();
+
+		System.out.println(match.token);
+
+		// ;
+		match = tokenizer.getToken();
 	}
 
 	private void readFile() throws FileNotFoundException, IOException {
