@@ -1,6 +1,7 @@
 package eu.svjatoslav.inspector.java.methods;
 
 import java.io.File;
+import java.io.IOException;
 
 import eu.svjatoslav.commons.file.FilePathParser;
 
@@ -42,10 +43,13 @@ public class Project {
 
 	public void parseFile(final File file) {
 		final String fileExtension = FilePathParser.getFileExtension(file);
-		if ("java".equalsIgnoreCase(fileExtension)){
-			JavaFile javaFile = new JavaFile(file);
-			// oeu
-		}
+		if ("java".equalsIgnoreCase(fileExtension))
+			try {
+				final JavaFile javaFile = new JavaFile(file);
+			} catch (final IOException e) {
+				System.out.println("Error parsing file: " + file.toString()
+						+ ", " + e.toString());
+			}
 	}
 
 }
