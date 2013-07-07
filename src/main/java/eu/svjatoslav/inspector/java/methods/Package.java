@@ -3,8 +3,8 @@ package eu.svjatoslav.inspector.java.methods;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Project {
+public class Package {
 
-	Map<String, Package> packages = new HashMap<String, Package>();
+	Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
 }
