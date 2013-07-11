@@ -46,7 +46,7 @@ public class ClassDescriptor implements GraphElement {
 
 	private boolean isShown = true;
 
-	private final ClassGraph dump;
+	private final ClassGraph classGraph;
 
 	List<ClassDescriptor> interfaces = new ArrayList<ClassDescriptor>();
 
@@ -59,7 +59,7 @@ public class ClassDescriptor implements GraphElement {
 
 	public ClassDescriptor(final Class<? extends Object> clazz,
 			final ClassGraph dump) {
-		this.dump = dump;
+		classGraph = dump;
 
 		fullyQualifiedName = clazz.getName();
 		dump.nameToClassMap.put(fullyQualifiedName, this);
@@ -360,7 +360,7 @@ public class ClassDescriptor implements GraphElement {
 				continue;
 
 			final FieldDescriptor fieldDescriptor = new FieldDescriptor(field,
-					this, dump);
+					this, classGraph);
 
 		}
 	}
@@ -369,7 +369,7 @@ public class ClassDescriptor implements GraphElement {
 		final Method[] methods = clazz.getMethods();
 
 		for (final Method method : methods)
-			new MethodDescriptor(method, this, dump);
+			new MethodDescriptor(method, this, classGraph);
 
 	}
 
@@ -380,6 +380,9 @@ public class ClassDescriptor implements GraphElement {
 			return false;
 
 		if (Utils.isSystemPackage(fullyQualifiedName))
+			return false;
+
+		if (!classGraph.filter.isClassShown(fullyQualifiedName))
 			return false;
 
 		return isShown;

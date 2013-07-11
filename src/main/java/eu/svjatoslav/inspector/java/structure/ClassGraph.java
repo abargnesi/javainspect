@@ -24,6 +24,8 @@ public class ClassGraph {
 	 */
 	Map<String, ClassDescriptor> nameToClassMap = new HashMap<String, ClassDescriptor>();
 
+	public Filter filter = new Filter();
+
 	public ClassGraph() {
 	}
 
