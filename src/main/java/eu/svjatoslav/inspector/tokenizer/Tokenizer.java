@@ -17,19 +17,26 @@ public class Tokenizer {
 		this.source = source;
 	}
 
-	public void addTerminator(final String terminator, final boolean empty) {
-
-		terminators.add(new Terminator(terminator, empty));
+	public void addTerminator(final String startSequence,
+			final boolean ignoreTerminator) {
+		terminators.add(new Terminator(startSequence, ignoreTerminator));
 	}
 
-	public void expectToken(final String value) throws InvalidSyntaxException {
-		final TokenizerMatch match = getToken();
+	public void addTerminator(final String startSequence,
+			final String endSequence, final boolean ignoreTerminator) {
+		terminators.add(new Terminator(startSequence, endSequence,
+				ignoreTerminator));
+	}
+
+	public void expectNextToken(final String value)
+			throws InvalidSyntaxException {
+		final TokenizerMatch match = getNextToken();
 		if (!value.equals(match.token))
 			throw new InvalidSyntaxException("Expected \"" + value
 					+ "\" but got \"" + match.token + "\" instead.");
 	}
 
-	public TokenizerMatch getToken() {
+	public TokenizerMatch getNextToken() {
 		tokenIndexes.push(currentIndex);
 		final StringBuffer result = new StringBuffer();
 
@@ -40,10 +47,14 @@ public class Tokenizer {
 			boolean accumulateCurrentChar = true;
 
 			findTerminator: for (final Terminator terminator : terminators)
-				if (terminatorMatches(terminator))
-					// empty space detected
-					if (terminator.empty) {
-						currentIndex += terminator.value.length();
+				if (sequenceMatches(terminator.startSequence))
+
+					if (terminator.ignoreTerminator) {
+						currentIndex += terminator.startSequence.length();
+
+						if (terminator.endSequence != null)
+							skipUntilSequence(terminator.endSequence);
+
 						if (result.length() > 0)
 							return new TokenizerMatch(result.toString(),
 									terminator);
@@ -54,8 +65,9 @@ public class Tokenizer {
 					} else if (result.length() > 0)
 						return new TokenizerMatch(result.toString(), terminator);
 					else {
-						currentIndex += terminator.value.length();
-						return new TokenizerMatch(terminator.value, terminator);
+						currentIndex += terminator.startSequence.length();
+						return new TokenizerMatch(terminator.startSequence,
+								terminator);
 					}
 
 			if (accumulateCurrentChar) {
@@ -66,32 +78,43 @@ public class Tokenizer {
 
 	}
 
-	public boolean isNextToken(final String token) {
-		if (token.equals(getToken().token))
+	public boolean probeNextToken(final String token) {
+		if (token.equals(getNextToken().token))
 			return true;
 
-		rollbackToken();
+		unreadToken();
 		return false;
 	}
 
-	public void rollbackToken() {
-		currentIndex = tokenIndexes.pop();
+	public boolean sequenceMatches(final String sequence) {
+		if ((currentIndex + sequence.length()) > source.length())
+			return false;
+
+		for (int i = 0; i < sequence.length(); i++)
+			if (sequence.charAt(i) != source.charAt(i + currentIndex))
+				return false;
+
+		return true;
 	}
 
-	public void skipUtilEnd() {
+	public void skipUntilDataEnd() {
 		tokenIndexes.push(currentIndex);
 		currentIndex = source.length();
 	}
 
-	public boolean terminatorMatches(final Terminator terminator) {
-		if ((currentIndex + terminator.value.length()) > source.length())
-			return false;
+	public void skipUntilSequence(final String sequence) {
+		while (currentIndex < source.length()) {
+			if (sequenceMatches(sequence)) {
+				currentIndex += sequence.length();
+				return;
+			}
 
-		for (int i = 0; i < terminator.value.length(); i++)
-			if (terminator.value.charAt(i) != source.charAt(i + currentIndex))
-				return false;
+			currentIndex++;
+		}
+	}
 
-		return true;
+	public void unreadToken() {
+		currentIndex = tokenIndexes.pop();
 	}
 
 }

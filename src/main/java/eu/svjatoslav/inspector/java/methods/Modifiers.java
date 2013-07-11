@@ -19,6 +19,8 @@ public class Modifiers {
 
 	boolean isFinal = false;
 
+	boolean isAbstract = false;
+
 	public boolean parseModifier(final String string) {
 		for (final Access access : Access.values())
 			if (access.name.equals(string)) {
@@ -33,6 +35,11 @@ public class Modifiers {
 
 		if ("final".equals(string)) {
 			isFinal = true;
+			return true;
+		}
+
+		if ("abstract".equals(string)) {
+			isAbstract = true;
 			return true;
 		}
 

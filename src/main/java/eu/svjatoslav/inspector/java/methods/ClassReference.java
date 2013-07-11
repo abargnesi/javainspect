@@ -14,20 +14,20 @@ public class ClassReference {
 
 	public ClassReference(final Tokenizer tokenizer)
 			throws InvalidSyntaxException {
-		name = tokenizer.getToken().token;
+		name = tokenizer.getNextToken().token;
 
-		if (!tokenizer.isNextToken("<"))
+		if (!tokenizer.probeNextToken("<"))
 			return;
 
 		while (true) {
 			final ClassReference parameterType = new ClassReference(tokenizer);
 			typeParameters.add(parameterType);
 
-			if (!tokenizer.isNextToken(","))
+			if (!tokenizer.probeNextToken(","))
 				break;
 		}
 
-		tokenizer.expectToken(">");
+		tokenizer.expectNextToken(">");
 	}
 
 	@Override
