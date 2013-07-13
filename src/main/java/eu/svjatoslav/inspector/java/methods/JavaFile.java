@@ -22,6 +22,8 @@ public class JavaFile {
 
 	StringBuffer contents = new StringBuffer();
 
+	public List<Clazz> classes = new ArrayList<Clazz>();
+
 	public JavaFile(final File file) throws IOException, InvalidSyntaxException {
 		this.file = file;
 		parse();
@@ -49,6 +51,7 @@ public class JavaFile {
 		tokenizer.addTerminator("<", false);
 		tokenizer.addTerminator(">", false);
 		tokenizer.addTerminator(",", false);
+		tokenizer.addTerminator("@", false);
 
 		// comments
 		tokenizer.addTerminator("//", "\n", true);
@@ -85,6 +88,11 @@ public class JavaFile {
 				continue;
 			}
 
+			if ("@".equals(match.token)) {
+				final Annotation annotation = new Annotation(tokenizer);
+				continue;
+			}
+
 			System.out.println("    " + modifiers.toString() + " "
 					+ match.token);
 			modifiers.reset();
@@ -99,7 +107,9 @@ public class JavaFile {
 		final TokenizerMatch match = tokenizer.getNextToken();
 		final Clazz clazz = new Clazz(packageName, match.token, tokenizer,
 				false);
-		System.out.println(clazz.toString());
+		// System.out.println(clazz.toString());
+		classes.add(clazz);
+
 	}
 
 	private void parseImport(final Tokenizer tokenizer)
@@ -125,7 +135,8 @@ public class JavaFile {
 
 		final TokenizerMatch match = tokenizer.getNextToken();
 		final Clazz clazz = new Clazz(packageName, match.token, tokenizer, true);
-		System.out.println(clazz.toString());
+		// System.out.println(clazz.toString());
+		classes.add(clazz);
 	}
 
 	private void parsePackage(final Tokenizer tokenizer)

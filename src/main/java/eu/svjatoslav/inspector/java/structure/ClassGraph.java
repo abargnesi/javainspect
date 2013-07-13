@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.svjatoslav.commons.file.CommonPathResolver;
+import eu.svjatoslav.inspector.java.methods.Clazz;
+import eu.svjatoslav.inspector.java.methods.ProjectScanner;
 
 public class ClassGraph {
 
@@ -52,6 +54,19 @@ public class ClassGraph {
 
 	public ClassDescriptor addObject(final Object object) {
 		return addClass(object.getClass());
+	}
+
+	public void addProject(final String path) {
+		final ProjectScanner projectScanner = new ProjectScanner(new File(path));
+		for (final Clazz clazz : projectScanner.getAllClasses())
+			try {
+				System.out.println("Class full name: " + clazz.getFullName());
+				final Class c = this.getClass().forName(clazz.getFullName());
+				addClass(c);
+			} catch (final Exception exception) {
+				System.out.println("cannot add class: "
+						+ exception.getMessage());
+			}
 	}
 
 	public void generateGraph(final String graphName) {

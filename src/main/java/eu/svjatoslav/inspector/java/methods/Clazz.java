@@ -52,6 +52,10 @@ public class Clazz {
 		}
 	}
 
+	public String getFullName() {
+		return packageName + "." + className;
+	}
+
 	public void parseClassBody(final Tokenizer tokenizer) {
 		tokenizer.skipUntilDataEnd();
 	}

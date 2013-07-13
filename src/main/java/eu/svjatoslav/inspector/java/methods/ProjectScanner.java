@@ -2,7 +2,9 @@ package eu.svjatoslav.inspector.java.methods;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.svjatoslav.commons.file.FilePathParser;
@@ -13,10 +15,21 @@ public class ProjectScanner {
 	private final File scanPath;
 
 	Map<File, Project> projects = new HashMap<File, Project>();
+	public List<JavaFile> javaFiles = new ArrayList<JavaFile>();
 
 	public ProjectScanner(final File projectPath) {
 		scanPath = projectPath;
 		parse();
+	}
+
+	public List<Clazz> getAllClasses() {
+		final List<Clazz> result = new ArrayList<Clazz>();
+
+		for (final JavaFile file : javaFiles)
+			for (final Clazz clazz : file.classes)
+				result.add(clazz);
+
+		return result;
 	}
 
 	public void parse() {
@@ -51,6 +64,7 @@ public class ProjectScanner {
 		if ("java".equalsIgnoreCase(fileExtension))
 			try {
 				final JavaFile javaFile = new JavaFile(file);
+				javaFiles.add(javaFile);
 			} catch (final IOException e) {
 				System.out.println("Error parsing file: " + file.toString()
 						+ ": " + e.toString());
