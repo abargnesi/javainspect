@@ -21,6 +21,15 @@ import eu.svjatoslav.inspector.java.methods.ProjectScanner;
 
 public class ClassGraph {
 
+	public static void render(final String graphName, final Class... classes) {
+		final ClassGraph classGraph = new ClassGraph();
+
+		for (final Class clazz : classes)
+			classGraph.addClass(clazz);
+
+		classGraph.generateGraph(graphName);
+	}
+
 	/**
 	 * Maps class fully qualified names to class descriptors.
 	 */
@@ -122,6 +131,13 @@ public class ClassGraph {
 
 		final String resultStr = result.toString();
 		return resultStr;
+	}
+
+	public void hideClassesWithoutReferences() {
+
+		for (final ClassDescriptor classDescriptor : nameToClassMap.values())
+			classDescriptor.hideClassIfNoReferences();
+
 	}
 
 }

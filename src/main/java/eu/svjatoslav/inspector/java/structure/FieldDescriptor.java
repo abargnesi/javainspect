@@ -122,6 +122,17 @@ public class FieldDescriptor implements GraphElement {
 		return parent.getGraphId() + ":" + name;
 	}
 
+	public int getOutsideVisibleReferencesCount() {
+
+		if (!isVisible())
+			return 0;
+
+		if (type.isVisible())
+			return 1;
+
+		return 0;
+	}
+
 	@Override
 	public boolean isVisible() {
 		if (name.contains("$"))
@@ -132,5 +143,4 @@ public class FieldDescriptor implements GraphElement {
 
 		return true;
 	}
-
 }

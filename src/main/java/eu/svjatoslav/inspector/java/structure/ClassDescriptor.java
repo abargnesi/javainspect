@@ -55,7 +55,7 @@ public class ClassDescriptor implements GraphElement {
 	/**
 	 * Amount of field and method references pointing to this class.
 	 */
-	private int referenceCount = 0;
+	private int incomingReferencesCount = 0;
 
 	public ClassDescriptor(final Class<? extends Object> clazz,
 			final ClassGraph dump) {
@@ -92,7 +92,7 @@ public class ClassDescriptor implements GraphElement {
 	}
 
 	public boolean areReferencesShown() {
-		return referenceCount <= MAX_REFERECNES_COUNT;
+		return incomingReferencesCount <= MAX_REFERECNES_COUNT;
 	}
 
 	public void enlistFieldReferences(final StringBuffer result) {
@@ -354,6 +354,31 @@ public class ClassDescriptor implements GraphElement {
 		isShown = false;
 	}
 
+	public boolean hideClassIfNoReferences() {
+		if (!isVisible())
+			return false;
+
+		int outgoingVisibleReferencesCount = 0;
+
+		for (final MethodDescriptor methodDescriptor : methods)
+			outgoingVisibleReferencesCount += methodDescriptor
+					.getOutsideVisibleReferencesCount();
+
+		for (final FieldDescriptor fieldDescriptor : nameToFieldMap.values())
+			outgoingVisibleReferencesCount += fieldDescriptor
+					.getOutsideVisibleReferencesCount();
+
+		final int totalReferencesCount = outgoingVisibleReferencesCount
+				+ incomingReferencesCount;
+
+		if (totalReferencesCount == 0) {
+			hide();
+			return true;
+		}
+
+		return false;
+	}
+
 	public void indexFields(final Field[] fields) {
 		for (final Field field : fields) {
 			if (nameToFieldMap.containsKey(field.getName()))
@@ -389,7 +414,7 @@ public class ClassDescriptor implements GraphElement {
 	}
 
 	public void registerReference() {
-		referenceCount++;
+		incomingReferencesCount++;
 	}
 
 	public void setDistinctiveColor(final String distinctiveColor) {

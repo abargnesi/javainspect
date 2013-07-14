@@ -52,7 +52,6 @@ public class MethodDescriptor implements GraphElement {
 				}
 
 		}
-
 	}
 
 	@Override
@@ -110,6 +109,19 @@ public class MethodDescriptor implements GraphElement {
 
 	public String getMethodLabel() {
 		return name;
+	}
+
+	public int getOutsideVisibleReferencesCount() {
+		int result = 0;
+
+		if (returnType.isVisible())
+			result++;
+
+		for (final ClassDescriptor classDescriptor : typeArguments)
+			if (classDescriptor.isVisible())
+				result++;
+
+		return result;
 	}
 
 	@Override
