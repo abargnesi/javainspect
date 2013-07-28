@@ -3,8 +3,8 @@ package eu.svjatoslav.inspector.java.methods;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.svjatoslav.inspector.tokenizer.InvalidSyntaxException;
-import eu.svjatoslav.inspector.tokenizer.Tokenizer;
+import eu.svjatoslav.commons.string.tokenizer.InvalidSyntaxException;
+import eu.svjatoslav.commons.string.tokenizer.Tokenizer;
 
 public class ClassReference {
 

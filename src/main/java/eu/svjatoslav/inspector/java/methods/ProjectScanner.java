@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.svjatoslav.commons.file.FilePathParser;
-import eu.svjatoslav.inspector.tokenizer.InvalidSyntaxException;
+import eu.svjatoslav.commons.string.tokenizer.InvalidSyntaxException;
 
 public class ProjectScanner {
 

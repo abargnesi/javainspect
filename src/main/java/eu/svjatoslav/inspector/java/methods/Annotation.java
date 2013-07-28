@@ -1,8 +1,8 @@
 package eu.svjatoslav.inspector.java.methods;
 
-import eu.svjatoslav.inspector.tokenizer.InvalidSyntaxException;
-import eu.svjatoslav.inspector.tokenizer.Tokenizer;
-import eu.svjatoslav.inspector.tokenizer.TokenizerMatch;
+import eu.svjatoslav.commons.string.tokenizer.InvalidSyntaxException;
+import eu.svjatoslav.commons.string.tokenizer.Tokenizer;
+import eu.svjatoslav.commons.string.tokenizer.TokenizerMatch;
 
 public class Annotation {
 
