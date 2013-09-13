@@ -20,6 +20,9 @@ public class Annotation {
 		while (true) {
 			final TokenizerMatch token = tokenizer.getNextToken();
 
+			if (token == null)
+				return;
+
 			if ("(".equals(token.token))
 				depth++;
 			if (")".equals(token.token))
