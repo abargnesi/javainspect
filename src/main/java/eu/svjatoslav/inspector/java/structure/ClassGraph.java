@@ -35,19 +35,33 @@ public class ClassGraph {
 	 */
 	Map<String, ClassDescriptor> nameToClassMap = new HashMap<String, ClassDescriptor>();
 
-	public Filter filter = new Filter();
+	private Filter filter = new Filter();
 
 	public ClassGraph() {
 	}
 
-	public ClassGraph(final Class<? extends Object> clazz) {
-		addClass(clazz);
+	/**
+	 * @param classes
+	 *            classes that shall be added to graph
+	 */
+	public ClassGraph(final Class<? extends Object>... classes) {
+		for (final Class<? extends Object> clazz : classes)
+			addClass(clazz);
 	}
 
-	public ClassGraph(final Object root) {
-		addClass(root.getClass());
+	/**
+	 * @param objects
+	 *            objects that shall be added to graph
+	 */
+	public ClassGraph(final Object... objects) {
+		for (Object object : objects)
+			addClass(object.getClass());
 	}
 
+	/**
+	 * @param clazz
+	 *            class that shall be added to graph
+	 */
 	public ClassDescriptor addClass(final Class<? extends Object> clazz) {
 
 		if (clazz == null)
@@ -61,10 +75,19 @@ public class ClassGraph {
 		return new ClassDescriptor(clazz, this);
 	}
 
+	/**
+	 * @param object
+	 *            object that shall be added to graph
+	 */
 	public ClassDescriptor addObject(final Object object) {
 		return addClass(object.getClass());
 	}
 
+	/**
+	 * @param path
+	 *            path to recursively scan for java source code could be
+	 *            relative to current project or absolute
+	 */
 	public void addProject(final String path) {
 		final ProjectScanner projectScanner = new ProjectScanner(new File(path));
 		for (final Clazz clazz : projectScanner.getAllClasses())
@@ -78,17 +101,34 @@ public class ClassGraph {
 			}
 	}
 
-	public void generateGraph(final String graphName) {
-		generateGraph(graphName, false);
+	/**
+	 * @param resultFileName
+	 *            file name for the generated graph. Existing file with the same
+	 *            name will be overwritten.
+	 */
+	public void generateGraph(final String resultFileName) {
+		generateGraph(resultFileName, false);
 	}
 
-	public void generateGraph(final String graphName, final boolean keepDotFile) {
+	/**
+	 * @param resultFileName
+	 *            file name for the generated graph. File extension will be
+	 *            added automatically. Existing file with the same name will be
+	 *            overwritten.
+	 * 
+	 * @param keepDotFile
+	 *            if set to <code>true</code> then intermediary GraphViz DOT
+	 *            file will be kept.
+	 */
+
+	public void generateGraph(final String resultFileName,
+			final boolean keepDotFile) {
 
 		final String desktopPath = CommonPathResolver.getDesktopDirectory()
 				.getAbsolutePath() + "/";
 
-		final String dotFilePath = desktopPath + graphName + ".dot";
-		final String imageFilePath = desktopPath + graphName + ".png";
+		final String dotFilePath = desktopPath + resultFileName + ".dot";
+		final String imageFilePath = desktopPath + resultFileName + ".png";
 
 		System.out.println("Dot file path:" + dotFilePath);
 
@@ -101,8 +141,8 @@ public class ClassGraph {
 			// execute GraphViz to visualize graph
 			try {
 				Runtime.getRuntime()
-						.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
-								imageFilePath }).waitFor();
+				.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
+						imageFilePath }).waitFor();
 			} catch (final InterruptedException e) {
 			} finally {
 			}
@@ -133,11 +173,22 @@ public class ClassGraph {
 		return resultStr;
 	}
 
-	public void hideClassesWithoutReferences() {
+	/**
+	 * Hide orphaned class that have no references
+	 */
+	public void hideOrphanedClasses() {
 
 		for (final ClassDescriptor classDescriptor : nameToClassMap.values())
 			classDescriptor.hideClassIfNoReferences();
 
+	}
+
+	public Filter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
 }

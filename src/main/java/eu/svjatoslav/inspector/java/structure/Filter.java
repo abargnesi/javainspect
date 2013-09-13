@@ -7,21 +7,35 @@ import eu.svjatoslav.commons.string.WildCardMatcher;
 
 public class Filter {
 
-	private static final List<String> blacklistedClasses = new ArrayList<String>();
+	/**
+	 * This class implements filter of classes that will be included or excluded
+	 * from resulting graph.
+	 * 
+	 * Filtering is done by lists of whitelist and blacklist patterns using
+	 * wildcards.
+	 * 
+	 * Filtering logic is such that if at least single whitelist entry is
+	 * defined then every class that is not whitelisted is automatically
+	 * excluded from graph.
+	 * 
+	 * Otherwise every class in included in graph that is not blacklisted.
+	 */
 
-	private static final List<String> whitelistedClasses = new ArrayList<String>();
+	private static final List<String> blacklistClassPatterns = new ArrayList<String>();
+
+	private static final List<String> whitelistClassPatterns = new ArrayList<String>();
 
 	public void blacklistClassPattern(final String pattern) {
-		blacklistedClasses.add(pattern);
+		blacklistClassPatterns.add(pattern);
 	}
 
 	public boolean isClassShown(final String className) {
-		for (final String pattern : blacklistedClasses)
+		for (final String pattern : blacklistClassPatterns)
 			if (WildCardMatcher.match(className, pattern))
 				return false;
 
-		if (!whitelistedClasses.isEmpty()) {
-			for (final String pattern : whitelistedClasses)
+		if (!whitelistClassPatterns.isEmpty()) {
+			for (final String pattern : whitelistClassPatterns)
 				if (WildCardMatcher.match(className, pattern))
 					return true;
 			return false;
@@ -31,7 +45,7 @@ public class Filter {
 	}
 
 	public void whitelistClassPattern(final String pattern) {
-		whitelistedClasses.add(pattern);
+		whitelistClassPatterns.add(pattern);
 	}
 
 }

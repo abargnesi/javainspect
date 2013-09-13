@@ -15,7 +15,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MethodDescriptor implements GraphElement {
+public class MethodDescriptor implements GraphElement,
+Comparable<MethodDescriptor> {
+
+	/**
+	 * This class corresponds to single method within a java class.
+	 */
 
 	public String name;
 	public ClassDescriptor returnType;
@@ -147,6 +152,16 @@ public class MethodDescriptor implements GraphElement {
 		}
 
 		return true;
+	}
+
+	@Override
+	public int compareTo(MethodDescriptor o) {
+
+		int nameComparisonResult = name.compareTo(o.name);
+		if (nameComparisonResult != 0)
+			return nameComparisonResult;
+
+		return toString().compareTo(o.toString());
 	}
 
 }

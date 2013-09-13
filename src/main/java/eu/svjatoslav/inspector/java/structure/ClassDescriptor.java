@@ -12,9 +12,11 @@ package eu.svjatoslav.inspector.java.structure;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Describes single class instance
@@ -25,9 +27,9 @@ public class ClassDescriptor implements GraphElement {
 
 	public final String fullyQualifiedName;
 
-	Map<String, FieldDescriptor> nameToFieldMap = new HashMap<String, FieldDescriptor>();
+	Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
 
-	public List<MethodDescriptor> methods = new ArrayList<MethodDescriptor>();
+	public SortedSet<MethodDescriptor> methods = new TreeSet<MethodDescriptor>();
 
 	/**
 	 * Incoming arrows will have this color.
@@ -297,7 +299,7 @@ public class ClassDescriptor implements GraphElement {
 	public String getGraphId() {
 		final String result = "class_"
 				+ fullyQualifiedName.replace('.', '_').replace(";", "")
-						.replace("[L", "").replace('$', '_');
+				.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
@@ -362,11 +364,11 @@ public class ClassDescriptor implements GraphElement {
 
 		for (final MethodDescriptor methodDescriptor : methods)
 			outgoingVisibleReferencesCount += methodDescriptor
-					.getOutsideVisibleReferencesCount();
+			.getOutsideVisibleReferencesCount();
 
 		for (final FieldDescriptor fieldDescriptor : nameToFieldMap.values())
 			outgoingVisibleReferencesCount += fieldDescriptor
-					.getOutsideVisibleReferencesCount();
+			.getOutsideVisibleReferencesCount();
 
 		final int totalReferencesCount = outgoingVisibleReferencesCount
 				+ incomingReferencesCount;
@@ -407,7 +409,7 @@ public class ClassDescriptor implements GraphElement {
 		if (Utils.isSystemPackage(fullyQualifiedName))
 			return false;
 
-		if (!classGraph.filter.isClassShown(fullyQualifiedName))
+		if (!classGraph.getFilter().isClassShown(fullyQualifiedName))
 			return false;
 
 		return isShown;

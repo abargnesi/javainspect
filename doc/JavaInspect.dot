@@ -1,186 +1,138 @@
 digraph Java {
 graph [rankdir=LR, overlap = false, concentrate=true];
 
-// Class: eu.svjatoslav.javainspect.structure.ClassDescriptor
-    class_eu_svjatoslav_javainspect_structure_ClassDescriptor[label=<<TABLE  BORDER="4" CELLBORDER="1" CELLSPACING="0">
+// Class: eu.svjatoslav.inspector.java.structure.Filter
+    class_eu_svjatoslav_inspector_java_structure_Filter[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
 
     // class descriptor header
-    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.javainspect.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>ClassDescriptor</B></FONT></TD></TR>
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>Filter</B></FONT></TD></TR>
 
     // fields:
-        // methods
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="methods" ALIGN="left"><FONT POINT-SIZE="11.0">methods</FONT></TD></TR>
-        // distinctiveReferenceColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="distinctiveReferenceColor" ALIGN="left"><FONT POINT-SIZE="11.0">distinctiveReferenceColor</FONT></TD></TR>
-        // interfaceColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="interfaceColor" ALIGN="left"><FONT POINT-SIZE="11.0">interfaceColor</FONT></TD></TR>
-        // superClass
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="superClass" ALIGN="left"><FONT POINT-SIZE="11.0">superClass</FONT></TD></TR>
-        // dump
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">Graph</FONT></td><TD PORT="dump" ALIGN="left"><FONT POINT-SIZE="11.0">dump</FONT></TD></TR>
-        // MAX_REFERECNES_COUNT
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="MAX_REFERECNES_COUNT" ALIGN="left"><FONT POINT-SIZE="11.0">MAX_REFERECNES_COUNT</FONT></TD></TR>
-        // nameToFieldMap
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">Map</FONT></td><TD PORT="nameToFieldMap" ALIGN="left"><FONT POINT-SIZE="11.0">nameToFieldMap</FONT></TD></TR>
-        // superClassColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="superClassColor" ALIGN="left"><FONT POINT-SIZE="11.0">superClassColor</FONT></TD></TR>
-        // isInterface
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isInterface" ALIGN="left"><FONT POINT-SIZE="11.0">isInterface</FONT></TD></TR>
-        // referenceCount
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="referenceCount" ALIGN="left"><FONT POINT-SIZE="11.0">referenceCount</FONT></TD></TR>
-        // isEnum
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isEnum" ALIGN="left"><FONT POINT-SIZE="11.0">isEnum</FONT></TD></TR>
-        // interfaces
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="interfaces" ALIGN="left"><FONT POINT-SIZE="11.0">interfaces</FONT></TD></TR>
-        // fullyQualifiedName
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="fullyQualifiedName" ALIGN="left"><FONT POINT-SIZE="11.0">fullyQualifiedName</FONT></TD></TR>
-        // isArray
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isArray" ALIGN="left"><FONT POINT-SIZE="11.0">isArray</FONT></TD></TR>
+        // blacklistClassPatterns
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="blacklistClassPatterns" ALIGN="left"><FONT POINT-SIZE="11.0">blacklistClassPatterns</FONT></TD></TR>
+        // whitelistClassPatterns
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="whitelistClassPatterns" ALIGN="left"><FONT POINT-SIZE="11.0">whitelistClassPatterns</FONT></TD></TR>
 
     // methods:
-        // getClassName
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getClassName" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getClassName</FONT></TD></TR>
-        // getDot
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDot</FONT></TD></TR>
-        // isVisible
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
-        // indexFields
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="indexFields" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">indexFields</FONT></TD></TR>
-        // areReferencesShown
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="areReferencesShown" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">areReferencesShown</FONT></TD></TR>
-        // enlistFieldReferences
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistFieldReferences" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistFieldReferences</FONT></TD></TR>
-        // enlistFields
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistFields" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistFields</FONT></TD></TR>
-        // getEmbeddedDot
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getEmbeddedDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getEmbeddedDot</FONT></TD></TR>
-        // enlistImplementedInterfaces
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistImplementedInterfaces" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistImplementedInterfaces</FONT></TD></TR>
-        // getGraphId
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getGraphId" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getGraphId</FONT></TD></TR>
-        // enlistMethodReferences
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistMethodReferences" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistMethodReferences</FONT></TD></TR>
-        // enlistMethods
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistMethods" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistMethods</FONT></TD></TR>
-        // enlistSuperClass
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistSuperClass" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistSuperClass</FONT></TD></TR>
-        // generateDotHeader
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="generateDotHeader" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">generateDotHeader</FONT></TD></TR>
-        // getBackgroundColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getBackgroundColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getBackgroundColor</FONT></TD></TR>
-        // getBorderWidth
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getBorderWidth" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getBorderWidth</FONT></TD></TR>
-        // getPackageName
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getPackageName" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getPackageName</FONT></TD></TR>
-        // getAllFields
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="getAllFields" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getAllFields</FONT></TD></TR>
-        // getColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getColor</FONT></TD></TR>
-        // getDistinctiveColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDistinctiveColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDistinctiveColor</FONT></TD></TR>
-        // setDistinctiveColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="setDistinctiveColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">setDistinctiveColor</FONT></TD></TR>
-        // registerReference
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="registerReference" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">registerReference</FONT></TD></TR>
+        // blacklistClassPattern
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="blacklistClassPattern" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">blacklistClassPattern</FONT></TD></TR>
+        // isClassShown
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isClassShown" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isClassShown</FONT></TD></TR>
+        // whitelistClassPattern
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="whitelistClassPattern" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">whitelistClassPattern</FONT></TD></TR>
     </TABLE>>, shape="none"];
 
     // field references to other classes
-    class_eu_svjatoslav_javainspect_structure_ClassDescriptor:methods -> class_eu_svjatoslav_javainspect_structure_MethodDescriptor[label="methods", color="antiquewhite4", style="bold"];
-    class_eu_svjatoslav_javainspect_structure_ClassDescriptor:dump -> class_eu_svjatoslav_javainspect_structure_Graph[label="dump", color="blueviolet", style="bold"];
-    class_eu_svjatoslav_javainspect_structure_ClassDescriptor:nameToFieldMap -> class_eu_svjatoslav_javainspect_structure_FieldDescriptor[label="nameToFieldMap", color="brown4", style="bold"];
 
     // method references to other classes
-    class_eu_svjatoslav_javainspect_structure_ClassDescriptor:getAllFields -> class_eu_svjatoslav_javainspect_structure_FieldDescriptor[label="getAllFields", color="brown4", style="dotted, bold"];
 
-    // interfaces implemented by class: eu.svjatoslav.javainspect.structure.ClassDescriptor
-    class_eu_svjatoslav_javainspect_structure_GraphElement -> class_eu_svjatoslav_javainspect_structure_ClassDescriptor[style="dotted, tapered", color="olivedrab2", penwidth=20, dir="forward"];
-
-// Class: eu.svjatoslav.javainspect.structure.MethodDescriptor
-    class_eu_svjatoslav_javainspect_structure_MethodDescriptor[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
+// Class: eu.svjatoslav.inspector.java.structure.FieldDescriptor
+    class_eu_svjatoslav_inspector_java_structure_FieldDescriptor[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
 
     // class descriptor header
-    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.javainspect.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>MethodDescriptor</B></FONT></TD></TR>
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>FieldDescriptor</B></FONT></TD></TR>
 
     // fields:
         // name
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="name" ALIGN="left"><FONT POINT-SIZE="11.0">name</FONT></TD></TR>
         // parent
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="parent" ALIGN="left"><FONT POINT-SIZE="11.0">parent</FONT></TD></TR>
+        // type
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="type" ALIGN="left"><FONT POINT-SIZE="11.0">type</FONT></TD></TR>
         // typeArguments
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="typeArguments" ALIGN="left"><FONT POINT-SIZE="11.0">typeArguments</FONT></TD></TR>
-        // returnType
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="returnType" ALIGN="left"><FONT POINT-SIZE="11.0">returnType</FONT></TD></TR>
 
     // methods:
         // getDot
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDot</FONT></TD></TR>
+        // getEmbeddedDot
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getEmbeddedDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getEmbeddedDot</FONT></TD></TR>
+        // getGraphId
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getGraphId" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getGraphId</FONT></TD></TR>
+        // getOutsideVisibleReferencesCount
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="getOutsideVisibleReferencesCount" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getOutsideVisibleReferencesCount</FONT></TD></TR>
         // isVisible
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
+    </TABLE>>, shape="none"];
+
+    // field references to other classes
+
+    // method references to other classes
+
+    // interfaces implemented by class: eu.svjatoslav.inspector.java.structure.FieldDescriptor
+    class_eu_svjatoslav_inspector_java_structure_GraphElement -> class_eu_svjatoslav_inspector_java_structure_FieldDescriptor[style="dotted, tapered", color="olivedrab2", penwidth=20, dir="forward"];
+
+// Class: eu.svjatoslav.inspector.java.structure.MethodDescriptor
+    class_eu_svjatoslav_inspector_java_structure_MethodDescriptor[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
+
+    // class descriptor header
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>MethodDescriptor</B></FONT></TD></TR>
+
+    // fields:
+        // name
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="name" ALIGN="left"><FONT POINT-SIZE="11.0">name</FONT></TD></TR>
+        // parent
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="parent" ALIGN="left"><FONT POINT-SIZE="11.0">parent</FONT></TD></TR>
+        // returnType
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="returnType" ALIGN="left"><FONT POINT-SIZE="11.0">returnType</FONT></TD></TR>
+        // typeArguments
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="typeArguments" ALIGN="left"><FONT POINT-SIZE="11.0">typeArguments</FONT></TD></TR>
+
+    // methods:
+        // compareTo
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="compareTo" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">compareTo</FONT></TD></TR>
+        // compareTo
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="compareTo" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">compareTo</FONT></TD></TR>
+        // getDot
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDot</FONT></TD></TR>
         // getEmbeddedDot
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getEmbeddedDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getEmbeddedDot</FONT></TD></TR>
         // getGraphId
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getGraphId" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getGraphId</FONT></TD></TR>
         // getMethodLabel
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getMethodLabel" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getMethodLabel</FONT></TD></TR>
+        // getOutsideVisibleReferencesCount
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="getOutsideVisibleReferencesCount" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getOutsideVisibleReferencesCount</FONT></TD></TR>
+        // isVisible
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
     </TABLE>>, shape="none"];
 
     // field references to other classes
 
     // method references to other classes
 
-    // interfaces implemented by class: eu.svjatoslav.javainspect.structure.MethodDescriptor
-    class_eu_svjatoslav_javainspect_structure_GraphElement -> class_eu_svjatoslav_javainspect_structure_MethodDescriptor[style="dotted, tapered", color="olivedrab2", penwidth=20, dir="forward"];
+    // interfaces implemented by class: eu.svjatoslav.inspector.java.structure.MethodDescriptor
+    class_eu_svjatoslav_inspector_java_structure_GraphElement -> class_eu_svjatoslav_inspector_java_structure_MethodDescriptor[style="dotted, tapered", color="olivedrab2", penwidth=20, dir="forward"];
 
-// Class: eu.svjatoslav.javainspect.structure.Graph
-    class_eu_svjatoslav_javainspect_structure_Graph[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
-
-    // class descriptor header
-    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.javainspect.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>Graph</B></FONT></TD></TR>
-
-    // fields:
-        // nameToClassMap
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">Map</FONT></td><TD PORT="nameToClassMap" ALIGN="left"><FONT POINT-SIZE="11.0">nameToClassMap</FONT></TD></TR>
-
-    // methods:
-        // addClass
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="addClass" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">addClass</FONT></TD></TR>
-        // addObject
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="addObject" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">addObject</FONT></TD></TR>
-        // generateGraph
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="generateGraph" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">generateGraph</FONT></TD></TR>
-        // generateGraph
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="generateGraph" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">generateGraph</FONT></TD></TR>
-    </TABLE>>, shape="none"];
-
-    // field references to other classes
-
-    // method references to other classes
-
-// Class: eu.svjatoslav.javainspect.structure.Utils
-    class_eu_svjatoslav_javainspect_structure_Utils[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
+// Class: eu.svjatoslav.inspector.java.structure.Utils
+    class_eu_svjatoslav_inspector_java_structure_Utils[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
 
     // class descriptor header
-    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.javainspect.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>Utils</B></FONT></TD></TR>
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>Utils</B></FONT></TD></TR>
 
     // fields:
+        // darkColors
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="darkColors" ALIGN="left"><FONT POINT-SIZE="11.0">darkColors</FONT></TD></TR>
+        // enumMethods
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="enumMethods" ALIGN="left"><FONT POINT-SIZE="11.0">enumMethods</FONT></TD></TR>
+        // lastChosenDarkColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="lastChosenDarkColor" ALIGN="left"><FONT POINT-SIZE="11.0">lastChosenDarkColor</FONT></TD></TR>
+        // lastChosenLightColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="lastChosenLightColor" ALIGN="left"><FONT POINT-SIZE="11.0">lastChosenLightColor</FONT></TD></TR>
         // lightColors
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="lightColors" ALIGN="left"><FONT POINT-SIZE="11.0">lightColors</FONT></TD></TR>
         // systemDataTypes
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="systemDataTypes" ALIGN="left"><FONT POINT-SIZE="11.0">systemDataTypes</FONT></TD></TR>
-        // lastChosenLightColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="lastChosenLightColor" ALIGN="left"><FONT POINT-SIZE="11.0">lastChosenLightColor</FONT></TD></TR>
-        // lastChosenDarkColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="lastChosenDarkColor" ALIGN="left"><FONT POINT-SIZE="11.0">lastChosenDarkColor</FONT></TD></TR>
         // systemMethods
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="systemMethods" ALIGN="left"><FONT POINT-SIZE="11.0">systemMethods</FONT></TD></TR>
-        // enumMethods
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="enumMethods" ALIGN="left"><FONT POINT-SIZE="11.0">enumMethods</FONT></TD></TR>
-        // darkColors
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="darkColors" ALIGN="left"><FONT POINT-SIZE="11.0">darkColors</FONT></TD></TR>
         // systemPackages
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="systemPackages" ALIGN="left"><FONT POINT-SIZE="11.0">systemPackages</FONT></TD></TR>
 
     // methods:
+        // getNextDarkColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getNextDarkColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getNextDarkColor</FONT></TD></TR>
+        // getNextLightColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getNextLightColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getNextLightColor</FONT></TD></TR>
         // initDarkColors
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="initDarkColors" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">initDarkColors</FONT></TD></TR>
         // initEnumMethods
@@ -193,74 +145,172 @@ graph [rankdir=LR, overlap = false, concentrate=true];
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="initSystemMethods" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">initSystemMethods</FONT></TD></TR>
         // initSystemPackages
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="initSystemPackages" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">initSystemPackages</FONT></TD></TR>
-        // isSystemMethod
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isSystemMethod" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isSystemMethod</FONT></TD></TR>
-        // getNextDarkColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getNextDarkColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getNextDarkColor</FONT></TD></TR>
-        // getNextLightColor
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getNextLightColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getNextLightColor</FONT></TD></TR>
-        // isSystemDataType
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isSystemDataType" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isSystemDataType</FONT></TD></TR>
-        // isSystemPackage
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isSystemPackage" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isSystemPackage</FONT></TD></TR>
         // isEnumMethod
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isEnumMethod" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isEnumMethod</FONT></TD></TR>
+        // isSystemDataType
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isSystemDataType" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isSystemDataType</FONT></TD></TR>
+        // isSystemMethod
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isSystemMethod" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isSystemMethod</FONT></TD></TR>
+        // isSystemPackage
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isSystemPackage" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isSystemPackage</FONT></TD></TR>
     </TABLE>>, shape="none"];
 
     // field references to other classes
 
     // method references to other classes
 
-// Class: eu.svjatoslav.javainspect.structure.GraphElement
-    class_eu_svjatoslav_javainspect_structure_GraphElement[label=<<TABLE bgcolor="darkslategray1" BORDER="1" CELLBORDER="1" CELLSPACING="0">
+// Class: eu.svjatoslav.inspector.java.structure.GraphElement
+    class_eu_svjatoslav_inspector_java_structure_GraphElement[label=<<TABLE bgcolor="darkslategray1" BORDER="1" CELLBORDER="1" CELLSPACING="0">
 
     // class descriptor header
-    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.javainspect.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>GraphElement</B></FONT></TD></TR>
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>GraphElement</B></FONT></TD></TR>
 
     // methods:
         // getDot
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDot</FONT></TD></TR>
-        // isVisible
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
         // getEmbeddedDot
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getEmbeddedDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getEmbeddedDot</FONT></TD></TR>
         // getGraphId
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getGraphId" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getGraphId</FONT></TD></TR>
+        // isVisible
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
     </TABLE>>, shape="none"];
 
     // method references to other classes
 
-// Class: eu.svjatoslav.javainspect.structure.FieldDescriptor
-    class_eu_svjatoslav_javainspect_structure_FieldDescriptor[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
+// Class: eu.svjatoslav.inspector.java.structure.ClassGraph
+    class_eu_svjatoslav_inspector_java_structure_ClassGraph[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
 
     // class descriptor header
-    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.javainspect.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>FieldDescriptor</B></FONT></TD></TR>
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>ClassGraph</B></FONT></TD></TR>
 
     // fields:
-        // name
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="name" ALIGN="left"><FONT POINT-SIZE="11.0">name</FONT></TD></TR>
-        // parent
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="parent" ALIGN="left"><FONT POINT-SIZE="11.0">parent</FONT></TD></TR>
-        // typeArguments
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="typeArguments" ALIGN="left"><FONT POINT-SIZE="11.0">typeArguments</FONT></TD></TR>
-        // type
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="type" ALIGN="left"><FONT POINT-SIZE="11.0">type</FONT></TD></TR>
+        // filter
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">Filter</FONT></td><TD PORT="filter" ALIGN="left"><FONT POINT-SIZE="11.0">filter</FONT></TD></TR>
+        // nameToClassMap
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">Map</FONT></td><TD PORT="nameToClassMap" ALIGN="left"><FONT POINT-SIZE="11.0">nameToClassMap</FONT></TD></TR>
 
     // methods:
+        // addClass
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="addClass" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">addClass</FONT></TD></TR>
+        // addObject
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="addObject" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">addObject</FONT></TD></TR>
+        // addProject
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="addProject" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">addProject</FONT></TD></TR>
+        // generateGraph
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="generateGraph" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">generateGraph</FONT></TD></TR>
+        // generateGraph
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="generateGraph" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">generateGraph</FONT></TD></TR>
+        // hideOrphanedClasses
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="hideOrphanedClasses" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">hideOrphanedClasses</FONT></TD></TR>
+        // render
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="render" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">render</FONT></TD></TR>
+    </TABLE>>, shape="none"];
+
+    // field references to other classes
+    class_eu_svjatoslav_inspector_java_structure_ClassGraph:filter -> class_eu_svjatoslav_inspector_java_structure_Filter[label="filter", color="antiquewhite4", style="bold"];
+
+    // method references to other classes
+
+// Class: eu.svjatoslav.inspector.java.structure.ClassDescriptor
+    class_eu_svjatoslav_inspector_java_structure_ClassDescriptor[label=<<TABLE  BORDER="4" CELLBORDER="1" CELLSPACING="0">
+
+    // class descriptor header
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >eu.svjatoslav.inspector.java.structure</FONT><br/><FONT POINT-SIZE="25.0"><B>ClassDescriptor</B></FONT></TD></TR>
+
+    // fields:
+        // MAX_REFERECNES_COUNT
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="MAX_REFERECNES_COUNT" ALIGN="left"><FONT POINT-SIZE="11.0">MAX_REFERECNES_COUNT</FONT></TD></TR>
+        // classGraph
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassGraph</FONT></td><TD PORT="classGraph" ALIGN="left"><FONT POINT-SIZE="11.0">classGraph</FONT></TD></TR>
+        // distinctiveReferenceColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="distinctiveReferenceColor" ALIGN="left"><FONT POINT-SIZE="11.0">distinctiveReferenceColor</FONT></TD></TR>
+        // fullyQualifiedName
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="fullyQualifiedName" ALIGN="left"><FONT POINT-SIZE="11.0">fullyQualifiedName</FONT></TD></TR>
+        // incomingReferencesCount
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">int</FONT></td><TD PORT="incomingReferencesCount" ALIGN="left"><FONT POINT-SIZE="11.0">incomingReferencesCount</FONT></TD></TR>
+        // interfaceColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="interfaceColor" ALIGN="left"><FONT POINT-SIZE="11.0">interfaceColor</FONT></TD></TR>
+        // interfaces
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="interfaces" ALIGN="left"><FONT POINT-SIZE="11.0">interfaces</FONT></TD></TR>
+        // isArray
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isArray" ALIGN="left"><FONT POINT-SIZE="11.0">isArray</FONT></TD></TR>
+        // isEnum
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isEnum" ALIGN="left"><FONT POINT-SIZE="11.0">isEnum</FONT></TD></TR>
+        // isInterface
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isInterface" ALIGN="left"><FONT POINT-SIZE="11.0">isInterface</FONT></TD></TR>
+        // isShown
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isShown" ALIGN="left"><FONT POINT-SIZE="11.0">isShown</FONT></TD></TR>
+        // methods
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">SortedSet</FONT></td><TD PORT="methods" ALIGN="left"><FONT POINT-SIZE="11.0">methods</FONT></TD></TR>
+        // nameToFieldMap
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">Map</FONT></td><TD PORT="nameToFieldMap" ALIGN="left"><FONT POINT-SIZE="11.0">nameToFieldMap</FONT></TD></TR>
+        // superClass
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">ClassDescriptor</FONT></td><TD PORT="superClass" ALIGN="left"><FONT POINT-SIZE="11.0">superClass</FONT></TD></TR>
+        // superClassColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="superClassColor" ALIGN="left"><FONT POINT-SIZE="11.0">superClassColor</FONT></TD></TR>
+
+    // methods:
+        // areReferencesShown
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="areReferencesShown" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">areReferencesShown</FONT></TD></TR>
+        // enlistFieldReferences
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistFieldReferences" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistFieldReferences</FONT></TD></TR>
+        // enlistFields
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistFields" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistFields</FONT></TD></TR>
+        // enlistImplementedInterfaces
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistImplementedInterfaces" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistImplementedInterfaces</FONT></TD></TR>
+        // enlistMethodReferences
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistMethodReferences" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistMethodReferences</FONT></TD></TR>
+        // enlistMethods
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistMethods" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistMethods</FONT></TD></TR>
+        // enlistSuperClass
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="enlistSuperClass" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">enlistSuperClass</FONT></TD></TR>
+        // generateDotHeader
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="generateDotHeader" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">generateDotHeader</FONT></TD></TR>
+        // getAllFields
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">List</FONT></td><TD PORT="getAllFields" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getAllFields</FONT></TD></TR>
+        // getBackgroundColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getBackgroundColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getBackgroundColor</FONT></TD></TR>
+        // getBorderWidth
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getBorderWidth" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getBorderWidth</FONT></TD></TR>
+        // getClassName
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getClassName" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getClassName</FONT></TD></TR>
+        // getColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getColor</FONT></TD></TR>
+        // getDistinctiveColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDistinctiveColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDistinctiveColor</FONT></TD></TR>
         // getDot
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getDot</FONT></TD></TR>
-        // isVisible
-        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
         // getEmbeddedDot
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getEmbeddedDot" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getEmbeddedDot</FONT></TD></TR>
         // getGraphId
         <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getGraphId" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getGraphId</FONT></TD></TR>
+        // getPackageName
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getPackageName" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getPackageName</FONT></TD></TR>
+        // getParentClassesName
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="getParentClassesName" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">getParentClassesName</FONT></TD></TR>
+        // hide
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="hide" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">hide</FONT></TD></TR>
+        // hideClassIfNoReferences
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="hideClassIfNoReferences" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">hideClassIfNoReferences</FONT></TD></TR>
+        // indexFields
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="indexFields" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">indexFields</FONT></TD></TR>
+        // isVisible
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">boolean</FONT></td><TD PORT="isVisible" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">isVisible</FONT></TD></TR>
+        // registerReference
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="registerReference" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">registerReference</FONT></TD></TR>
+        // setDistinctiveColor
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">void</FONT></td><TD PORT="setDistinctiveColor" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">setDistinctiveColor</FONT></TD></TR>
     </TABLE>>, shape="none"];
 
     // field references to other classes
+    class_eu_svjatoslav_inspector_java_structure_ClassDescriptor:classGraph -> class_eu_svjatoslav_inspector_java_structure_ClassGraph[label="classGraph", color="blueviolet", style="bold"];
+    class_eu_svjatoslav_inspector_java_structure_ClassDescriptor:methods -> class_eu_svjatoslav_inspector_java_structure_MethodDescriptor[label="methods", color="brown4", style="bold"];
+    class_eu_svjatoslav_inspector_java_structure_ClassDescriptor:nameToFieldMap -> class_eu_svjatoslav_inspector_java_structure_FieldDescriptor[label="nameToFieldMap", color="chartreuse4", style="bold"];
 
     // method references to other classes
+    class_eu_svjatoslav_inspector_java_structure_ClassDescriptor:getAllFields -> class_eu_svjatoslav_inspector_java_structure_FieldDescriptor[label="getAllFields", color="chartreuse4", style="dotted, bold"];
 
-    // interfaces implemented by class: eu.svjatoslav.javainspect.structure.FieldDescriptor
-    class_eu_svjatoslav_javainspect_structure_GraphElement -> class_eu_svjatoslav_javainspect_structure_FieldDescriptor[style="dotted, tapered", color="olivedrab2", penwidth=20, dir="forward"];
+    // interfaces implemented by class: eu.svjatoslav.inspector.java.structure.ClassDescriptor
+    class_eu_svjatoslav_inspector_java_structure_GraphElement -> class_eu_svjatoslav_inspector_java_structure_ClassDescriptor[style="dotted, tapered", color="olivedrab2", penwidth=20, dir="forward"];
 }

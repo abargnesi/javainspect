@@ -17,6 +17,10 @@ import java.util.List;
 
 public class FieldDescriptor implements GraphElement {
 
+	/**
+	 * This class corresponds to single field within a java class.
+	 */
+
 	public String name;
 	public ClassDescriptor type;
 	private ClassDescriptor parent;

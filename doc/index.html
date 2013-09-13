@@ -70,31 +70,64 @@ This software is distributed under <a
 	<img src="legend.png" />
 
 
-	<h2>Usage example</h2>
+	<h2>Usage example 1</h2>
 
-	Following example produces graph for JavaInspect itself:
-
-	<pre>
-
+<pre>
 <code>
-// Create graph
-final ClassGraph graph = new ClassGraph();
+		/*
+		 * This example demonstrates generating of class graph from hand picked
+		 * classes.
+		 */
 
-// Add some object to the graph.
-graph.addObject(graph);
+		// Create graph
+		final ClassGraph graph = new ClassGraph();
 
-// Add some class to the graph.
-graph.addClass(Utils.class);
+		// While classes and objects can be immediately passed to ClassGraph
+		// constructor as arguments, it is also possible to add then one by one
+		// as in the following example.
 
-// Produce bitmap image titled "JavaInspect.png" to the user Desktop
-// directory.
-graph.generateGraph("JavaInspect", true);
+		// Add some object to the graph.
+		graph.addObject(graph);
+
+		// Add some class to the graph.
+		graph.addClass(Utils.class);
+
+		// Produce bitmap image titled "JavaInspect.png" to the user Desktop
+		// directory and keep intermediary GraphViz DOT file for reference.
+		graph.generateGraph("JavaInspect", true);
 </code>
 
 
 Result:
     Generated DOT file: <a href="JavaInspect.dot">JavaInspect.dot</a>
     Generated PNG image: <a href="JavaInspect.png">JavaInspect.png</a>
+
+</pre>
+
+
+	<h2>Usage example 2</h2>
+
+<pre>
+<code>
+		// Recursively scan current directory for Java source code and attempt
+		// to detect class names from there to be added to the graph.
+		graph.addProject(".");
+
+		// Blacklist example classes from being shown on the graph
+		graph.getFilter().blacklistClassPattern(
+				"eu.svjatoslav.inspector.java.structure.example.*");
+
+		// do not show single classes with no relationships on the graph
+		graph.hideOrphanedClasses();
+
+		// Produce bitmap image titled "JavaInspect full project.png" to the
+		// user Desktop directory.
+		graph.generateGraph("JavaInspect full project");
+</code>
+
+
+Result:
+    Generated PNG image: <a href="JavaInspect full project.png">JavaInspect full project.png</a>
 
 </pre>
 
@@ -112,7 +145,7 @@ Declare JavaInspect as dependency:
         &lt;dependency&gt;
             &lt;groupId&gt;eu.svjatoslav&lt;/groupId&gt;
             &lt;artifactId&gt;javainspect&lt;/artifactId&gt;
-            &lt;version&gt;1.1&lt;/version&gt;
+            &lt;version&gt;1.2&lt;/version&gt;
         &lt;/dependency&gt;
  
     &lt;/dependencies&gt;
