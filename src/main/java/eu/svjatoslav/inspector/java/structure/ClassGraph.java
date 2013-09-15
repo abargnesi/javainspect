@@ -22,10 +22,7 @@ import eu.svjatoslav.inspector.java.methods.ProjectScanner;
 public class ClassGraph {
 
 	public static void render(final String graphName, final Class... classes) {
-		final ClassGraph classGraph = new ClassGraph();
-
-		for (final Class clazz : classes)
-			classGraph.addClass(clazz);
+		final ClassGraph classGraph = new ClassGraph(classes);
 
 		classGraph.generateGraph(graphName);
 	}

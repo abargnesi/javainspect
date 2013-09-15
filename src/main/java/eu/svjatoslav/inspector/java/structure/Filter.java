@@ -21,9 +21,9 @@ public class Filter {
 	 * Otherwise every class in included in graph that is not blacklisted.
 	 */
 
-	private static final List<String> blacklistClassPatterns = new ArrayList<String>();
+	private final List<String> blacklistClassPatterns = new ArrayList<String>();
 
-	private static final List<String> whitelistClassPatterns = new ArrayList<String>();
+	private final List<String> whitelistClassPatterns = new ArrayList<String>();
 
 	public void blacklistClassPattern(final String pattern) {
 		blacklistClassPatterns.add(pattern);
