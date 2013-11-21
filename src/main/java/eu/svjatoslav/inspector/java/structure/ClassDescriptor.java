@@ -59,6 +59,8 @@ public class ClassDescriptor implements GraphElement {
 	 */
 	private int incomingReferencesCount = 0;
 
+	private int extensionsCount = 0;
+
 	public ClassDescriptor(final Class<? extends Object> clazz,
 			final ClassGraph dump) {
 		classGraph = dump;
@@ -87,10 +89,17 @@ public class ClassDescriptor implements GraphElement {
 
 		indexMethods(clazz);
 
-		for (final Class interfaceClass : clazz.getInterfaces())
-			interfaces.add(dump.addClass(interfaceClass));
+		for (final Class interfaceClass : clazz.getInterfaces()) {
+			final ClassDescriptor classDescriptor = dump
+					.addClass(interfaceClass);
+			classDescriptor.registerExtension();
+			interfaces.add(classDescriptor);
+		}
 
 		superClass = dump.addClass(clazz.getSuperclass());
+		if (superClass != null)
+			superClass.registerExtension();
+
 	}
 
 	public boolean areReferencesShown() {
@@ -299,7 +308,7 @@ public class ClassDescriptor implements GraphElement {
 	public String getGraphId() {
 		final String result = "class_"
 				+ fullyQualifiedName.replace('.', '_').replace(";", "")
-				.replace("[L", "").replace('$', '_');
+						.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
@@ -310,6 +319,30 @@ public class ClassDescriptor implements GraphElement {
 		return interfaceColor;
 	}
 
+	private int getOutgoingReferencesCount() {
+		int result = 0;
+
+		// count method references
+		for (final MethodDescriptor methodDescriptor : methods)
+			result += methodDescriptor.getOutsideVisibleReferencesCount();
+
+		// count field references
+		for (final FieldDescriptor fieldDescriptor : nameToFieldMap.values())
+			result += fieldDescriptor.getOutsideVisibleReferencesCount();
+
+		// count implemented interfaces
+		for (final ClassDescriptor classDescriptor : interfaces)
+			if (classDescriptor.isVisible())
+				result++;
+
+		// count superclass
+		if (superClass != null)
+			if (superClass.isVisible())
+				result++;
+
+		return result;
+	}
+
 	public String getPackageName() {
 
 		final int i = fullyQualifiedName.lastIndexOf('.');
@@ -318,17 +351,6 @@ public class ClassDescriptor implements GraphElement {
 			return "";
 
 		return fullyQualifiedName.substring(0, i).replace("[L", "");
-	}
-
-	public String getParentClassesName() {
-		int i = fullyQualifiedName.lastIndexOf('.');
-		final String fullClassName = fullyQualifiedName.substring(i + 1);
-
-		i = fullClassName.lastIndexOf('$');
-		if (i == -1)
-			return "";
-		final String parentClassesName = fullClassName.substring(0, i);
-		return parentClassesName.replace('$', '.');
 	}
 
 	// public String getReadableName() {
@@ -345,6 +367,17 @@ public class ClassDescriptor implements GraphElement {
 	// return fullyQualifiedName;
 	// }
 
+	public String getParentClassesName() {
+		int i = fullyQualifiedName.lastIndexOf('.');
+		final String fullClassName = fullyQualifiedName.substring(i + 1);
+
+		i = fullClassName.lastIndexOf('$');
+		if (i == -1)
+			return "";
+		final String parentClassesName = fullClassName.substring(0, i);
+		return parentClassesName.replace('$', '.');
+	}
+
 	public String getSuperClassColor() {
 		if (superClassColor == null)
 			superClassColor = Utils.getNextLightColor();
@@ -356,29 +389,19 @@ public class ClassDescriptor implements GraphElement {
 		isShown = false;
 	}
 
-	public boolean hideClassIfNoReferences() {
+	public void hideClassIfNoReferences() {
 		if (!isVisible())
-			return false;
+			return;
 
-		int outgoingVisibleReferencesCount = 0;
-
-		for (final MethodDescriptor methodDescriptor : methods)
-			outgoingVisibleReferencesCount += methodDescriptor
-			.getOutsideVisibleReferencesCount();
-
-		for (final FieldDescriptor fieldDescriptor : nameToFieldMap.values())
-			outgoingVisibleReferencesCount += fieldDescriptor
-			.getOutsideVisibleReferencesCount();
-
-		final int totalReferencesCount = outgoingVisibleReferencesCount
-				+ incomingReferencesCount;
+		final int totalReferencesCount = getOutgoingReferencesCount()
+				+ incomingReferencesCount + extensionsCount;
 
 		if (totalReferencesCount == 0) {
 			hide();
-			return true;
+			return;
 		}
 
-		return false;
+		return;
 	}
 
 	public void indexFields(final Field[] fields) {
@@ -413,6 +436,14 @@ public class ClassDescriptor implements GraphElement {
 			return false;
 
 		return isShown;
+	}
+
+	/**
+	 * Register event when another class is extending this one, or is
+	 * implementing interface declared by this class.
+	 */
+	public void registerExtension() {
+		extensionsCount++;
 	}
 
 	public void registerReference() {

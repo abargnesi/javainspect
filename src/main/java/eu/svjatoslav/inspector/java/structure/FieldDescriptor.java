@@ -22,7 +22,7 @@ public class FieldDescriptor implements GraphElement {
 	 */
 
 	public String name;
-	public ClassDescriptor type;
+	private ClassDescriptor type;
 	private ClassDescriptor parent;
 	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
 
@@ -131,8 +131,9 @@ public class FieldDescriptor implements GraphElement {
 		if (!isVisible())
 			return 0;
 
-		if (type.isVisible())
-			return 1;
+		if (type != null)
+			if (type.isVisible())
+				return 1;
 
 		return 0;
 	}
