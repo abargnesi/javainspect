@@ -57,8 +57,12 @@ public class ClassDescriptor implements GraphElement {
 	/**
 	 * Amount of field and method references pointing to this class.
 	 */
-	private int incomingReferencesCount = 0;
+	private int referencesCount = 0;
 
+	// for interface, counts amount of found implementations
+	private int implementationsCount = 0;
+
+	// counts amount of times this class is extended
 	private int extensionsCount = 0;
 
 	public ClassDescriptor(final Class<? extends Object> clazz,
@@ -92,7 +96,7 @@ public class ClassDescriptor implements GraphElement {
 		for (final Class interfaceClass : clazz.getInterfaces()) {
 			final ClassDescriptor classDescriptor = dump
 					.addClass(interfaceClass);
-			classDescriptor.registerExtension();
+			classDescriptor.registerImplementation();
 			interfaces.add(classDescriptor);
 		}
 
@@ -103,7 +107,7 @@ public class ClassDescriptor implements GraphElement {
 	}
 
 	public boolean areReferencesShown() {
-		return incomingReferencesCount <= MAX_REFERECNES_COUNT;
+		return referencesCount <= MAX_REFERECNES_COUNT;
 	}
 
 	public void enlistFieldReferences(final StringBuffer result) {
@@ -394,7 +398,7 @@ public class ClassDescriptor implements GraphElement {
 			return;
 
 		final int totalReferencesCount = getOutgoingReferencesCount()
-				+ incomingReferencesCount + extensionsCount;
+				+ referencesCount + extensionsCount + implementationsCount;
 
 		if (totalReferencesCount == 0) {
 			hide();
@@ -439,15 +443,18 @@ public class ClassDescriptor implements GraphElement {
 	}
 
 	/**
-	 * Register event when another class is extending this one, or is
-	 * implementing interface declared by this class.
+	 * Register event when another class is extending this one.
 	 */
 	public void registerExtension() {
 		extensionsCount++;
 	}
 
+	public void registerImplementation() {
+		implementationsCount++;
+	}
+
 	public void registerReference() {
-		incomingReferencesCount++;
+		referencesCount++;
 	}
 
 	public void setDistinctiveColor(final String distinctiveColor) {
