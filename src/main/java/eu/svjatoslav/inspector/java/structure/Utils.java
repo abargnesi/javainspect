@@ -88,8 +88,9 @@ public class Utils {
 		lightColors.add("olivedrab2");
 		lightColors.add("peachpuff2");
 		lightColors.add("seagreen1");
-		lightColors.add("yellow");
 		lightColors.add("violet");
+		lightColors.add("aqua");
+		lightColors.add("orange");
 	}
 
 	public static void initSystemDataTypes() {
