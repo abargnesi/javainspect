@@ -23,13 +23,13 @@ public class FieldDescriptor implements GraphElement {
 
 	public String name;
 	private ClassDescriptor type;
-	private ClassDescriptor parent;
+	private ClassDescriptor parentClass;
 	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
 
 	public FieldDescriptor(final Field field, final ClassDescriptor parent,
 			final ClassGraph dump) {
 
-		this.parent = parent;
+		parentClass = parent;
 
 		if (!field.getDeclaringClass().getName()
 				.equals(parent.fullyQualifiedName))
@@ -83,10 +83,10 @@ public class FieldDescriptor implements GraphElement {
 		// main type
 		boolean showLink = type.areReferencesShown();
 
-		if (type == parent)
+		if (type == parentClass)
 			showLink = false;
 
-		if (parent.isEnum)
+		if (parentClass.isEnum)
 			showLink = false;
 
 		if (showLink)
@@ -106,7 +106,7 @@ public class FieldDescriptor implements GraphElement {
 		final StringBuffer result = new StringBuffer();
 
 		result.append("        // " + name + "\n");
-		if (parent.isEnum && (type == parent)) {
+		if (parentClass.isEnum && (type == parentClass)) {
 			result.append("        <TR><TD colspan=\"2\" PORT=\"" + name);
 			result.append("\" ALIGN=\"left\"><FONT POINT-SIZE=\"11.0\">");
 			result.append(name + "</FONT></TD></TR>\n");
@@ -123,7 +123,7 @@ public class FieldDescriptor implements GraphElement {
 
 	@Override
 	public String getGraphId() {
-		return parent.getGraphId() + ":" + name;
+		return parentClass.getGraphId() + ":" + name;
 	}
 
 	public int getOutsideVisibleReferencesCount() {
@@ -138,6 +138,10 @@ public class FieldDescriptor implements GraphElement {
 		return 0;
 	}
 
+	public ClassDescriptor getType() {
+		return type;
+	}
+
 	@Override
 	public boolean isVisible() {
 		if (name.contains("$"))
@@ -148,4 +152,5 @@ public class FieldDescriptor implements GraphElement {
 
 		return true;
 	}
+
 }

@@ -308,6 +308,19 @@ public class ClassDescriptor implements GraphElement {
 		return null;
 	}
 
+	/**
+	 * Returns field with given name (case is ignored). Or <code>null</code> if
+	 * field is not found.
+	 */
+	public FieldDescriptor getFieldIgnoreCase(final String fieldToSearch) {
+
+		for (final String fieldName : nameToFieldMap.keySet())
+			if (fieldToSearch.equalsIgnoreCase(fieldName))
+				return nameToFieldMap.get(fieldName);
+
+		return null;
+	}
+
 	@Override
 	public String getGraphId() {
 		final String result = "class_"
@@ -347,16 +360,6 @@ public class ClassDescriptor implements GraphElement {
 		return result;
 	}
 
-	public String getPackageName() {
-
-		final int i = fullyQualifiedName.lastIndexOf('.');
-
-		if (i == -1)
-			return "";
-
-		return fullyQualifiedName.substring(0, i).replace("[L", "");
-	}
-
 	// public String getReadableName() {
 	//
 	// // do not print full class name for well known system classes
@@ -370,6 +373,16 @@ public class ClassDescriptor implements GraphElement {
 	//
 	// return fullyQualifiedName;
 	// }
+
+	public String getPackageName() {
+
+		final int i = fullyQualifiedName.lastIndexOf('.');
+
+		if (i == -1)
+			return "";
+
+		return fullyQualifiedName.substring(0, i).replace("[L", "");
+	}
 
 	public String getParentClassesName() {
 		int i = fullyQualifiedName.lastIndexOf('.');
@@ -387,6 +400,19 @@ public class ClassDescriptor implements GraphElement {
 			superClassColor = Utils.getNextLightColor();
 
 		return superClassColor;
+	}
+
+	/**
+	 * Checks if class has field with given name (case is ignored). Returns
+	 * <code>true</code> if such field is found.
+	 */
+	public boolean hasFieldIgnoreCase(final String fieldToSearch) {
+
+		for (final String fieldName : nameToFieldMap.keySet())
+			if (fieldToSearch.equalsIgnoreCase(fieldName))
+				return true;
+
+		return false;
 	}
 
 	public void hide() {

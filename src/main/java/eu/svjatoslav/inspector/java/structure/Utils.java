@@ -16,7 +16,7 @@ public class Utils {
 
 	private static final List<String> systemDataTypes = new ArrayList<String>();
 
-	private static final List<String> systemMethods = new ArrayList<String>();
+	private static final List<String> commonObjectMethods = new ArrayList<String>();
 
 	private static final List<String> systemPackages = new ArrayList<String>();
 
@@ -35,7 +35,7 @@ public class Utils {
 		initSystemDataTypes();
 		initDarkColors();
 		initLightColors();
-		initSystemMethods();
+		initCommonObjectMethods();
 		initSystemPackages();
 	}
 
@@ -105,14 +105,14 @@ public class Utils {
 		systemDataTypes.add("byte");
 	}
 
-	public static void initSystemMethods() {
-		systemMethods.add("wait");
-		systemMethods.add("equals");
-		systemMethods.add("toString");
-		systemMethods.add("hashCode");
-		systemMethods.add("notify");
-		systemMethods.add("notifyAll");
-		systemMethods.add("getClass");
+	public static void initCommonObjectMethods() {
+		commonObjectMethods.add("wait");
+		commonObjectMethods.add("equals");
+		commonObjectMethods.add("toString");
+		commonObjectMethods.add("hashCode");
+		commonObjectMethods.add("notify");
+		commonObjectMethods.add("notifyAll");
+		commonObjectMethods.add("getClass");
 	}
 
 	public static void initSystemPackages() {
@@ -129,8 +129,8 @@ public class Utils {
 		return systemDataTypes.contains(name);
 	}
 
-	public static boolean isSystemMethod(final String name) {
-		return systemMethods.contains(name);
+	public static boolean isCommonObjectMethod(final String name) {
+		return commonObjectMethods.contains(name);
 	}
 
 	public static boolean isSystemPackage(final String name) {

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MethodDescriptor implements GraphElement,
-Comparable<MethodDescriptor> {
+		Comparable<MethodDescriptor> {
 
 	/**
 	 * This class corresponds to single method within a java class.
@@ -24,14 +24,14 @@ Comparable<MethodDescriptor> {
 
 	public String name;
 	public ClassDescriptor returnType;
-	private final ClassDescriptor parent;
+	private final ClassDescriptor parentClass;
 
-	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
+	List<ClassDescriptor> argumentTypes = new ArrayList<ClassDescriptor>();
 
 	public MethodDescriptor(final Method method, final ClassDescriptor parent,
 			final ClassGraph dump) {
 
-		this.parent = parent;
+		parentClass = parent;
 
 		name = method.getName();
 
@@ -53,10 +53,20 @@ Comparable<MethodDescriptor> {
 					final Class cl = (Class) t;
 					final ClassDescriptor classDescriptor = dump.addClass(cl);
 					classDescriptor.registerReference();
-					typeArguments.add(classDescriptor);
+					argumentTypes.add(classDescriptor);
 				}
 
 		}
+	}
+
+	@Override
+	public int compareTo(final MethodDescriptor o) {
+
+		final int nameComparisonResult = name.compareTo(o.name);
+		if (nameComparisonResult != 0)
+			return nameComparisonResult;
+
+		return toString().compareTo(o.toString());
 	}
 
 	@Override
@@ -68,7 +78,7 @@ Comparable<MethodDescriptor> {
 		final StringBuffer result = new StringBuffer();
 
 		// describe associated types
-		for (final ClassDescriptor classDescriptor : typeArguments)
+		for (final ClassDescriptor classDescriptor : argumentTypes)
 			if (classDescriptor.isVisible())
 				if (classDescriptor.areReferencesShown())
 					result.append("    " + getGraphId() + " -> "
@@ -109,7 +119,7 @@ Comparable<MethodDescriptor> {
 
 	@Override
 	public String getGraphId() {
-		return parent.getGraphId() + ":" + name;
+		return parentClass.getGraphId() + ":" + name;
 	}
 
 	public String getMethodLabel() {
@@ -122,7 +132,7 @@ Comparable<MethodDescriptor> {
 		if (returnType.isVisible())
 			result++;
 
-		for (final ClassDescriptor classDescriptor : typeArguments)
+		for (final ClassDescriptor classDescriptor : argumentTypes)
 			if (classDescriptor.isVisible())
 				result++;
 
@@ -132,36 +142,30 @@ Comparable<MethodDescriptor> {
 	@Override
 	public boolean isVisible() {
 
-		if (Utils.isSystemMethod(name))
+		// hide common object methods
+		if (Utils.isCommonObjectMethod(name))
 			return false;
 
-		if (parent.isEnum && Utils.isEnumMethod(name))
+		// hide common Enumeration methods
+		if (parentClass.isEnum && Utils.isEnumMethod(name))
 			return false;
 
-		if (!(name.startsWith("get") || name.startsWith("set")))
-			return true;
-
-		final String upprCaseName = name.substring(3).toUpperCase();
-
-		for (String parentField : parent.nameToFieldMap.keySet()) {
-			parentField = parentField.toUpperCase();
-
-			if (upprCaseName.equals(parentField))
+		// hide get/set methods for the field of the same name
+		if (name.startsWith("get") || name.startsWith("set"))
+			if (parentClass.hasFieldIgnoreCase(name.substring(3)))
 				return false;
 
+		// hide is methods for the boolean field of the same name
+		if (name.startsWith("is")) {
+			final FieldDescriptor field = parentClass.getFieldIgnoreCase(name
+					.substring(2));
+			if (field != null)
+				if ("boolean".equals(field.getType().fullyQualifiedName))
+					return false;
 		}
 
 		return true;
-	}
 
-	@Override
-	public int compareTo(MethodDescriptor o) {
-
-		int nameComparisonResult = name.compareTo(o.name);
-		if (nameComparisonResult != 0)
-			return nameComparisonResult;
-
-		return toString().compareTo(o.toString());
 	}
 
 }
