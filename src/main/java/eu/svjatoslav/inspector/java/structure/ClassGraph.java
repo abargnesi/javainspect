@@ -1,10 +1,10 @@
 /*
  * JavaInspect - Utility to visualize java software
- * Copyright (C) 2013, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
+ * Copyright (C) 2013-2014, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
  * 
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public License
- * as published by the Free Software Foundation.
+ * modify it under the terms of version 3 of the GNU Lesser General Public License
+ * or later as published by the Free Software Foundation.
  */
 
 package eu.svjatoslav.inspector.java.structure;
@@ -51,7 +51,7 @@ public class ClassGraph {
 	 *            objects that shall be added to graph
 	 */
 	public ClassGraph(final Object... objects) {
-		for (Object object : objects)
+		for (final Object object : objects)
 			addClass(object.getClass());
 	}
 
@@ -138,8 +138,8 @@ public class ClassGraph {
 			// execute GraphViz to visualize graph
 			try {
 				Runtime.getRuntime()
-				.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
-						imageFilePath }).waitFor();
+						.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
+								imageFilePath }).waitFor();
 			} catch (final InterruptedException e) {
 			} finally {
 			}
@@ -170,6 +170,10 @@ public class ClassGraph {
 		return resultStr;
 	}
 
+	public Filter getFilter() {
+		return filter;
+	}
+
 	/**
 	 * Hide orphaned class that have no references
 	 */
@@ -180,11 +184,7 @@ public class ClassGraph {
 
 	}
 
-	public Filter getFilter() {
-		return filter;
-	}
-
-	public void setFilter(Filter filter) {
+	public void setFilter(final Filter filter) {
 		this.filter = filter;
 	}
 

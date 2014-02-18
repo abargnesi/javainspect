@@ -1,10 +1,10 @@
 /*
  * JavaInspect - Utility to visualize java software
- * Copyright (C) 2013, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
+ * Copyright (C) 2013-2014, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
  * 
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public License
- * as published by the Free Software Foundation.
+ * modify it under the terms of version 3 of the GNU Lesser General Public License
+ * or later as published by the Free Software Foundation.
  */
 
 package eu.svjatoslav.inspector.java.structure.example;
@@ -15,14 +15,6 @@ import eu.svjatoslav.inspector.java.structure.ClassGraph;
 import eu.svjatoslav.inspector.java.structure.Utils;
 
 public class RenderJavaInspect {
-
-	public static void main(final String[] args) throws FileNotFoundException {
-
-		handpickClassesExample();
-
-		fullProjectExample();
-
-	}
 
 	private static void fullProjectExample() {
 		final ClassGraph graph = new ClassGraph();
@@ -65,5 +57,13 @@ public class RenderJavaInspect {
 		// Produce bitmap image titled "JavaInspect.png" to the user Desktop
 		// directory and keep intermediary GraphViz DOT file for reference.
 		graph.generateGraph("JavaInspect", true);
+	}
+
+	public static void main(final String[] args) throws FileNotFoundException {
+
+		handpickClassesExample();
+
+		fullProjectExample();
+
 	}
 }

@@ -1,10 +1,10 @@
 /*
  * JavaInspect - Utility to visualize java software
- * Copyright (C) 2013, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
+ * Copyright (C) 2013-2014, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
  * 
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public License
- * as published by the Free Software Foundation.
+ * modify it under the terms of version 3 of the GNU Lesser General Public License
+ * or later as published by the Free Software Foundation.
  */
 
 package eu.svjatoslav.inspector.java.structure;
@@ -61,6 +61,16 @@ public class Utils {
 		return lightColors.get(lastChosenLightColor);
 	}
 
+	public static void initCommonObjectMethods() {
+		commonObjectMethods.add("wait");
+		commonObjectMethods.add("equals");
+		commonObjectMethods.add("toString");
+		commonObjectMethods.add("hashCode");
+		commonObjectMethods.add("notify");
+		commonObjectMethods.add("notifyAll");
+		commonObjectMethods.add("getClass");
+	}
+
 	public static void initDarkColors() {
 		darkColors.add("antiquewhite4");
 		darkColors.add("blueviolet");
@@ -105,20 +115,14 @@ public class Utils {
 		systemDataTypes.add("byte");
 	}
 
-	public static void initCommonObjectMethods() {
-		commonObjectMethods.add("wait");
-		commonObjectMethods.add("equals");
-		commonObjectMethods.add("toString");
-		commonObjectMethods.add("hashCode");
-		commonObjectMethods.add("notify");
-		commonObjectMethods.add("notifyAll");
-		commonObjectMethods.add("getClass");
-	}
-
 	public static void initSystemPackages() {
 		systemPackages.add("java.");
 		systemPackages.add("javax.");
 		systemPackages.add("sun.");
+	}
+
+	public static boolean isCommonObjectMethod(final String name) {
+		return commonObjectMethods.contains(name);
 	}
 
 	public static boolean isEnumMethod(final String name) {
@@ -127,10 +131,6 @@ public class Utils {
 
 	public static boolean isSystemDataType(final String name) {
 		return systemDataTypes.contains(name);
-	}
-
-	public static boolean isCommonObjectMethod(final String name) {
-		return commonObjectMethods.contains(name);
 	}
 
 	public static boolean isSystemPackage(final String name) {
