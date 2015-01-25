@@ -1,7 +1,7 @@
 /*
  * JavaInspect - Utility to visualize java software
  * Copyright (C) 2013-2014, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public License
  * or later as published by the Free Software Foundation.
@@ -112,7 +112,7 @@ public class ClassGraph {
 	 *            file name for the generated graph. File extension will be
 	 *            added automatically. Existing file with the same name will be
 	 *            overwritten.
-	 * 
+	 *
 	 * @param keepDotFile
 	 *            if set to <code>true</code> then intermediary GraphViz DOT
 	 *            file will be kept.
@@ -124,8 +124,31 @@ public class ClassGraph {
 		final String desktopPath = CommonPathResolver.getDesktopDirectory()
 				.getAbsolutePath() + "/";
 
-		final String dotFilePath = desktopPath + resultFileName + ".dot";
-		final String imageFilePath = desktopPath + resultFileName + ".png";
+		generateGraph(desktopPath, resultFileName, keepDotFile);
+	}
+
+	/**
+	 * @param targetDirectory
+	 *            target directory name
+	 *
+	 * @param resultFileName
+	 *            file name for the generated graph. File extension will be
+	 *            added automatically. Existing file with the same name will be
+	 *            overwritten.
+	 *
+	 * @param keepDotFile
+	 *            if set to <code>true</code> then intermediary GraphViz DOT
+	 *            file will be kept.
+	 */
+
+	public void generateGraph(String targetDirectory,
+			final String resultFileName, final boolean keepDotFile) {
+
+		if (!targetDirectory.endsWith("/"))
+			targetDirectory += "/";
+
+		final String dotFilePath = targetDirectory + resultFileName + ".dot";
+		final String imageFilePath = targetDirectory + resultFileName + ".png";
 
 		System.out.println("Dot file path:" + dotFilePath);
 
@@ -138,8 +161,8 @@ public class ClassGraph {
 			// execute GraphViz to visualize graph
 			try {
 				Runtime.getRuntime()
-						.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
-								imageFilePath }).waitFor();
+				.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
+						imageFilePath }).waitFor();
 			} catch (final InterruptedException e) {
 			} finally {
 			}
@@ -152,6 +175,7 @@ public class ClassGraph {
 		} catch (final IOException e) {
 			System.err.println(e);
 		}
+
 	}
 
 	private String getDot() {
