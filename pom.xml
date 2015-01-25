@@ -5,20 +5,28 @@
 	<version>1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Java inspect</name>
-	<description>Java inspect</description>
+	<description>Utility to visualize Java code</description>
 
 	<organization>
 		<name>svjatoslav.eu</name>
 		<url>http://svjatoslav.eu</url>
 	</organization>
 
-	<dependencies>
-		<dependency>
-			<groupId>eu.svjatoslav</groupId>
-			<artifactId>svjatoslavcommons</artifactId>
-			<version>1.2</version>
-		</dependency>
-	</dependencies>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- Attempt to discover bugs by doing static code analysis -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<build>
 		<plugins>
@@ -29,7 +37,6 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<optimize>true</optimize>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -61,16 +68,38 @@
 					</execution>
 				</executions>
 			</plugin>
+						
 		</plugins>
 
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.2</version>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>2.6</version>
 			</extension>
 		</extensions>
 	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.svjatoslav</groupId>
+			<artifactId>svjatoslavcommons</artifactId>
+			<version>1.4-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>svjatoslav.eu</id>
+			<name>svjatoslav.eu</name>
+			<url>scpexe://svjatoslav.eu/var/www/svjatoslav.eu/maven</url>
+		</snapshotRepository>
+		<repository>
+			<id>svjatoslav.eu</id>
+			<name>svjatoslav.eu</name>
+			<url>scpexe://svjatoslav.eu/var/www/svjatoslav.eu/maven</url>
+		</repository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
@@ -80,19 +109,6 @@
 		</repository>
 	</repositories>
 
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>svjatoslav.eu</id>
-			<name>svjatoslav.eu</name>
-			<url>scp://svjatoslav.eu/var/www/svjatoslav.eu/maven</url>
-		</snapshotRepository>
-		<repository>
-			<id>svjatoslav.eu</id>
-			<name>svjatoslav.eu</name>
-			<url>scp://svjatoslav.eu/var/www/svjatoslav.eu/maven</url>
-		</repository>
-	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:ssh://git@svjatoslav.eu/home/git/repositories/javainspect.git</connection>
