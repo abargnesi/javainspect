@@ -5,16 +5,16 @@
 <title>JavaInspect</title>
 </head>
 <body>
-	<h1>JavaInspect - Utility to visualize java software</h1>
-	<a
-		href="http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz">Download</a>
-	&nbsp;&nbsp;
-	<a
-		href="http://www2.svjatoslav.eu/gitbrowse/javainspect/doc/index.html">Online
-		homepage</a> &nbsp;&nbsp;
-	<a href="http://svjatoslav.eu/programs.jsp">Other applications
-		hosted on svjatoslav.eu</a>
-	<pre>
+        <h1>JavaInspect - Utility to visualize java software</h1>
+        <a
+                href="http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz">Download</a>
+        &nbsp;&nbsp;
+        <a
+                href="http://www2.svjatoslav.eu/gitbrowse/javainspect/doc/index.html">Online
+                homepage</a> &nbsp;&nbsp;
+        <a href="http://svjatoslav.eu/programs.jsp">Other applications
+                hosted on svjatoslav.eu</a>
+        <pre>
 <b>Program author:</b>
     Svjatoslav Agejenko
     Homepage: <a href="http://svjatoslav.eu">http://svjatoslav.eu</a>
@@ -24,76 +24,76 @@ This software is distributed under <a href="http://www.gnu.org/copyleft/lesser.h
 
 </pre>
 
-	<h2>General</h2>
+        <h2>General</h2>
 
-	Goal: simplify/speed up understanding the computer program code by
-	automatically visualizing its structure.
-	  
-	<br/><br/>
-	JavaInspect is a Java library that you can embed into your Java project
-	with a few lines of Maven configuration and then visualize any part of
-	your Java program structure with few simple JavaInspect API calls at
-	application runtime.
+        Goal: simplify/speed up understanding the computer program code by
+        automatically visualizing its structure.
 
-	<br />
-	<br /> JavaInspect uses Java reflection to discover class relations and
-	structure and produces GraphViz dot file that describes your
-	application. Then launches GraphViz to generate bitmap graph in PNG
-	format on your Desktop directory.
+        <br/><br/>
+        JavaInspect is a Java library that you can embed into your Java project
+        with a few lines of Maven configuration and then visualize any part of
+        your Java program structure with few simple JavaInspect API calls at
+        application runtime.
 
-
-	<h2>Current status</h2>
-
-	This is simple utility, quickly written. Tested on Linux (can be
-	relatively simply ported to other operating systems too). So far I used
-	it for my own needs. There might be bugs and missing features. Feedback
-	and code contributions are welcome.
+        <br />
+        <br /> JavaInspect uses Java reflection to discover class relations and
+        structure and produces GraphViz dot file that describes your
+        application. Then launches GraphViz to generate bitmap graph in PNG
+        format on your Desktop directory.
 
 
-	<h2>Example graphs</h2>
+        <h2>Current status</h2>
 
-	Example visualization of
-	<a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a>
-	project:
-	<a
-		href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/architecture%20graphs/index.html">architecture
-		graphs</a>
-
-	<br />
-	<br /> A very simple example:
-	<br />
-	<a href="example.png"><img src="example.resized.png" /></a>
-
-	<br /> Graph legend:
-	<br />
-	<img src="legend.png" />
+        This is simple utility, quickly written. Tested on Linux (can be
+        relatively simply ported to other operating systems too). So far I used
+        it for my own needs. There might be bugs and missing features. Feedback
+        and code contributions are welcome.
 
 
-	<h2>Usage example 1</h2>
+        <h2>Example graphs</h2>
+
+        Example visualization of
+        <a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a>
+        project:
+        <a
+                href="http://www2.svjatoslav.eu/projects/sixth/codegraphs/">architecture
+                graphs</a>
+
+        <br />
+        <br /> A very simple example:
+        <br />
+        <a href="example.png"><img src="example.resized.png" /></a>
+
+        <br /> Graph legend:
+        <br />
+        <img src="legend.png" />
+
+
+        <h2>Usage example 1</h2>
 
 <pre>
 <code>
-		/*
-		 * This example demonstrates generating of class graph from hand picked
-		 * classes.
-		 */
+                /*
+                 * This example demonstrates generating of class graph from hand picked
+                 * classes.
+                 */
 
-		// Create graph
-		final ClassGraph graph = new ClassGraph();
+                // Create graph
+                final ClassGraph graph = new ClassGraph();
 
-		// While classes and objects can be immediately passed to ClassGraph
-		// constructor as arguments, it is also possible to add then one by one
-		// as in the following example.
+                // While classes and objects can be immediately passed to ClassGraph
+                // constructor as arguments, it is also possible to add then one by one
+                // as in the following example.
 
-		// Add some object to the graph.
-		graph.addObject(graph);
+                // Add some object to the graph.
+                graph.addObject(graph);
 
-		// Add some class to the graph.
-		graph.addClass(Utils.class);
+                // Add some class to the graph.
+                graph.addClass(Utils.class);
 
-		// Produce bitmap image titled "JavaInspect.png" to the user Desktop
-		// directory and keep intermediary GraphViz DOT file for reference.
-		graph.generateGraph("JavaInspect", true);
+                // Produce bitmap image titled "JavaInspect.png" to the user Desktop
+                // directory and keep intermediary GraphViz DOT file for reference.
+                graph.generateGraph("JavaInspect", true);
 </code>
 
 
@@ -104,24 +104,24 @@ Result:
 </pre>
 
 
-	<h2>Usage example 2</h2>
+        <h2>Usage example 2</h2>
 
 <pre>
 <code>
-		// Recursively scan current directory for Java source code and attempt
-		// to detect class names from there to be added to the graph.
-		graph.addProject(".");
+                // Recursively scan current directory for Java source code and attempt
+                // to detect class names from there to be added to the graph.
+                graph.addProject(".");
 
-		// Blacklist example classes from being shown on the graph
-		graph.getFilter().blacklistClassPattern(
-				"eu.svjatoslav.inspector.java.structure.example.*");
+                // Blacklist example classes from being shown on the graph
+                graph.getFilter().blacklistClassPattern(
+                                "eu.svjatoslav.inspector.java.structure.example.*");
 
-		// do not show single classes with no relationships on the graph
-		graph.hideOrphanedClasses();
+                // do not show single classes with no relationships on the graph
+                graph.hideOrphanedClasses();
 
-		// Produce bitmap image titled "JavaInspect full project.png" to the
-		// user Desktop directory.
-		graph.generateGraph("JavaInspect full project");
+                // Produce bitmap image titled "JavaInspect full project.png" to the
+                // user Desktop directory.
+                graph.generateGraph("JavaInspect full project");
 </code>
 
 
@@ -132,8 +132,8 @@ Result:
 
 
 
-	<h2>Embedding JavaInspect in your project</h2>
-	<pre>
+        <h2>Embedding JavaInspect in your project</h2>
+        <pre>
 
 Declare JavaInspect as dependency:
 
@@ -146,13 +146,13 @@ Declare JavaInspect as dependency:
             &lt;artifactId&gt;javainspect&lt;/artifactId&gt;
             &lt;version&gt;1.3&lt;/version&gt;
         &lt;/dependency&gt;
- 
+
     &lt;/dependencies&gt;
-    
-  
-  
+
+
+
 Add Maven repository to retrieve artifact from:
-  
+
     &lt;repositories&gt;
         &lt;repository&gt;
             &lt;id&gt;svjatoslav.eu&lt;/id&gt;
@@ -165,11 +165,11 @@ Add Maven repository to retrieve artifact from:
 
 
 
-	<h2>Requirements</h2>
+        <h2>Requirements</h2>
 
-	<br>
-	<a href="http://www.graphviz.org/">GraphViz</a> - shall be installed on
-	the computer.
+        <br>
+        <a href="http://www.graphviz.org/">GraphViz</a> - shall be installed on
+        the computer.
 
 
 </body>
