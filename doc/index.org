@@ -1,0 +1,128 @@
+#+TITLE: JavaInspect - Utility to visualize java software
+
+-----
+
+- [[http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz][download]]
+- [[http://svjatoslav.eu/programs.jsp][other applications hosted at svjatoslav.eu]]
+- Program author:
+    - Svjatoslav Agejenko
+    - Homepage: http://svjatoslav.eu
+    - Email: mailto://svjatoslav@svjatoslav.eu
+
+* General
+Goal: simplify/speed up understanding the computer program code by
+automatically visualizing its structure.
+
+JavaInspect is a Java library that you can embed into your Java
+project with a few lines of Maven configuration and then visualize any
+part of your Java program structure with few simple JavaInspect API
+calls at application runtime.
+
+JavaInspect uses Java reflection to discover class relations and
+structure and produces GraphViz dot file that describes your
+application. Then launches GraphViz to generate bitmap graph in PNG
+format on your Desktop directory.
+
+* Current status
+This is simple utility, quickly written. Tested on GNU Linux (can be
+relatively simply ported to other operating systems too). So far I
+used it for my own needs. There might be bugs and missing
+features. Feedback and code contributions are welcome.
+
+* Example graphs
+Example visualization of [[http://www2.svjatoslav.eu/gitbrowse/sixth/doc/][Sixth]] project: [[http://www2.svjatoslav.eu/projects/sixth/codegraphs/][architecture graphs]].
+
+A very simple example:
+
+[[file:example.png][file:example.resized.png]]
+
+
+Graph legend:
+
+file:legend.png
+
+* Usage example 1
+This example demonstrates generating of class graph from hand picked
+classes.
+
+#+BEGIN_SRC java
+  // Create graph
+  final ClassGraph graph = new ClassGraph();
+
+  // While classes and objects can be immediately passed to ClassGraph
+  // constructor as arguments, it is also possible to add them one by
+  // one as in the following example.
+
+  // Add some object to the graph.
+  graph.addObject(graph);
+
+  // Add some class to the graph.
+  graph.addClass(Utils.class);
+
+  // Produce bitmap image titled "JavaInspect.png" to the user Desktop
+  // directory and keep intermediary GraphViz DOT file for reference.
+  graph.generateGraph("JavaInspect", true);
+#+END_SRC
+
+
+
+Result:
+    - Generated DOT file: [[file:JavaInspect.dot][JavaInspect.dot]]
+    - Generated PNG image: [[file:JavaInspect.png][JavaInspect.png]]
+
+* Usage example 2
+Recursively scan current directory for Java source code and attempt to
+detect class names from there to be added to the graph.
+
+#+BEGIN_SRC java
+  graph.addProject(".");
+
+  // Blacklist example classes from being shown on the graph
+  graph.getFilter().blacklistClassPattern(
+      "eu.svjatoslav.inspector.java.structure.example.*");
+
+  // do not show single classes with no relationships on the graph
+  graph.hideOrphanedClasses();
+
+  // Produce bitmap image titled "JavaInspect full project.png" to the
+  // user Desktop directory.
+  graph.generateGraph("JavaInspect full project");
+#+END_SRC
+Result:
+    - Generated PNG image: [[file:JavaInspect%20full%20project.png][JavaInspect full project.png]]
+
+* Embedding JavaInspect in your Maven project
+
+Declare JavaInspect as dependency:
+#+BEGIN_SRC xml
+    <dependencies>
+        ...
+        <dependency>
+            <groupId>eu.svjatoslav</groupId>
+            <artifactId>javainspect</artifactId>
+            <version>1.3</version>
+        </dependency>
+        ...
+    </dependencies>
+#+END_SRC
+
+
+Add Maven repository to retrieve artifact from:
+#+BEGIN_SRC xml
+    <repositories>
+        ...
+        <repository>
+            <id>svjatoslav.eu</id>
+            <name>Svjatoslav repository</name>
+            <url>http://www2.svjatoslav.eu/maven/</url>
+        </repository>
+        ...
+    </repositories>
+#+END_SRC
+
+* Requirements
+
+[[http://www.graphviz.org/][GraphViz]] - shall be installed on the computer.
+
+On Ubuntu/Debian use:
+: sudo apt-get install graphviz

@@ -1,176 +1,381 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>JavaInspect</title>
+<title>JavaInspect - Utility to visualize java software</title>
+<!-- 2015-02-02 Mon 19:49 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Svjatoslav Agejenko" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-dark.min.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
 </head>
 <body>
-        <h1>JavaInspect - Utility to visualize java software</h1>
-        <a
-                href="http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz">Download</a>
-        &nbsp;&nbsp;
-        <a
-                href="http://www2.svjatoslav.eu/gitbrowse/javainspect/doc/index.html">Online
-                homepage</a> &nbsp;&nbsp;
-        <a href="http://svjatoslav.eu/programs.jsp">Other applications
-                hosted on svjatoslav.eu</a>
-        <pre>
-<b>Program author:</b>
-    Svjatoslav Agejenko
-    Homepage: <a href="http://svjatoslav.eu">http://svjatoslav.eu</a>
-    Email: <a href="mailto:svjatoslav@svjatoslav.eu">svjatoslav@svjatoslav.eu</a>
+<div id="content">
+<h1 class="title">JavaInspect - Utility to visualize java software</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. General</a></li>
+<li><a href="#sec-2">2. Current status</a></li>
+<li><a href="#sec-3">3. Example graphs</a></li>
+<li><a href="#sec-4">4. Usage example 1</a></li>
+<li><a href="#sec-5">5. Usage example 2</a></li>
+<li><a href="#sec-6">6. Embedding JavaInspect in your Maven project</a></li>
+<li><a href="#sec-7">7. Requirements</a></li>
+</ul>
+</div>
+</div>
+<hr  />
 
-This software is distributed under <a href="http://www.gnu.org/copyleft/lesser.html">GNU LESSER GENERAL PUBLIC LICENSE version 3 or later</a>.
+<ul class="org-ul">
+<li><a href="http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz">download</a>
+</li>
+<li><a href="http://svjatoslav.eu/programs.jsp">other applications hosted at svjatoslav.eu</a>
+</li>
+<li>Program author:
+<ul class="org-ul">
+<li>Svjatoslav Agejenko
+</li>
+<li>Homepage: <a href="http://svjatoslav.eu">http://svjatoslav.eu</a>
+</li>
+<li>Email: <a href="mailto://svjatoslav@svjatoslav.eu">mailto://svjatoslav@svjatoslav.eu</a>
+</li>
+</ul>
+</li>
+</ul>
 
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> General</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Goal: simplify/speed up understanding the computer program code by
+automatically visualizing its structure.
+</p>
+
+<p>
+JavaInspect is a Java library that you can embed into your Java
+project with a few lines of Maven configuration and then visualize any
+part of your Java program structure with few simple JavaInspect API
+calls at application runtime.
+</p>
+
+<p>
+JavaInspect uses Java reflection to discover class relations and
+structure and produces GraphViz dot file that describes your
+application. Then launches GraphViz to generate bitmap graph in PNG
+format on your Desktop directory.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Current status</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+This is simple utility, quickly written. Tested on GNU Linux (can be
+relatively simply ported to other operating systems too). So far I
+used it for my own needs. There might be bugs and missing
+features. Feedback and code contributions are welcome.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Example graphs</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Example visualization of <a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a> project: <a href="http://www2.svjatoslav.eu/projects/sixth/codegraphs/">architecture graphs</a>.
+</p>
+
+<p>
+A very simple example:
+</p>
+
+
+<div class="figure">
+<p><a href="example.png"><img src="example.resized.png" alt="example.resized.png" /></a>
+</p>
+</div>
+
+
+<p>
+Graph legend:
+</p>
+
+
+<div class="figure">
+<p><img src="legend.png" alt="legend.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Usage example 1</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+This example demonstrates generating of class graph from hand picked
+classes.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Create graph</span>
+<span style="color: #F92672;">final</span> <span style="color: #66D9EF;">ClassGraph</span> <span style="color: #FD971F;">graph</span> = <span style="color: #F92672;">new</span> <span style="color: #66D9EF;">ClassGraph</span>();
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">While classes and objects can be immediately passed to ClassGraph</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">constructor as arguments, it is also possible to add them one by</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">one as in the following example.</span>
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Add some object to the graph.</span>
+graph.addObject(graph);
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Add some class to the graph.</span>
+graph.addClass(Utils.<span style="color: #F92672;">class</span>);
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Produce bitmap image titled "JavaInspect.png" to the user Desktop</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">directory and keep intermediary GraphViz DOT file for reference.</span>
+graph.generateGraph(<span style="color: #EEDC82;">"JavaInspect"</span>, <span style="color: #FF80F4;">true</span>);
 </pre>
-
-        <h2>General</h2>
-
-        Goal: simplify/speed up understanding the computer program code by
-        automatically visualizing its structure.
-
-        <br/><br/>
-        JavaInspect is a Java library that you can embed into your Java project
-        with a few lines of Maven configuration and then visualize any part of
-        your Java program structure with few simple JavaInspect API calls at
-        application runtime.
-
-        <br />
-        <br /> JavaInspect uses Java reflection to discover class relations and
-        structure and produces GraphViz dot file that describes your
-        application. Then launches GraphViz to generate bitmap graph in PNG
-        format on your Desktop directory.
+</div>
 
 
-        <h2>Current status</h2>
 
-        This is simple utility, quickly written. Tested on Linux (can be
-        relatively simply ported to other operating systems too). So far I used
-        it for my own needs. There might be bugs and missing features. Feedback
-        and code contributions are welcome.
-
-
-        <h2>Example graphs</h2>
-
-        Example visualization of
-        <a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a>
-        project:
-        <a
-                href="http://www2.svjatoslav.eu/projects/sixth/codegraphs/">architecture
-                graphs</a>
-
-        <br />
-        <br /> A very simple example:
-        <br />
-        <a href="example.png"><img src="example.resized.png" /></a>
-
-        <br /> Graph legend:
-        <br />
-        <img src="legend.png" />
-
-
-        <h2>Usage example 1</h2>
-
-<pre>
-<code>
-                /*
-                 * This example demonstrates generating of class graph from hand picked
-                 * classes.
-                 */
-
-                // Create graph
-                final ClassGraph graph = new ClassGraph();
-
-                // While classes and objects can be immediately passed to ClassGraph
-                // constructor as arguments, it is also possible to add then one by one
-                // as in the following example.
-
-                // Add some object to the graph.
-                graph.addObject(graph);
-
-                // Add some class to the graph.
-                graph.addClass(Utils.class);
-
-                // Produce bitmap image titled "JavaInspect.png" to the user Desktop
-                // directory and keep intermediary GraphViz DOT file for reference.
-                graph.generateGraph("JavaInspect", true);
-</code>
-
-
+<p>
 Result:
-    Generated DOT file: <a href="JavaInspect.dot">JavaInspect.dot</a>
-    Generated PNG image: <a href="JavaInspect.png">JavaInspect.png</a>
+</p>
+<ul class="org-ul">
+<li>Generated DOT file: <a href="JavaInspect.dot">JavaInspect.dot</a>
+</li>
+<li>Generated PNG image: <a href="JavaInspect.png">JavaInspect.png</a>
+</li>
+</ul>
+</div>
+</div>
 
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Usage example 2</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Recursively scan current directory for Java source code and attempt to
+detect class names from there to be added to the graph.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">graph.addProject(<span style="color: #EEDC82;">"."</span>);
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Blacklist example classes from being shown on the graph</span>
+graph.getFilter().blacklistClassPattern(
+    <span style="color: #EEDC82;">"eu.svjatoslav.inspector.java.structure.example.*"</span>);
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">do not show single classes with no relationships on the graph</span>
+graph.hideOrphanedClasses();
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Produce bitmap image titled "JavaInspect full project.png" to the</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">user Desktop directory.</span>
+graph.generateGraph(<span style="color: #EEDC82;">"JavaInspect full project"</span>);
 </pre>
-
-
-        <h2>Usage example 2</h2>
-
-<pre>
-<code>
-                // Recursively scan current directory for Java source code and attempt
-                // to detect class names from there to be added to the graph.
-                graph.addProject(".");
-
-                // Blacklist example classes from being shown on the graph
-                graph.getFilter().blacklistClassPattern(
-                                "eu.svjatoslav.inspector.java.structure.example.*");
-
-                // do not show single classes with no relationships on the graph
-                graph.hideOrphanedClasses();
-
-                // Produce bitmap image titled "JavaInspect full project.png" to the
-                // user Desktop directory.
-                graph.generateGraph("JavaInspect full project");
-</code>
-
-
+</div>
+<p>
 Result:
-    Generated PNG image: <a href="JavaInspect full project.png">JavaInspect full project.png</a>
+</p>
+<ul class="org-ul">
+<li>Generated PNG image: <a href="JavaInspect%20full%20project.png">JavaInspect full project.png</a>
+</li>
+</ul>
+</div>
+</div>
 
-</pre>
-
-
-
-        <h2>Embedding JavaInspect in your project</h2>
-        <pre>
-
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Embedding JavaInspect in your Maven project</h2>
+<div class="outline-text-2" id="text-6">
+<p>
 Declare JavaInspect as dependency:
+</p>
+<div class="org-src-container">
 
-    &lt;dependencies&gt;
-
-        ...
-
-        &lt;dependency&gt;
-            &lt;groupId&gt;eu.svjatoslav&lt;/groupId&gt;
-            &lt;artifactId&gt;javainspect&lt;/artifactId&gt;
-            &lt;version&gt;1.3&lt;/version&gt;
-        &lt;/dependency&gt;
-
-    &lt;/dependencies&gt;
-
-
-
-Add Maven repository to retrieve artifact from:
-
-    &lt;repositories&gt;
-        &lt;repository&gt;
-            &lt;id&gt;svjatoslav.eu&lt;/id&gt;
-            &lt;name&gt;Svjatoslav repository&lt;/name&gt;
-            &lt;url&gt;http://www2.svjatoslav.eu/maven/&lt;/url&gt;
-        &lt;/repository&gt;
-    &lt;/repositories&gt;
+<pre class="src src-xml">&lt;<span style="color: #A6E22E;">dependencies</span>&gt;
+    ...
+    &lt;<span style="color: #A6E22E;">dependency</span>&gt;
+        &lt;<span style="color: #A6E22E;">groupId</span>&gt;eu.svjatoslav&lt;/<span style="color: #A6E22E;">groupId</span>&gt;
+        &lt;<span style="color: #A6E22E;">artifactId</span>&gt;javainspect&lt;/<span style="color: #A6E22E;">artifactId</span>&gt;
+        &lt;<span style="color: #A6E22E;">version</span>&gt;1.3&lt;/<span style="color: #A6E22E;">version</span>&gt;
+    &lt;/<span style="color: #A6E22E;">dependency</span>&gt;
+    ...
+&lt;/<span style="color: #A6E22E;">dependencies</span>&gt;
 </pre>
+</div>
 
 
+<p>
+Add Maven repository to retrieve artifact from:
+</p>
+<div class="org-src-container">
 
+<pre class="src src-xml">&lt;<span style="color: #A6E22E;">repositories</span>&gt;
+    ...
+    &lt;<span style="color: #A6E22E;">repository</span>&gt;
+        &lt;<span style="color: #A6E22E;">id</span>&gt;svjatoslav.eu&lt;/<span style="color: #A6E22E;">id</span>&gt;
+        &lt;<span style="color: #A6E22E;">name</span>&gt;Svjatoslav repository&lt;/<span style="color: #A6E22E;">name</span>&gt;
+        &lt;<span style="color: #A6E22E;">url</span>&gt;http://www2.svjatoslav.eu/maven/&lt;/<span style="color: #A6E22E;">url</span>&gt;
+    &lt;/<span style="color: #A6E22E;">repository</span>&gt;
+    ...
+&lt;/<span style="color: #A6E22E;">repositories</span>&gt;
+</pre>
+</div>
+</div>
+</div>
 
-        <h2>Requirements</h2>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Requirements</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+<a href="http://www.graphviz.org/">GraphViz</a> - shall be installed on the computer.
+</p>
 
-        <br>
-        <a href="http://www.graphviz.org/">GraphViz</a> - shall be installed on
-        the computer.
-
-
+<p>
+On Ubuntu/Debian use:
+</p>
+<pre class="example">
+sudo apt-get install graphviz
+</pre>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Svjatoslav Agejenko</p>
+<p class="date">Created: 2015-02-02 Mon 19:49</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
 </body>
 </html>
