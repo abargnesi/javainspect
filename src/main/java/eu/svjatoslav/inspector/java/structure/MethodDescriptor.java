@@ -22,7 +22,7 @@ public class MethodDescriptor implements GraphElement,
 	 * This class corresponds to single method within a java class.
 	 */
 
-	public String name;
+	public String methodName;
 	public ClassDescriptor returnType;
 	private final ClassDescriptor parentClass;
 
@@ -33,10 +33,10 @@ public class MethodDescriptor implements GraphElement,
 
 		parentClass = parent;
 
-		name = method.getName();
+		methodName = method.getName();
 
 		if (!method.getDeclaringClass().getName()
-				.equals(parent.fullyQualifiedName))
+				.equals(parent.classFullyQualifiedName))
 			// do not index inherited methods
 			return;
 
@@ -62,7 +62,7 @@ public class MethodDescriptor implements GraphElement,
 	@Override
 	public int compareTo(final MethodDescriptor o) {
 
-		final int nameComparisonResult = name.compareTo(o.name);
+		final int nameComparisonResult = methodName.compareTo(o.methodName);
 		if (nameComparisonResult != 0)
 			return nameComparisonResult;
 
@@ -82,7 +82,7 @@ public class MethodDescriptor implements GraphElement,
 			if (classDescriptor.isVisible())
 				if (classDescriptor.areReferencesShown())
 					result.append("    " + getGraphId() + " -> "
-							+ classDescriptor.getGraphId() + "[label=\"" + name
+							+ classDescriptor.getGraphId() + "[label=\"" + methodName
 							+ "\", color=\"" + classDescriptor.getColor()
 							+ "\", style=\"dotted, bold\"];\n");
 
@@ -92,7 +92,7 @@ public class MethodDescriptor implements GraphElement,
 		// main type
 		if (returnType.areReferencesShown())
 			result.append("    " + getGraphId() + " -> "
-					+ returnType.getGraphId() + "[label=\"" + name + "\","
+					+ returnType.getGraphId() + "[label=\"" + methodName + "\","
 					+ " color=\"" + returnType.getColor()
 					+ "\", style=\"dotted, bold\"];\n");
 
@@ -106,7 +106,7 @@ public class MethodDescriptor implements GraphElement,
 
 		final StringBuffer result = new StringBuffer();
 
-		result.append("        // " + name + "\n");
+		result.append("        // " + methodName + "\n");
 
 		result.append("        <TR><td ALIGN=\"right\">"
 				+ "<FONT POINT-SIZE=\"8.0\">" + returnType.getClassName(true)
@@ -119,11 +119,11 @@ public class MethodDescriptor implements GraphElement,
 
 	@Override
 	public String getGraphId() {
-		return parentClass.getGraphId() + ":" + name;
+		return parentClass.getGraphId() + ":" + methodName;
 	}
 
 	public String getMethodLabel() {
-		return name;
+		return methodName;
 	}
 
 	public int getOutsideVisibleReferencesCount() {
@@ -143,24 +143,24 @@ public class MethodDescriptor implements GraphElement,
 	public boolean isVisible() {
 
 		// hide common object methods
-		if (Utils.isCommonObjectMethod(name))
+		if (Utils.isCommonObjectMethod(methodName))
 			return false;
 
 		// hide common Enumeration methods
-		if (parentClass.isEnum && Utils.isEnumMethod(name))
+		if (parentClass.isEnum && Utils.isEnumMethod(methodName))
 			return false;
 
 		// hide get/set methods for the field of the same name
-		if (name.startsWith("get") || name.startsWith("set"))
-			if (parentClass.hasFieldIgnoreCase(name.substring(3)))
+		if (methodName.startsWith("get") || methodName.startsWith("set"))
+			if (parentClass.hasFieldIgnoreCase(methodName.substring(3)))
 				return false;
 
 		// hide is methods for the boolean field of the same name
-		if (name.startsWith("is")) {
-			final FieldDescriptor field = parentClass.getFieldIgnoreCase(name
+		if (methodName.startsWith("is")) {
+			final FieldDescriptor field = parentClass.getFieldIgnoreCase(methodName
 					.substring(2));
 			if (field != null)
-				if ("boolean".equals(field.getType().fullyQualifiedName))
+				if ("boolean".equals(field.getType().classFullyQualifiedName))
 					return false;
 		}
 

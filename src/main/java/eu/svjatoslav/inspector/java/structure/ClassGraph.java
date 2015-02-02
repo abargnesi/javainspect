@@ -30,7 +30,7 @@ public class ClassGraph {
 	/**
 	 * Maps class fully qualified names to class descriptors.
 	 */
-	Map<String, ClassDescriptor> nameToClassMap = new HashMap<String, ClassDescriptor>();
+	private final Map<String, ClassDescriptor> fullyQualifiedNameToClassMap = new HashMap<String, ClassDescriptor>();
 
 	private Filter filter = new Filter();
 
@@ -66,8 +66,8 @@ public class ClassGraph {
 
 		final String className = clazz.getName();
 
-		if (nameToClassMap.containsKey(className))
-			return nameToClassMap.get(className);
+		if (fullyQualifiedNameToClassMap.containsKey(className))
+			return fullyQualifiedNameToClassMap.get(className);
 
 		return new ClassDescriptor(clazz, this);
 	}
@@ -161,8 +161,8 @@ public class ClassGraph {
 			// execute GraphViz to visualize graph
 			try {
 				Runtime.getRuntime()
-				.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
-						imageFilePath }).waitFor();
+						.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
+								imageFilePath }).waitFor();
 			} catch (final InterruptedException e) {
 			} finally {
 			}
@@ -184,7 +184,7 @@ public class ClassGraph {
 		result.append("digraph Java {\n");
 		result.append("graph [rankdir=LR, overlap = false, concentrate=true];\n");
 
-		for (final Map.Entry<String, ClassDescriptor> entry : nameToClassMap
+		for (final Map.Entry<String, ClassDescriptor> entry : fullyQualifiedNameToClassMap
 				.entrySet())
 			result.append(entry.getValue().getDot());
 
@@ -203,9 +203,16 @@ public class ClassGraph {
 	 */
 	public void hideOrphanedClasses() {
 
-		for (final ClassDescriptor classDescriptor : nameToClassMap.values())
+		for (final ClassDescriptor classDescriptor : fullyQualifiedNameToClassMap
+				.values())
 			classDescriptor.hideClassIfNoReferences();
 
+	}
+
+	public void registerClass(final String classFullyQualifiedName,
+			final ClassDescriptor classDescriptor) {
+		fullyQualifiedNameToClassMap.put(classFullyQualifiedName,
+				classDescriptor);
 	}
 
 	public void setFilter(final Filter filter) {

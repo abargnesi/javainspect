@@ -27,12 +27,12 @@ public class FieldDescriptor implements GraphElement {
 	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
 
 	public FieldDescriptor(final Field field, final ClassDescriptor parent,
-			final ClassGraph dump) {
+			final ClassGraph classGraph) {
 
 		parentClass = parent;
 
 		if (!field.getDeclaringClass().getName()
-				.equals(parent.fullyQualifiedName))
+				.equals(parent.classFullyQualifiedName))
 			// if field is inherited, do not index it
 			return;
 
@@ -42,7 +42,7 @@ public class FieldDescriptor implements GraphElement {
 		parent.nameToFieldMap.put(field.getName(), this);
 
 		name = field.getName();
-		type = dump.addClass(field.getType());
+		type = classGraph.addClass(field.getType());
 		type.registerReference();
 
 		final Type genericType = field.getGenericType();
@@ -51,7 +51,7 @@ public class FieldDescriptor implements GraphElement {
 			for (final Type t : pt.getActualTypeArguments())
 				if (t instanceof Class) {
 					final Class cl = (Class) t;
-					final ClassDescriptor genericTypeDescriptor = dump
+					final ClassDescriptor genericTypeDescriptor = classGraph
 							.addClass(cl);
 					genericTypeDescriptor.registerReference();
 					typeArguments.add(genericTypeDescriptor);

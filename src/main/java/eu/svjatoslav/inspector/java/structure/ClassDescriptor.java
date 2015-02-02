@@ -1,7 +1,7 @@
 /*
  * JavaInspect - Utility to visualize java software
  * Copyright (C) 2013-2014, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public License
  * or later as published by the Free Software Foundation.
@@ -25,7 +25,7 @@ public class ClassDescriptor implements GraphElement {
 
 	private static final int MAX_REFERECNES_COUNT = 10;
 
-	public final String fullyQualifiedName;
+	public final String classFullyQualifiedName;
 
 	Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
 
@@ -65,18 +65,21 @@ public class ClassDescriptor implements GraphElement {
 	// counts amount of times this class is extended
 	private int extensionsCount = 0;
 
-	public ClassDescriptor(final Class<? extends Object> clazz,
-			final ClassGraph dump) {
-		classGraph = dump;
+	private ClassDescriptor arrayComponent;
 
-		fullyQualifiedName = clazz.getName();
-		dump.nameToClassMap.put(fullyQualifiedName, this);
+	public ClassDescriptor(final Class<? extends Object> clazz,
+			final ClassGraph classGraph) {
+		this.classGraph = classGraph;
+
+		classFullyQualifiedName = clazz.getName();
+
+		classGraph.registerClass(classFullyQualifiedName, this);
 
 		isArray = clazz.isArray();
 
 		if (isArray) {
 			final Class<?> componentType = clazz.getComponentType();
-			dump.addClass(componentType);
+			arrayComponent = classGraph.addClass(componentType);
 		}
 
 		// System.out.println("class: " + fullyQualifiedName);
@@ -94,13 +97,13 @@ public class ClassDescriptor implements GraphElement {
 		indexMethods(clazz);
 
 		for (final Class interfaceClass : clazz.getInterfaces()) {
-			final ClassDescriptor classDescriptor = dump
+			final ClassDescriptor classDescriptor = classGraph
 					.addClass(interfaceClass);
 			classDescriptor.registerImplementation();
 			interfaces.add(classDescriptor);
 		}
 
-		superClass = dump.addClass(clazz.getSuperclass());
+		superClass = classGraph.addClass(clazz.getSuperclass());
 		if (superClass != null)
 			superClass.registerExtension();
 
@@ -140,7 +143,7 @@ public class ClassDescriptor implements GraphElement {
 
 		result.append("\n");
 		result.append("    // interfaces implemented by class: "
-				+ fullyQualifiedName + "\n");
+				+ classFullyQualifiedName + "\n");
 
 		for (final ClassDescriptor interfaceDescriptor : interfaces) {
 			if (!interfaceDescriptor.isVisible())
@@ -183,7 +186,8 @@ public class ClassDescriptor implements GraphElement {
 			return;
 
 		result.append("\n");
-		result.append("    // super class for: " + fullyQualifiedName + "\n");
+		result.append("    // super class for: " + classFullyQualifiedName
+				+ "\n");
 
 		result.append("    " + superClass.getGraphId() + " -> " + getGraphId()
 				+ "[style=\"tapered\", color=\""
@@ -193,7 +197,7 @@ public class ClassDescriptor implements GraphElement {
 
 	public void generateDotHeader(final StringBuffer result) {
 		result.append("\n");
-		result.append("// Class: " + fullyQualifiedName + "\n");
+		result.append("// Class: " + classFullyQualifiedName + "\n");
 
 		result.append("    " + getGraphId() + "[label=<<TABLE "
 				+ getBackgroundColor() + " BORDER=\"" + getBorderWidth()
@@ -245,14 +249,21 @@ public class ClassDescriptor implements GraphElement {
 
 	public String getClassName(final boolean differentiateArray) {
 		// this is needed for nested classes
-		final String actualClassName = fullyQualifiedName.replace('$', '.');
+		final String actualClassName = classFullyQualifiedName
+				.replace('$', '.');
 
-		final int i = actualClassName.lastIndexOf('.');
-
-		String result = actualClassName.substring(i + 1);
-
-		if (isArray)
-			result = result.substring(0, result.length() - 1);
+		String result;
+		if (isArray) {
+			// for arrays use array component instead of array class name
+			result = arrayComponent.classFullyQualifiedName;
+			if (result.contains(".")) {
+				final int i = result.lastIndexOf('.');
+				result = result.substring(i + 1);
+			}
+		} else {
+			final int i = actualClassName.lastIndexOf('.');
+			result = actualClassName.substring(i + 1);
+		}
 
 		if (differentiateArray)
 			if (isArray)
@@ -324,8 +335,8 @@ public class ClassDescriptor implements GraphElement {
 	@Override
 	public String getGraphId() {
 		final String result = "class_"
-				+ fullyQualifiedName.replace('.', '_').replace(";", "")
-						.replace("[L", "").replace('$', '_');
+				+ classFullyQualifiedName.replace('.', '_').replace(";", "")
+				.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
@@ -376,17 +387,17 @@ public class ClassDescriptor implements GraphElement {
 
 	public String getPackageName() {
 
-		final int i = fullyQualifiedName.lastIndexOf('.');
+		final int i = classFullyQualifiedName.lastIndexOf('.');
 
 		if (i == -1)
 			return "";
 
-		return fullyQualifiedName.substring(0, i).replace("[L", "");
+		return classFullyQualifiedName.substring(0, i).replace("[L", "");
 	}
 
 	public String getParentClassesName() {
-		int i = fullyQualifiedName.lastIndexOf('.');
-		final String fullClassName = fullyQualifiedName.substring(i + 1);
+		int i = classFullyQualifiedName.lastIndexOf('.');
+		final String fullClassName = classFullyQualifiedName.substring(i + 1);
 
 		i = fullClassName.lastIndexOf('$');
 		if (i == -1)
@@ -456,14 +467,23 @@ public class ClassDescriptor implements GraphElement {
 	@Override
 	public boolean isVisible() {
 
-		if (Utils.isSystemDataType(fullyQualifiedName))
+		if (Utils.isSystemDataType(classFullyQualifiedName))
 			return false;
 
-		if (Utils.isSystemPackage(fullyQualifiedName))
+		if (Utils.isSystemPackage(classFullyQualifiedName))
 			return false;
 
-		if (!classGraph.getFilter().isClassShown(fullyQualifiedName))
+		if (!classGraph.getFilter().isClassShown(classFullyQualifiedName))
 			return false;
+
+		if (isArray)
+			if (arrayComponent != null)
+				if (Utils
+						.isSystemDataType(arrayComponent.classFullyQualifiedName))
+					// Do not show references to primitive data types in arrays.
+					// That is: there is no point to show reference to byte when
+					// we have class with byte array field.
+					return false;
 
 		return isShown;
 	}
