@@ -1,13 +1,18 @@
 #+TITLE: JavaInspect - Utility to visualize java software
 
 -----
+- [[http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz][download latest snapshot]]
 
-- [[http://www2.svjatoslav.eu/gitweb/?p=javainspect.git;a=snapshot;h=HEAD;sf=tgz][download]]
-- [[http://svjatoslav.eu/programs.jsp][other applications hosted at svjatoslav.eu]]
+- This program is free software; you can redistribute it and/or modify
+  it under the terms of version 3 of the [[https://www.gnu.org/licenses/lgpl.html][GNU Lesser General Public
+  License]] or later as published by the Free Software Foundation.
+
 - Program author:
-    - Svjatoslav Agejenko
-    - Homepage: http://svjatoslav.eu
-    - Email: mailto://svjatoslav@svjatoslav.eu
+  - Svjatoslav Agejenko
+  - Homepage: http://svjatoslav.eu
+  - Email: mailto://svjatoslav@svjatoslav.eu
+
+- [[http://svjatoslav.eu/programs.jsp][other applications hosted at svjatoslav.eu]]
 
 * General
 Goal: simplify/speed up understanding the computer program code by
