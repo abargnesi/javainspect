@@ -149,6 +149,9 @@ public class ClassDescriptor implements GraphElement {
 			if (!interfaceDescriptor.isVisible())
 				continue;
 
+			if (!interfaceDescriptor.areReferencesShown())
+				continue;
+
 			result.append("    " + interfaceDescriptor.getGraphId() + " -> "
 					+ getGraphId() + "[style=\"dotted, tapered\", color=\""
 					+ interfaceDescriptor.getInterfaceColor()
@@ -183,6 +186,9 @@ public class ClassDescriptor implements GraphElement {
 			return;
 
 		if (!superClass.isVisible())
+			return;
+
+		if (!superClass.areReferencesShown())
 			return;
 
 		result.append("\n");
