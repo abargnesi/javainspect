@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>JavaInspect - Utility to visualize java software</title>
-<!-- 2015-02-02 Mon 19:49 -->
+<!-- 2015-02-03 Tue 20:24 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Svjatoslav Agejenko" />
@@ -150,6 +150,7 @@ for the JavaScript code in this tag.
 <li><a href="#sec-5">5. Usage example 2</a></li>
 <li><a href="#sec-6">6. Embedding JavaInspect in your Maven project</a></li>
 <li><a href="#sec-7">7. Requirements</a></li>
+<li><a href="#sec-8">8. <span class="todo TODO">TODO</span> </a></li>
 </ul>
 </div>
 </div>
@@ -370,10 +371,49 @@ sudo apt-get install graphviz
 </pre>
 </div>
 </div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> </h2>
+<div class="outline-text-2" id="text-8">
+<ul class="org-ul">
+<li>BUG: Should not hide references if there are too many of them to
+classes if referring classes are not visible anyway because of
+blacklist/whitelist rules. Basically reference counting should
+exclude not visible classes.
+</li>
+<li>BUG: Current code is quite messy (because of lack of time) things
+were implemented ad-hoc. Needs cleanup/refactoring for better
+readability.
+</li>
+<li>FEATURE: add dark theme
+</li>
+<li>FEATURE: sort Class fields by alphabet
+</li>
+<li>FEATURE: visualize also concrete field values so it could be used as
+ultra cool runtime logging framework
+</li>
+<li>FEATURE: possibility to visualize structure and data from JVM
+snapshot
+</li>
+<li>FEATURE: possibility to attach to remote process to visualize
+data/structure using JVM debug port and mechanism.
+</li>
+<li>FEATURE: possibility to attach to JVM using JVM agent
+</li>
+<li>FEATURE: possibility to script javainspect behavior
+</li>
+<li>FEATURE: possibility to select classes/fields/values to be
+visualized in SQL like syntax
+</li>
+<li>FEATURE: configurable maven plugin to generate graphs as part of the
+project build/release process
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Svjatoslav Agejenko</p>
-<p class="date">Created: 2015-02-02 Mon 19:49</p>
+<p class="date">Created: 2015-02-03 Tue 20:24</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

@@ -126,3 +126,25 @@ Add Maven repository to retrieve artifact from:
 
 On Ubuntu/Debian use:
 : sudo apt-get install graphviz
+* TODO
+- BUG: Should not hide references if there are too many of them to
+  classes if referring classes are not visible anyway because of
+  blacklist/whitelist rules. Basically reference counting should
+  exclude not visible classes.
+- BUG: Current code is quite messy (because of lack of time) things
+  were implemented ad-hoc. Needs cleanup/refactoring for better
+  readability.
+- FEATURE: add dark theme
+- FEATURE: sort Class fields by alphabet
+- FEATURE: visualize also concrete field values so it could be used as
+  ultra cool runtime logging framework
+- FEATURE: possibility to visualize structure and data from JVM
+  snapshot
+- FEATURE: possibility to attach to remote process to visualize
+  data/structure using JVM debug port and mechanism.
+- FEATURE: possibility to attach to JVM using JVM agent
+- FEATURE: possibility to script javainspect behavior
+- FEATURE: possibility to select classes/fields/values to be
+  visualized in SQL like syntax
+- FEATURE: configurable maven plugin to generate graphs as part of the
+  project build/release process
