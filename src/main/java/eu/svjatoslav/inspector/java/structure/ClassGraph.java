@@ -21,63 +21,34 @@ import eu.svjatoslav.inspector.java.methods.ProjectScanner;
 
 public class ClassGraph {
 
-	public static void render(final String graphName, final Class... classes) {
-		final ClassGraph classGraph = new ClassGraph(classes);
-
-		classGraph.generateGraph(graphName);
-	}
-
 	/**
 	 * Maps class fully qualified names to class descriptors.
 	 */
 	private final Map<String, ClassDescriptor> fullyQualifiedNameToClassMap = new HashMap<String, ClassDescriptor>();
 
-	private Filter filter = new Filter();
+	private final Filter filter = new Filter();
 
 	public ClassGraph() {
-	}
-
-	/**
-	 * @param classes
-	 *            classes that shall be added to graph
-	 */
-	public ClassGraph(final Class<? extends Object>... classes) {
-		for (final Class<? extends Object> clazz : classes)
-			addClass(clazz);
 	}
 
 	/**
 	 * @param objects
 	 *            objects that shall be added to graph
 	 */
-	public ClassGraph(final Object... objects) {
-		for (final Object object : objects)
-			addClass(object.getClass());
+	public ClassGraph add(final Object... objects) {
+
+		if (objects != null)
+			for (final Object object : objects)
+				addObject(object);
+
+		return this;
 	}
 
-	/**
-	 * @param clazz
-	 *            class that shall be added to graph
-	 */
-	public ClassDescriptor addClass(final Class<? extends Object> clazz) {
-
-		if (clazz == null)
-			return null;
-
-		final String className = clazz.getName();
-
-		if (fullyQualifiedNameToClassMap.containsKey(className))
-			return fullyQualifiedNameToClassMap.get(className);
-
-		return new ClassDescriptor(clazz, this);
-	}
-
-	/**
-	 * @param object
-	 *            object that shall be added to graph
-	 */
-	public ClassDescriptor addObject(final Object object) {
-		return addClass(object.getClass());
+	private void addObject(final Object object) {
+		if (object instanceof Class)
+			getOrCreateClassDescriptor((Class) object);
+		else
+			getOrCreateClassDescriptor(object.getClass());
 	}
 
 	/**
@@ -91,7 +62,7 @@ public class ClassGraph {
 			try {
 				System.out.println("Class full name: " + clazz.getFullName());
 				final Class c = this.getClass().forName(clazz.getFullName());
-				addClass(c);
+				addObject(c);
 			} catch (final Exception exception) {
 				System.out.println("cannot add class: "
 						+ exception.getMessage());
@@ -199,6 +170,31 @@ public class ClassGraph {
 	}
 
 	/**
+	 * @param clazz
+	 *            class that shall be added to graph
+	 */
+	protected ClassDescriptor getOrCreateClassDescriptor(final Class clazz) {
+
+		if (clazz == null)
+			return null;
+
+		final String classFullyQualifiedName = clazz.getName();
+
+		// reuse existing instance if possible
+		if (fullyQualifiedNameToClassMap.containsKey(classFullyQualifiedName))
+			return fullyQualifiedNameToClassMap.get(classFullyQualifiedName);
+
+		// create new class descriptor
+		final ClassDescriptor newClassDescriptor = new ClassDescriptor(this);
+		fullyQualifiedNameToClassMap.put(classFullyQualifiedName,
+				newClassDescriptor);
+
+		newClassDescriptor.analyzeClass(clazz);
+
+		return newClassDescriptor;
+	}
+
+	/**
 	 * Hide orphaned class that have no references
 	 */
 	public void hideOrphanedClasses() {
@@ -207,16 +203,6 @@ public class ClassGraph {
 				.values())
 			classDescriptor.hideClassIfNoReferences();
 
-	}
-
-	public void registerClass(final String classFullyQualifiedName,
-			final ClassDescriptor classDescriptor) {
-		fullyQualifiedNameToClassMap.put(classFullyQualifiedName,
-				classDescriptor);
-	}
-
-	public void setFilter(final Filter filter) {
-		this.filter = filter;
 	}
 
 }

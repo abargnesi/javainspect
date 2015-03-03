@@ -1,7 +1,7 @@
 /*
  * JavaInspect - Utility to visualize java software
  * Copyright (C) 2013-2015, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public License
  * or later as published by the Free Software Foundation.
@@ -28,21 +28,22 @@ public class MethodDescriptor implements GraphElement,
 
 	List<ClassDescriptor> argumentTypes = new ArrayList<ClassDescriptor>();
 
-	public MethodDescriptor(final Method method, final ClassDescriptor parent,
-			final ClassGraph dump) {
+	boolean isInherited;
 
+	public MethodDescriptor(final ClassDescriptor parent,
+			final String methodName) {
 		parentClass = parent;
+		this.methodName = methodName;
+	}
 
-		methodName = method.getName();
+	public void analyze(final Method method) {
 
 		if (!method.getDeclaringClass().getName()
-				.equals(parent.classFullyQualifiedName))
-			// do not index inherited methods
-			return;
+				.equals(parentClass.classFullyQualifiedName))
+			isInherited = true;
 
-		parent.methods.add(this);
-
-		returnType = dump.addClass(method.getReturnType());
+		returnType = parentClass.getClassGraph().getOrCreateClassDescriptor(
+				method.getReturnType());
 		returnType.registerReference();
 
 		final Type genericType = method.getGenericReturnType();
@@ -51,7 +52,8 @@ public class MethodDescriptor implements GraphElement,
 			for (final Type t : pt.getActualTypeArguments())
 				if (t instanceof Class) {
 					final Class cl = (Class) t;
-					final ClassDescriptor classDescriptor = dump.addClass(cl);
+					final ClassDescriptor classDescriptor = parentClass
+							.getClassGraph().getOrCreateClassDescriptor(cl);
 					classDescriptor.registerReference();
 					argumentTypes.add(classDescriptor);
 				}
@@ -82,8 +84,9 @@ public class MethodDescriptor implements GraphElement,
 			if (classDescriptor.isVisible())
 				if (classDescriptor.areReferencesShown())
 					result.append("    " + getGraphId() + " -> "
-							+ classDescriptor.getGraphId() + "[label=\"" + methodName
-							+ "\", color=\"" + classDescriptor.getColor()
+							+ classDescriptor.getGraphId() + "[label=\""
+							+ methodName + "\", color=\""
+							+ classDescriptor.getColor()
 							+ "\", style=\"dotted, bold\"];\n");
 
 		if (!returnType.isVisible())
@@ -92,8 +95,8 @@ public class MethodDescriptor implements GraphElement,
 		// main type
 		if (returnType.areReferencesShown())
 			result.append("    " + getGraphId() + " -> "
-					+ returnType.getGraphId() + "[label=\"" + methodName + "\","
-					+ " color=\"" + returnType.getColor()
+					+ returnType.getGraphId() + "[label=\"" + methodName
+					+ "\"," + " color=\"" + returnType.getColor()
 					+ "\", style=\"dotted, bold\"];\n");
 
 		return result.toString();
@@ -142,6 +145,10 @@ public class MethodDescriptor implements GraphElement,
 	@Override
 	public boolean isVisible() {
 
+		// hide inherited methods
+		if (isInherited)
+			return false;
+
 		// hide common object methods
 		if (Utils.isCommonObjectMethod(methodName))
 			return false;
@@ -157,8 +164,8 @@ public class MethodDescriptor implements GraphElement,
 
 		// hide is methods for the boolean field of the same name
 		if (methodName.startsWith("is")) {
-			final FieldDescriptor field = parentClass.getFieldIgnoreCase(methodName
-					.substring(2));
+			final FieldDescriptor field = parentClass
+					.getFieldIgnoreCase(methodName.substring(2));
 			if (field != null)
 				if ("boolean".equals(field.getType().classFullyQualifiedName))
 					return false;

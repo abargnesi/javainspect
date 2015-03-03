@@ -1,7 +1,7 @@
 /*
  * JavaInspect - Utility to visualize java software
  * Copyright (C) 2013-2015, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public License
  * or later as published by the Free Software Foundation.
@@ -49,10 +49,10 @@ public class RenderJavaInspect {
 		// as in the following example.
 
 		// Add some object to the graph.
-		graph.addObject(graph);
+		graph.add(graph);
 
 		// Add some class to the graph.
-		graph.addClass(Utils.class);
+		graph.add(Utils.class);
 
 		// Produce bitmap image titled "JavaInspect.png" to the user Desktop
 		// directory and keep intermediary GraphViz DOT file for reference.

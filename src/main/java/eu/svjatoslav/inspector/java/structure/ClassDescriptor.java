@@ -25,11 +25,11 @@ public class ClassDescriptor implements GraphElement {
 
 	private static final int MAX_REFERECNES_COUNT = 10;
 
-	public final String classFullyQualifiedName;
+	public String classFullyQualifiedName;
 
-	Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
+	private final Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
 
-	public SortedSet<MethodDescriptor> methods = new TreeSet<MethodDescriptor>();
+	private final SortedSet<MethodDescriptor> methods = new TreeSet<MethodDescriptor>();
 
 	/**
 	 * Incoming arrows will have this color.
@@ -67,19 +67,20 @@ public class ClassDescriptor implements GraphElement {
 
 	private ClassDescriptor arrayComponent;
 
-	public ClassDescriptor(final Class<? extends Object> clazz,
-			final ClassGraph classGraph) {
+	public ClassDescriptor(final ClassGraph classGraph) {
 		this.classGraph = classGraph;
+	}
+
+	public void analyzeClass(final Class<? extends Object> clazz) {
 
 		classFullyQualifiedName = clazz.getName();
-
-		classGraph.registerClass(classFullyQualifiedName, this);
 
 		isArray = clazz.isArray();
 
 		if (isArray) {
 			final Class<?> componentType = clazz.getComponentType();
-			arrayComponent = classGraph.addClass(componentType);
+			arrayComponent = getClassGraph().getOrCreateClassDescriptor(
+					componentType);
 		}
 
 		// System.out.println("class: " + fullyQualifiedName);
@@ -97,17 +98,18 @@ public class ClassDescriptor implements GraphElement {
 		indexMethods(clazz);
 
 		for (final Class interfaceClass : clazz.getInterfaces()) {
-			final ClassDescriptor classDescriptor = classGraph
-					.addClass(interfaceClass);
-			classDescriptor.registerImplementation();
-			interfaces.add(classDescriptor);
+			final ClassDescriptor interfaceClassDescriptor = getClassGraph()
+					.getOrCreateClassDescriptor(interfaceClass);
+			interfaceClassDescriptor.registerImplementation();
+			interfaces.add(interfaceClassDescriptor);
 		}
 
-		superClass = classGraph.addClass(clazz.getSuperclass());
+		superClass = getClassGraph().getOrCreateClassDescriptor(
+				clazz.getSuperclass());
 		if (superClass != null)
 			superClass.registerExtension();
 
-	}
+	};
 
 	public boolean areReferencesShown() {
 		return referencesCount <= MAX_REFERECNES_COUNT;
@@ -252,6 +254,10 @@ public class ClassDescriptor implements GraphElement {
 		return "1";
 	}
 
+	public ClassGraph getClassGraph() {
+		return classGraph;
+	}
+
 	public String getClassName(final boolean differentiateArray) {
 		// this is needed for nested classes
 		final String actualClassName = classFullyQualifiedName
@@ -341,7 +347,7 @@ public class ClassDescriptor implements GraphElement {
 	public String getGraphId() {
 		final String result = "class_"
 				+ classFullyQualifiedName.replace('.', '_').replace(";", "")
-				.replace("[L", "").replace('$', '_');
+						.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
@@ -350,6 +356,35 @@ public class ClassDescriptor implements GraphElement {
 			interfaceColor = Utils.getNextDarkColor();
 
 		return interfaceColor;
+	}
+
+	// public String getReadableName() {
+	//
+	// // do not print full class name for well known system classes
+	// final String packageName = getPackageName();
+	//
+	// if (packageName.equals("java.util"))
+	// return getClassName();
+	//
+	// if (packageName.equals("java.lang"))
+	// return getClassName();
+	//
+	// return fullyQualifiedName;
+	// }
+
+	private FieldDescriptor getOrCreateFieldDescriptor(final Field field) {
+
+		final String fieldName = field.getName();
+
+		if (nameToFieldMap.containsKey(fieldName))
+			return nameToFieldMap.get(fieldName);
+
+		final FieldDescriptor newFieldDescriptor = new FieldDescriptor(this);
+		nameToFieldMap.put(fieldName, newFieldDescriptor);
+
+		newFieldDescriptor.analyzeField(field);
+
+		return newFieldDescriptor;
 	}
 
 	private int getOutgoingReferencesCount() {
@@ -375,20 +410,6 @@ public class ClassDescriptor implements GraphElement {
 
 		return result;
 	}
-
-	// public String getReadableName() {
-	//
-	// // do not print full class name for well known system classes
-	// final String packageName = getPackageName();
-	//
-	// if (packageName.equals("java.util"))
-	// return getClassName();
-	//
-	// if (packageName.equals("java.lang"))
-	// return getClassName();
-	//
-	// return fullyQualifiedName;
-	// }
 
 	public String getPackageName() {
 
@@ -451,21 +472,19 @@ public class ClassDescriptor implements GraphElement {
 	}
 
 	public void indexFields(final Field[] fields) {
-		for (final Field field : fields) {
-			if (nameToFieldMap.containsKey(field.getName()))
-				continue;
-
-			final FieldDescriptor fieldDescriptor = new FieldDescriptor(field,
-					this, classGraph);
-
-		}
+		for (final Field field : fields)
+			getOrCreateFieldDescriptor(field);
 	}
 
 	private void indexMethods(final Class<? extends Object> clazz) {
-		final Method[] methods = clazz.getMethods();
+		for (final Method method : clazz.getMethods()) {
+			final MethodDescriptor methodDescriptor = new MethodDescriptor(
+					this, method.getName());
 
-		for (final Method method : methods)
-			new MethodDescriptor(method, this, classGraph);
+			methods.add(methodDescriptor);
+
+			methodDescriptor.analyze(method);
+		}
 
 	}
 
@@ -478,7 +497,7 @@ public class ClassDescriptor implements GraphElement {
 		if (Utils.isSystemPackage(classFullyQualifiedName))
 			return false;
 
-		if (!classGraph.getFilter().isClassShown(classFullyQualifiedName))
+		if (!getClassGraph().getFilter().isClassShown(classFullyQualifiedName))
 			return false;
 
 		if (isArray)

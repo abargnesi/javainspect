@@ -16,12 +16,9 @@ import eu.svjatoslav.inspector.java.structure.example.structure.SampleClass2;
 public class RenderDemoClasses {
 
 	public static void main(final String[] args) {
-		final ClassGraph graph = new ClassGraph();
 
-		graph.addClass(SampleClass.class);
-		graph.addClass(SampleClass2.class);
-
-		graph.generateGraph("example", false);
+		new ClassGraph().add(SampleClass.class, SampleClass2.class)
+				.generateGraph("example", false);
 	}
 
 }

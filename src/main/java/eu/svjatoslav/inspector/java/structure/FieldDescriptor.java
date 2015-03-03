@@ -1,7 +1,7 @@
 /*
  * JavaInspect - Utility to visualize java software
  * Copyright (C) 2013-2015, Svjatoslav Agejenko, svjatoslav@svjatoslav.eu
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public License
  * or later as published by the Free Software Foundation.
@@ -23,26 +23,27 @@ public class FieldDescriptor implements GraphElement {
 
 	public String name;
 	private ClassDescriptor type;
-	private ClassDescriptor parentClass;
+	private final ClassDescriptor parentClass;
 	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
 
-	public FieldDescriptor(final Field field, final ClassDescriptor parent,
-			final ClassGraph classGraph) {
+	public boolean isInherited;
 
+	public FieldDescriptor(final ClassDescriptor parent) {
 		parentClass = parent;
+	}
+
+	public void analyzeField(final Field field) {
 
 		if (!field.getDeclaringClass().getName()
-				.equals(parent.classFullyQualifiedName))
-			// if field is inherited, do not index it
-			return;
+				.equals(parentClass.classFullyQualifiedName))
+			isInherited = true;
 
 		// if (field.getType().isArray())
 		// System.out.println("field name: " + field.getName());
 
-		parent.nameToFieldMap.put(field.getName(), this);
-
 		name = field.getName();
-		type = classGraph.addClass(field.getType());
+		type = parentClass.getClassGraph().getOrCreateClassDescriptor(
+				field.getType());
 		type.registerReference();
 
 		final Type genericType = field.getGenericType();
@@ -51,8 +52,8 @@ public class FieldDescriptor implements GraphElement {
 			for (final Type t : pt.getActualTypeArguments())
 				if (t instanceof Class) {
 					final Class cl = (Class) t;
-					final ClassDescriptor genericTypeDescriptor = classGraph
-							.addClass(cl);
+					final ClassDescriptor genericTypeDescriptor = parentClass
+							.getClassGraph().getOrCreateClassDescriptor(cl);
 					genericTypeDescriptor.registerReference();
 					typeArguments.add(genericTypeDescriptor);
 				}
@@ -144,6 +145,9 @@ public class FieldDescriptor implements GraphElement {
 
 	@Override
 	public boolean isVisible() {
+		if (isInherited)
+			return false;
+
 		if (name.contains("$"))
 			return false;
 
