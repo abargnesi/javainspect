@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>JavaInspect - Utility to visualize java software</title>
-<!-- 2015-02-03 Tue 20:39 -->
+<!-- 2015-03-03 Tue 22:24 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Svjatoslav Agejenko" />
@@ -144,13 +144,16 @@ for the JavaScript code in this tag.
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#sec-1">1. General</a></li>
-<li><a href="#sec-2">2. Current status</a></li>
-<li><a href="#sec-3">3. Example graphs</a></li>
-<li><a href="#sec-4">4. Usage example 1</a></li>
-<li><a href="#sec-5">5. Usage example 2</a></li>
-<li><a href="#sec-6">6. Embedding JavaInspect in your Maven project</a></li>
-<li><a href="#sec-7">7. Requirements</a></li>
-<li><a href="#sec-8">8. <span class="todo TODO">TODO</span> </a></li>
+<li><a href="#sec-2">2. Example graphs</a></li>
+<li><a href="#sec-3">3. Usage</a>
+<ul>
+<li><a href="#sec-3-1">3.1. example 1</a></li>
+<li><a href="#sec-3-2">3.2. example 2</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Embedding JavaInspect in your Maven project</a></li>
+<li><a href="#sec-5">5. Requirements</a></li>
+<li><a href="#sec-6">6. <span class="todo TODO">TODO</span> </a></li>
 </ul>
 </div>
 </div>
@@ -188,50 +191,57 @@ automatically visualizing its structure.
 </p>
 
 <p>
-JavaInspect is a Java library that you can embed into your Java
-project with a few lines of Maven configuration and then visualize any
-part of your Java program structure with few simple JavaInspect API
-calls at application runtime.
+JavaInspect is a Java library that primarily uses Java reflection to
+discover and visualize any part of Java program provided that
+classes to be visualised are available in the classpath.
 </p>
 
 <p>
-JavaInspect uses Java reflection to discover class relations and
-structure and produces GraphViz dot file that describes your
-application. Then launches GraphViz to generate bitmap graph in PNG
-format on your Desktop directory.
+JavaInspect currently has no GUI, configuration files, embedded
+scripting support, direct Maven or Ant integration. The only way to
+instuct Javainspect what to do is by using its Java API.
+</p>
+
+<p>
+To get JavaInspect into same classpath with your projecs I so far came
+up with 2 solutions:
+</p>
+
+<ol class="org-ol">
+<li>Add JavaInspect library in your project as a dependency.
+</li>
+<li>Create new Java project for the purpose visualizing your other
+projects and include JavaInspect and your projecs binary artifacts
+(Jar's) into new project classpath. Built binary Jar's (with no
+source code) are sufficient because JavaInspect operates via
+reflection.
+</li>
+</ol>
+
+<p>
+After discovering application structure and optionally filtering out
+unimportant parts, JavaInspect produces GraphViz dot file that
+describes data to be visualized. Then launches GraphViz to generate
+bitmap graph in PNG format. By default on your Desktop directory.
+</p>
+
+<p>
+Note: GraphViz is developed and tested so far only on GNU Linux.
 </p>
 </div>
 </div>
 
 <div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> Current status</h2>
+<h2 id="sec-2"><span class="section-number-2">2</span> Example graphs</h2>
 <div class="outline-text-2" id="text-2">
-<p>
-This is simple utility, quickly written. Tested on GNU Linux (can be
-relatively simply ported to other operating systems too). So far I
-used it for my own needs. There might be bugs and missing
-features. Feedback and code contributions are welcome.
-</p>
-</div>
-</div>
-
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> Example graphs</h2>
-<div class="outline-text-2" id="text-3">
-<p>
-Example visualization of <a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a> project: <a href="http://www2.svjatoslav.eu/projects/sixth/codegraphs/">architecture graphs</a>.
-</p>
-
-<p>
-A very simple example:
-</p>
+<ul class="org-ul">
+<li>A very simple example:
 
 
 <div class="figure">
 <p><a href="example.png"><img src="example.resized.png" alt="example.resized.png" /></a>
 </p>
 </div>
-
 
 <p>
 Graph legend:
@@ -242,12 +252,70 @@ Graph legend:
 <p><img src="legend.png" alt="legend.png" />
 </p>
 </div>
+</li>
+
+<li>Example visualization of <a href="http://www2.svjatoslav.eu/gitbrowse/sixth/doc/">Sixth</a> project: <a href="http://www2.svjatoslav.eu/projects/sixth/codegraphs/">architecture graphs</a>.
+</li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Usage example 1</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Usage</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Currently the only way to control JavaInspect is by using Java
+API. Simple Java based control/configuration code needs to be written
+for each project. I usually put such code into directories devoted for
+JUnit tests. Because it needs not to be compiled/embedded into final
+product or project artifact I'm just willing to visualize.
+</p>
+
+<p>
+Control code in general does the following:
+</p>
+<ol class="org-ol">
+<li>Create graph object.
+</li>
+<li>Java reflection/classloaders does not provide mechanism for
+discovering all classes under given package. Therefore you need to
+declare at least some classes to be added to the graph by:
+<ul class="org-ul">
+<li>Manually adding individual classes to the graph.
+</li>
+<li>and/or: Let GraphViz recursively scan and parse specified
+directories with Java source code files to discover class names.
+</li>
+<li>For every class added to the graph, GraphViz will recursively
+inspect it and add all referecned classes to the graph as well.
+</li>
+</ul>
+</li>
+<li>Graphs easilly get very big and complex so optionally we filter
+important code using classname wildcards patterns based blacklist
+and/or whitelist.
+</li>
+<li>Optionally we can tune some rendering parameters like:
+<ul class="org-ul">
+<li>Possibility to remove orphaned classes (classes with no
+references) from the graph.
+</li>
+<li>Specify target directory for generated visualization
+files. (Default is user desktop directory)
+</li>
+<li>Keep intermediate GraphViz dot file for later inspection.
+</li>
+</ul>
+</li>
+<li>Render graph.
+</li>
+</ol>
+</div>
+
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> example 1</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 This example demonstrates generating of class graph from hand picked
 classes.
@@ -288,9 +356,9 @@ Result:
 </div>
 </div>
 
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Usage example 2</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> example 2</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 Recursively scan current directory for Java source code and attempt to
 detect class names from there to be added to the graph.
@@ -321,10 +389,11 @@ Result:
 </ul>
 </div>
 </div>
+</div>
 
-<div id="outline-container-sec-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> Embedding JavaInspect in your Maven project</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Embedding JavaInspect in your Maven project</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 Declare JavaInspect as dependency:
 </p>
@@ -362,9 +431,9 @@ Add Maven repository to retrieve artifact from:
 </div>
 </div>
 
-<div id="outline-container-sec-7" class="outline-2">
-<h2 id="sec-7"><span class="section-number-2">7</span> Requirements</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Requirements</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 <a href="http://www.graphviz.org/">GraphViz</a> - shall be installed on the computer.
 </p>
@@ -377,9 +446,9 @@ sudo apt-get install graphviz
 </pre>
 </div>
 </div>
-<div id="outline-container-sec-8" class="outline-2">
-<h2 id="sec-8"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> </h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> </h2>
+<div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>BUG: Should not hide references if there are too many of them to
 classes if referring classes are not visible anyway because of
@@ -419,7 +488,7 @@ project build/release process
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Svjatoslav Agejenko</p>
-<p class="date">Created: 2015-02-03 Tue 20:39</p>
+<p class="date">Created: 2015-03-03 Tue 22:24</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

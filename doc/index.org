@@ -18,35 +18,72 @@
 Goal: simplify/speed up understanding the computer program code by
 automatically visualizing its structure.
 
-JavaInspect is a Java library that you can embed into your Java
-project with a few lines of Maven configuration and then visualize any
-part of your Java program structure with few simple JavaInspect API
-calls at application runtime.
+JavaInspect is a Java library that primarily uses Java reflection to
+discover and visualize any part of Java program provided that
+classes to be visualised are available in the classpath.
 
-JavaInspect uses Java reflection to discover class relations and
-structure and produces GraphViz dot file that describes your
-application. Then launches GraphViz to generate bitmap graph in PNG
-format on your Desktop directory.
+JavaInspect currently has no GUI, configuration files, embedded
+scripting support, direct Maven or Ant integration. The only way to
+instuct Javainspect what to do is by using its Java API.
 
-* Current status
-This is simple utility, quickly written. Tested on GNU Linux (can be
-relatively simply ported to other operating systems too). So far I
-used it for my own needs. There might be bugs and missing
-features. Feedback and code contributions are welcome.
+To get JavaInspect into same classpath with your projecs I so far came
+up with 2 solutions:
+
+1. Add JavaInspect library in your project as a dependency.
+2. Create new Java project for the purpose visualizing your other
+   projects and include JavaInspect and your projecs binary artifacts
+   (Jar's) into new project classpath. Built binary Jar's (with no
+   source code) are sufficient because JavaInspect operates via
+   reflection.
+
+After discovering application structure and optionally filtering out
+unimportant parts, JavaInspect produces GraphViz dot file that
+describes data to be visualized. Then launches GraphViz to generate
+bitmap graph in PNG format. By default on your Desktop directory.
+
+Note: GraphViz is developed and tested so far only on GNU Linux.
 
 * Example graphs
-Example visualization of [[http://www2.svjatoslav.eu/gitbrowse/sixth/doc/][Sixth]] project: [[http://www2.svjatoslav.eu/projects/sixth/codegraphs/][architecture graphs]].
++ A very simple example:
 
-A very simple example:
+    [[file:example.png][file:example.resized.png]]
 
-[[file:example.png][file:example.resized.png]]
+    Graph legend:
+
+    file:legend.png
+
++ Example visualization of [[http://www2.svjatoslav.eu/gitbrowse/sixth/doc/][Sixth]] project: [[http://www2.svjatoslav.eu/projects/sixth/codegraphs/][architecture graphs]].
+
+* Usage
+Currently the only way to control JavaInspect is by using Java
+API. Simple Java based control/configuration code needs to be written
+for each project. I usually put such code into directories devoted for
+JUnit tests. Because it needs not to be compiled/embedded into final
+product or project artifact I'm just willing to visualize.
+
+Control code in general does the following:
+1. Create graph object.
+2. Java reflection/classloaders does not provide mechanism for
+   discovering all classes under given package. Therefore you need to
+   declare at least some classes to be added to the graph by:
+   + Manually adding individual classes to the graph.
+   + and/or: Let GraphViz recursively scan and parse specified
+     directories with Java source code files to discover class names.
+   + For every class added to the graph, GraphViz will recursively
+     inspect it and add all referecned classes to the graph as well.
+3. Graphs easilly get very big and complex so optionally we filter
+   important code using classname wildcards patterns based blacklist
+   and/or whitelist.
+4. Optionally we can tune some rendering parameters like:
+   + Possibility to remove orphaned classes (classes with no
+     references) from the graph.
+   + Specify target directory for generated visualization
+     files. (Default is user desktop directory)
+   + Keep intermediate GraphViz dot file for later inspection.
+5. Render graph.
 
 
-Graph legend:
-
-file:legend.png
-
-* Usage example 1
+** example 1
 This example demonstrates generating of class graph from hand picked
 classes.
 
@@ -75,7 +112,7 @@ Result:
     - Generated DOT file: [[file:JavaInspect.dot][JavaInspect.dot]]
     - Generated PNG image: [[file:JavaInspect.png][JavaInspect.png]]
 
-* Usage example 2
+** example 2
 Recursively scan current directory for Java source code and attempt to
 detect class names from there to be added to the graph.
 

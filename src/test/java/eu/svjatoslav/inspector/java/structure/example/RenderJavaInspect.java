@@ -37,25 +37,22 @@ public class RenderJavaInspect {
 	private static void handpickClassesExample() {
 		/*
 		 * This example demonstrates generating of class graph from hand picked
-		 * classes.
+		 * classes and visualizing GraphViz itself.
 		 */
 
 		// Create graph
 		final ClassGraph graph = new ClassGraph();
 
-		// While classes and objects can be immediately passed to ClassGraph
-		// constructor as arguments, it is also possible to add then one by one
-		// as in the following example.
-
-		// Add some object to the graph.
+		// Add some random object to the graph. GraphViz will detect Class from
+		// the object.
 		graph.add(graph);
 
-		// Add some class to the graph.
+		// Add some random class to the graph.
 		graph.add(Utils.class);
 
 		// Produce bitmap image titled "JavaInspect.png" to the user Desktop
 		// directory and keep intermediary GraphViz DOT file for reference.
-		graph.generateGraph("JavaInspect", true);
+		graph.setKeepDotFile(true).generateGraph("JavaInspect");
 	}
 
 	public static void main(final String[] args) throws FileNotFoundException {

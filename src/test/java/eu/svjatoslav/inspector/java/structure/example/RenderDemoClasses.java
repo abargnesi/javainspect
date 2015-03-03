@@ -18,7 +18,7 @@ public class RenderDemoClasses {
 	public static void main(final String[] args) {
 
 		new ClassGraph().add(SampleClass.class, SampleClass2.class)
-				.generateGraph("example", false);
+				.generateGraph("example");
 	}
 
 }

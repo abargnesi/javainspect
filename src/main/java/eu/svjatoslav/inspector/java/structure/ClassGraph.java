@@ -33,6 +33,11 @@ public class ClassGraph {
 
 	private final List<String> whitelistClassPatterns = new ArrayList<String>();
 
+	private String targetDirectory = CommonPathResolver.getDesktopDirectory()
+			.getAbsolutePath() + "/";
+
+	private boolean keepDotFile;
+
 	public ClassGraph() {
 	}
 
@@ -79,35 +84,6 @@ public class ClassGraph {
 	}
 
 	/**
-	 * @param resultFileName
-	 *            file name for the generated graph. Existing file with the same
-	 *            name will be overwritten.
-	 */
-	public void generateGraph(final String resultFileName) {
-		generateGraph(resultFileName, false);
-	}
-
-	/**
-	 * @param resultFileName
-	 *            file name for the generated graph. File extension will be
-	 *            added automatically. Existing file with the same name will be
-	 *            overwritten.
-	 *
-	 * @param keepDotFile
-	 *            if set to <code>true</code> then intermediary GraphViz DOT
-	 *            file will be kept.
-	 */
-
-	public void generateGraph(final String resultFileName,
-			final boolean keepDotFile) {
-
-		final String desktopPath = CommonPathResolver.getDesktopDirectory()
-				.getAbsolutePath() + "/";
-
-		generateGraph(desktopPath, resultFileName, keepDotFile);
-	}
-
-	/**
 	 * @param targetDirectory
 	 *            target directory name
 	 *
@@ -121,11 +97,7 @@ public class ClassGraph {
 	 *            file will be kept.
 	 */
 
-	public void generateGraph(String targetDirectory,
-			final String resultFileName, final boolean keepDotFile) {
-
-		if (!targetDirectory.endsWith("/"))
-			targetDirectory += "/";
+	public void generateGraph(final String resultFileName) {
 
 		final String dotFilePath = targetDirectory + resultFileName + ".dot";
 		final String imageFilePath = targetDirectory + resultFileName + ".png";
@@ -149,8 +121,7 @@ public class ClassGraph {
 
 			if (!keepDotFile) {
 				// delete dot file
-				final File dotFile = new File(dotFilePath);
-				dotFile.delete();
+				new File(dotFilePath).delete();
 			}
 		} catch (final IOException e) {
 			System.err.println(e);
@@ -210,7 +181,7 @@ public class ClassGraph {
 
 	}
 
-	public boolean isClassShown(final String className) {
+	protected boolean isClassShown(final String className) {
 		for (final String pattern : blacklistClassPatterns)
 			if (WildCardMatcher.match(className, pattern))
 				return false;
@@ -225,8 +196,25 @@ public class ClassGraph {
 		return true;
 	}
 
-	public void whitelistClassPattern(final String pattern) {
+	public ClassGraph setKeepDotFile(final boolean keepDotFile) {
+		this.keepDotFile = keepDotFile;
+
+		return this;
+	}
+
+	public ClassGraph setTargetDirectory(String directoryPath) {
+		if (!directoryPath.endsWith("/"))
+			directoryPath += "/";
+
+		targetDirectory = directoryPath;
+
+		return this;
+	}
+
+	public ClassGraph whitelistClassPattern(final String pattern) {
 		whitelistClassPatterns.add(pattern);
+
+		return this;
 	}
 
 }
