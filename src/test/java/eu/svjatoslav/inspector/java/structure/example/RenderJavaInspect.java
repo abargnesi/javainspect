@@ -47,12 +47,15 @@ public class RenderJavaInspect {
 		// the object.
 		graph.add(graph);
 
-		// Add some random class to the graph.
+		// Also add some random class to the graph.
 		graph.add(Utils.class);
 
+		// Keep intermediary GraphViz DOT file for reference.
+		graph.setKeepDotFile(true);
+
 		// Produce bitmap image titled "JavaInspect.png" to the user Desktop
-		// directory and keep intermediary GraphViz DOT file for reference.
-		graph.setKeepDotFile(true).generateGraph("JavaInspect");
+		// directory
+		graph.generateGraph("JavaInspect");
 	}
 
 	public static void main(final String[] args) throws FileNotFoundException {

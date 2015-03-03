@@ -85,25 +85,32 @@ Control code in general does the following:
 
 ** example 1
 This example demonstrates generating of class graph from hand picked
-classes.
+classes and visualizing GraphViz itself.
 
 #+BEGIN_SRC java
-  // Create graph
-  final ClassGraph graph = new ClassGraph();
 
-  // While classes and objects can be immediately passed to ClassGraph
-  // constructor as arguments, it is also possible to add them one by
-  // one as in the following example.
+// Create graph
+final ClassGraph graph = new ClassGraph();
 
-  // Add some object to the graph.
-  graph.addObject(graph);
+// Add some random object to the graph. GraphViz will detect Class from
+// the object.
+graph.add(graph);
 
-  // Add some class to the graph.
-  graph.addClass(Utils.class);
+// Also add some random class to the graph.
+graph.add(Utils.class);
 
-  // Produce bitmap image titled "JavaInspect.png" to the user Desktop
-  // directory and keep intermediary GraphViz DOT file for reference.
-  graph.generateGraph("JavaInspect", true);
+// Keep intermediary GraphViz DOT file for reference.
+graph.setKeepDotFile(true);
+
+// Produce bitmap image titled "JavaInspect.png" to the user Desktop
+// directory
+graph.generateGraph("JavaInspect");
+
+#+END_SRC
+
+Note: if needed, this code can be very compactly written too:
+#+BEGIN_SRC java
+
 #+END_SRC
 
 
