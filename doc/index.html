@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>JavaInspect - Utility to visualize java software</title>
-<!-- 2015-03-03 Tue 22:24 -->
+<!-- 2015-03-03 Tue 22:38 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Svjatoslav Agejenko" />
@@ -147,8 +147,8 @@ for the JavaScript code in this tag.
 <li><a href="#sec-2">2. Example graphs</a></li>
 <li><a href="#sec-3">3. Usage</a>
 <ul>
-<li><a href="#sec-3-1">3.1. example 1</a></li>
-<li><a href="#sec-3-2">3.2. example 2</a></li>
+<li><a href="#sec-3-1">3.1. example 1: individually picked objects</a></li>
+<li><a href="#sec-3-2">3.2. example 2: scan java code, apply filters</a></li>
 </ul>
 </li>
 <li><a href="#sec-4">4. Embedding JavaInspect in your Maven project</a></li>
@@ -314,11 +314,11 @@ files. (Default is user desktop directory)
 
 
 <div id="outline-container-sec-3-1" class="outline-3">
-<h3 id="sec-3-1"><span class="section-number-3">3.1</span> example 1</h3>
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> example 1: individually picked objects</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 This example demonstrates generating of class graph from hand picked
-classes.
+classes and visualizing GraphViz itself.
 </p>
 
 <div class="org-src-container">
@@ -326,22 +326,31 @@ classes.
 <pre class="src src-java"><span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Create graph</span>
 <span style="color: #F92672;">final</span> <span style="color: #66D9EF;">ClassGraph</span> <span style="color: #FD971F;">graph</span> = <span style="color: #F92672;">new</span> <span style="color: #66D9EF;">ClassGraph</span>();
 
-<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">While classes and objects can be immediately passed to ClassGraph</span>
-<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">constructor as arguments, it is also possible to add them one by</span>
-<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">one as in the following example.</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Add some random object to the graph. GraphViz will detect Class from</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">the object.</span>
+graph.add(graph);
 
-<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Add some object to the graph.</span>
-graph.addObject(graph);
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Also add some random class to the graph.</span>
+graph.add(Utils.<span style="color: #F92672;">class</span>);
 
-<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Add some class to the graph.</span>
-graph.addClass(Utils.<span style="color: #F92672;">class</span>);
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Keep intermediary GraphViz DOT file for reference.</span>
+graph.setKeepDotFile(<span style="color: #FF80F4;">true</span>);
 
 <span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Produce bitmap image titled "JavaInspect.png" to the user Desktop</span>
-<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">directory and keep intermediary GraphViz DOT file for reference.</span>
-graph.generateGraph(<span style="color: #EEDC82;">"JavaInspect"</span>, <span style="color: #FF80F4;">true</span>);
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">directory</span>
+graph.generateGraph(<span style="color: #EEDC82;">"JavaInspect"</span>);
 </pre>
 </div>
 
+<p>
+Note: if desired, more compact version of the above:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #F92672;">new</span> <span style="color: #66D9EF;">ClassGraph</span>().add(randomObject, RandomClass.<span style="color: #F92672;">class</span>)
+                .setKeepDotFile(<span style="color: #FF80F4;">true</span>).generateGraph(<span style="color: #EEDC82;">"JavaInspect"</span>);
+</pre>
+</div>
 
 
 <p>
@@ -357,20 +366,19 @@ Result:
 </div>
 
 <div id="outline-container-sec-3-2" class="outline-3">
-<h3 id="sec-3-2"><span class="section-number-3">3.2</span> example 2</h3>
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> example 2: scan java code, apply filters</h3>
 <div class="outline-text-3" id="text-3-2">
-<p>
-Recursively scan current directory for Java source code and attempt to
-detect class names from there to be added to the graph.
-</p>
-
 <div class="org-src-container">
 
-<pre class="src src-java">graph.addProject(<span style="color: #EEDC82;">"."</span>);
+<pre class="src src-java"><span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Create graph</span>
+<span style="color: #F92672;">final</span> <span style="color: #66D9EF;">ClassGraph</span> <span style="color: #FD971F;">graph</span> = <span style="color: #F92672;">new</span> <span style="color: #66D9EF;">ClassGraph</span>();
+
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Recursively scan current directory for Java source code and attempt</span>
+<span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">to detect class names from there to be added to the graph.</span>
+graph.addProject(<span style="color: #EEDC82;">"."</span>);
 
 <span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">Blacklist example classes from being shown on the graph</span>
-graph.getFilter().blacklistClassPattern(
-    <span style="color: #EEDC82;">"eu.svjatoslav.inspector.java.structure.example.*"</span>);
+graph.blacklistClassPattern(<span style="color: #EEDC82;">"eu.svjatoslav.inspector.java.structure.example.*"</span>);
 
 <span style="color: #8C8C8C;">// </span><span style="color: #8C8C8C;">do not show single classes with no relationships on the graph</span>
 graph.hideOrphanedClasses();
@@ -404,7 +412,7 @@ Declare JavaInspect as dependency:
     &lt;<span style="color: #A6E22E;">dependency</span>&gt;
         &lt;<span style="color: #A6E22E;">groupId</span>&gt;eu.svjatoslav&lt;/<span style="color: #A6E22E;">groupId</span>&gt;
         &lt;<span style="color: #A6E22E;">artifactId</span>&gt;javainspect&lt;/<span style="color: #A6E22E;">artifactId</span>&gt;
-        &lt;<span style="color: #A6E22E;">version</span>&gt;1.3&lt;/<span style="color: #A6E22E;">version</span>&gt;
+        &lt;<span style="color: #A6E22E;">version</span>&gt;1.5-SNAPSHOT&lt;/<span style="color: #A6E22E;">version</span>&gt;
     &lt;/<span style="color: #A6E22E;">dependency</span>&gt;
     ...
 &lt;/<span style="color: #A6E22E;">dependencies</span>&gt;
@@ -441,9 +449,11 @@ Add Maven repository to retrieve artifact from:
 <p>
 On Ubuntu/Debian use:
 </p>
-<pre class="example">
-sudo apt-get install graphviz
+<div class="org-src-container">
+
+<pre class="src src-sh">sudo apt-get install graphviz
 </pre>
+</div>
 </div>
 </div>
 <div id="outline-container-sec-6" class="outline-2">
@@ -454,10 +464,6 @@ sudo apt-get install graphviz
 classes if referring classes are not visible anyway because of
 blacklist/whitelist rules. Basically reference counting should
 exclude not visible classes.
-</li>
-<li>BUG: Current code is quite messy (because of lack of time) things
-were implemented ad-hoc. Needs cleanup/refactoring for better
-readability.
 </li>
 <li>FEATURE: add dark theme
 </li>
@@ -488,7 +494,7 @@ project build/release process
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Svjatoslav Agejenko</p>
-<p class="date">Created: 2015-03-03 Tue 22:24</p>
+<p class="date">Created: 2015-03-03 Tue 22:38</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.4.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

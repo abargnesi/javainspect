@@ -83,7 +83,7 @@ Control code in general does the following:
 5. Render graph.
 
 
-** example 1
+** example 1: individually picked objects
 This example demonstrates generating of class graph from hand picked
 classes and visualizing GraphViz itself.
 
@@ -108,34 +108,35 @@ graph.generateGraph("JavaInspect");
 
 #+END_SRC
 
-Note: if needed, this code can be very compactly written too:
+Note: if desired, more compact version of the above:
 #+BEGIN_SRC java
-
+new ClassGraph().add(randomObject, RandomClass.class)
+                .setKeepDotFile(true).generateGraph("JavaInspect");
 #+END_SRC
-
 
 
 Result:
     - Generated DOT file: [[file:JavaInspect.dot][JavaInspect.dot]]
     - Generated PNG image: [[file:JavaInspect.png][JavaInspect.png]]
 
-** example 2
-Recursively scan current directory for Java source code and attempt to
-detect class names from there to be added to the graph.
-
+** example 2: scan java code, apply filters
 #+BEGIN_SRC java
-  graph.addProject(".");
+// Create graph
+final ClassGraph graph = new ClassGraph();
 
-  // Blacklist example classes from being shown on the graph
-  graph.getFilter().blacklistClassPattern(
-      "eu.svjatoslav.inspector.java.structure.example.*");
+// Recursively scan current directory for Java source code and attempt
+// to detect class names from there to be added to the graph.
+graph.addProject(".");
 
-  // do not show single classes with no relationships on the graph
-  graph.hideOrphanedClasses();
+// Blacklist example classes from being shown on the graph
+graph.blacklistClassPattern("eu.svjatoslav.inspector.java.structure.example.*");
 
-  // Produce bitmap image titled "JavaInspect full project.png" to the
-  // user Desktop directory.
-  graph.generateGraph("JavaInspect full project");
+// do not show single classes with no relationships on the graph
+graph.hideOrphanedClasses();
+
+// Produce bitmap image titled "JavaInspect full project.png" to the
+// user Desktop directory.
+graph.generateGraph("JavaInspect full project");
 #+END_SRC
 Result:
     - Generated PNG image: [[file:JavaInspect%20full%20project.png][JavaInspect full project.png]]
@@ -149,7 +150,7 @@ Declare JavaInspect as dependency:
         <dependency>
             <groupId>eu.svjatoslav</groupId>
             <artifactId>javainspect</artifactId>
-            <version>1.3</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
         ...
     </dependencies>
@@ -170,19 +171,17 @@ Add Maven repository to retrieve artifact from:
 #+END_SRC
 
 * Requirements
-
 [[http://www.graphviz.org/][GraphViz]] - shall be installed on the computer.
 
 On Ubuntu/Debian use:
-: sudo apt-get install graphviz
+#+BEGIN_SRC sh
+sudo apt-get install graphviz
+#+END_SRC
 * TODO
 - BUG: Should not hide references if there are too many of them to
   classes if referring classes are not visible anyway because of
   blacklist/whitelist rules. Basically reference counting should
   exclude not visible classes.
-- BUG: Current code is quite messy (because of lack of time) things
-  were implemented ad-hoc. Needs cleanup/refactoring for better
-  readability.
 - FEATURE: add dark theme
 - FEATURE: sort Class fields by alphabet
 - FEATURE: visualize also concrete field values so it could be used as

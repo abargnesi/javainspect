@@ -17,6 +17,7 @@ import eu.svjatoslav.inspector.java.structure.Utils;
 public class RenderJavaInspect {
 
 	private static void fullProjectExample() {
+		// Create graph
 		final ClassGraph graph = new ClassGraph();
 
 		// Recursively scan current directory for Java source code and attempt
