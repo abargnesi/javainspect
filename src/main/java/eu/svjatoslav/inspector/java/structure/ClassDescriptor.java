@@ -153,9 +153,9 @@ public class ClassDescriptor implements GraphElement {
 				continue;
 
 			result.append("    " + interfaceDescriptor.getGraphId() + " -> "
-					+ getGraphId() + "[style=\"dotted, tapered\", color=\""
+					+ getGraphId() + "[style=\"dotted\", color=\""
 					+ interfaceDescriptor.getInterfaceColor()
-					+ "\", penwidth=20, dir=\"forward\"];\n");
+					+ "\", penwidth=10, dir=\"forward\"];\n");
 		}
 	}
 
@@ -196,8 +196,7 @@ public class ClassDescriptor implements GraphElement {
 				+ "\n");
 
 		result.append("    " + superClass.getGraphId() + " -> " + getGraphId()
-				+ "[style=\"tapered\", color=\""
-				+ superClass.getSuperClassColor()
+				+ "[ color=\"" + superClass.getSuperClassColor()
 				+ "\", penwidth=10, dir=\"forward\"];\n");
 	}
 
@@ -348,7 +347,7 @@ public class ClassDescriptor implements GraphElement {
 
 	public String getInterfaceColor() {
 		if (interfaceColor == null)
-			interfaceColor = Utils.getNextLightColor();
+			interfaceColor = Utils.getNextDarkColor();
 
 		return interfaceColor;
 	}
