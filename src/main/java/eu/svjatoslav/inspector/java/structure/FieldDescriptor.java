@@ -15,18 +15,17 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class corresponds to single field within a java class.
+ */
+
 public class FieldDescriptor implements GraphElement {
 
-	/**
-	 * This class corresponds to single field within a java class.
-	 */
-
-	public String name;
+	private String name;
 	private ClassDescriptor type;
 	private final ClassDescriptor parentClass;
-	List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
-
-	public boolean isInherited;
+	private final List<ClassDescriptor> typeArguments = new ArrayList<ClassDescriptor>();
+	private boolean isInherited;
 
 	public FieldDescriptor(final ClassDescriptor parent) {
 		parentClass = parent;
@@ -37,9 +36,6 @@ public class FieldDescriptor implements GraphElement {
 		if (!field.getDeclaringClass().getName()
 				.equals(parentClass.getFullyQualifiedName()))
 			isInherited = true;
-
-		// if (field.getType().isArray())
-		// System.out.println("field name: " + field.getName());
 
 		name = field.getName();
 		type = parentClass.getClassGraph().getOrCreateClassDescriptor(
@@ -127,7 +123,7 @@ public class FieldDescriptor implements GraphElement {
 		return parentClass.getGraphId() + ":" + name;
 	}
 
-	public int getOutsideVisibleReferencesCount() {
+	protected int getOutsideVisibleReferencesCount() {
 
 		if (!isVisible())
 			return 0;
@@ -139,7 +135,7 @@ public class FieldDescriptor implements GraphElement {
 		return 0;
 	}
 
-	public ClassDescriptor getType() {
+	protected ClassDescriptor getType() {
 		return type;
 	}
 
