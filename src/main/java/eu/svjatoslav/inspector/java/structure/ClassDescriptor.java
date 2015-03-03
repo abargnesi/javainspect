@@ -25,7 +25,7 @@ public class ClassDescriptor implements GraphElement {
 
 	private static final int MAX_REFERECNES_COUNT = 10;
 
-	public String classFullyQualifiedName;
+	private String fullyQualifiedName;
 
 	private final Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
 
@@ -71,9 +71,9 @@ public class ClassDescriptor implements GraphElement {
 		this.classGraph = classGraph;
 	}
 
-	public void analyzeClass(final Class<? extends Object> clazz) {
+	protected void analyzeClass(final Class<? extends Object> clazz) {
 
-		classFullyQualifiedName = clazz.getName();
+		fullyQualifiedName = clazz.getName();
 
 		isArray = clazz.isArray();
 
@@ -111,11 +111,11 @@ public class ClassDescriptor implements GraphElement {
 
 	};
 
-	public boolean areReferencesShown() {
+	protected boolean areReferencesShown() {
 		return referencesCount <= MAX_REFERECNES_COUNT;
 	}
 
-	public void enlistFieldReferences(final StringBuffer result) {
+	private void enlistFieldReferences(final StringBuffer result) {
 		if (nameToFieldMap.isEmpty())
 			return;
 
@@ -126,7 +126,7 @@ public class ClassDescriptor implements GraphElement {
 			result.append(entry.getValue().getDot());
 	}
 
-	public void enlistFields(final StringBuffer result) {
+	private void enlistFields(final StringBuffer result) {
 		if (nameToFieldMap.isEmpty())
 			return;
 
@@ -139,13 +139,13 @@ public class ClassDescriptor implements GraphElement {
 			result.append(entry.getValue().getEmbeddedDot());
 	}
 
-	public void enlistImplementedInterfaces(final StringBuffer result) {
+	private void enlistImplementedInterfaces(final StringBuffer result) {
 		if (interfaces.isEmpty())
 			return;
 
 		result.append("\n");
 		result.append("    // interfaces implemented by class: "
-				+ classFullyQualifiedName + "\n");
+				+ fullyQualifiedName + "\n");
 
 		for (final ClassDescriptor interfaceDescriptor : interfaces) {
 			if (!interfaceDescriptor.isVisible())
@@ -161,7 +161,7 @@ public class ClassDescriptor implements GraphElement {
 		}
 	}
 
-	public void enlistMethodReferences(final StringBuffer result) {
+	private void enlistMethodReferences(final StringBuffer result) {
 		if (methods.isEmpty())
 			return;
 
@@ -171,7 +171,7 @@ public class ClassDescriptor implements GraphElement {
 			result.append(methodDescriptor.getDot());
 	}
 
-	public void enlistMethods(final StringBuffer result) {
+	private void enlistMethods(final StringBuffer result) {
 		if (methods.isEmpty())
 			return;
 
@@ -183,7 +183,7 @@ public class ClassDescriptor implements GraphElement {
 			result.append(methodDescriptor.getEmbeddedDot());
 	}
 
-	public void enlistSuperClass(final StringBuffer result) {
+	private void enlistSuperClass(final StringBuffer result) {
 		if (superClass == null)
 			return;
 
@@ -194,17 +194,16 @@ public class ClassDescriptor implements GraphElement {
 			return;
 
 		result.append("\n");
-		result.append("    // super class for: " + classFullyQualifiedName
-				+ "\n");
+		result.append("    // super class for: " + fullyQualifiedName + "\n");
 
 		result.append("    " + superClass.getGraphId() + " -> " + getGraphId()
 				+ "[ color=\"" + superClass.getSuperClassColor()
 				+ "\", penwidth=10, dir=\"forward\"];\n");
 	}
 
-	public void generateDotHeader(final StringBuffer result) {
+	private void generateDotHeader(final StringBuffer result) {
 		result.append("\n");
-		result.append("// Class: " + classFullyQualifiedName + "\n");
+		result.append("// Class: " + fullyQualifiedName + "\n");
 
 		result.append("    " + getGraphId() + "[label=<<TABLE "
 				+ getBackgroundColor() + " BORDER=\"" + getBorderWidth()
@@ -225,17 +224,7 @@ public class ClassDescriptor implements GraphElement {
 				+ "</B></FONT>" + "</TD></TR>\n");
 	}
 
-	public List<FieldDescriptor> getAllFields() {
-		final List<FieldDescriptor> result = new ArrayList<FieldDescriptor>();
-
-		for (final Map.Entry<String, FieldDescriptor> entry : nameToFieldMap
-				.entrySet())
-			result.add(entry.getValue());
-
-		return result;
-	}
-
-	public String getBackgroundColor() {
+	private String getBackgroundColor() {
 		String bgColor = "";
 
 		if (isEnum)
@@ -247,26 +236,25 @@ public class ClassDescriptor implements GraphElement {
 		return bgColor;
 	}
 
-	public String getBorderWidth() {
+	private String getBorderWidth() {
 
 		if (!areReferencesShown())
 			return "4";
 		return "1";
 	}
 
-	public ClassGraph getClassGraph() {
+	protected ClassGraph getClassGraph() {
 		return classGraph;
 	}
 
-	public String getClassName(final boolean differentiateArray) {
+	protected String getClassName(final boolean differentiateArray) {
 		// this is needed for nested classes
-		final String actualClassName = classFullyQualifiedName
-				.replace('$', '.');
+		final String actualClassName = fullyQualifiedName.replace('$', '.');
 
 		String result;
 		if (isArray) {
 			// for arrays use array component instead of array class name
-			result = arrayComponent.classFullyQualifiedName;
+			result = arrayComponent.fullyQualifiedName;
 			if (result.contains(".")) {
 				final int i = result.lastIndexOf('.');
 				result = result.substring(i + 1);
@@ -285,14 +273,10 @@ public class ClassDescriptor implements GraphElement {
 		return result;
 	}
 
-	public String getColor() {
-		if (getDistinctiveColor() == null)
-			setDistinctiveColor(Utils.getNextDarkColor());
+	protected String getColor() {
+		if (distinctiveReferenceColor == null)
+			distinctiveReferenceColor = Utils.getNextDarkColor();
 
-		return getDistinctiveColor();
-	}
-
-	public String getDistinctiveColor() {
 		return distinctiveReferenceColor;
 	}
 
@@ -334,7 +318,7 @@ public class ClassDescriptor implements GraphElement {
 	 * Returns field with given name (case is ignored). Or <code>null</code> if
 	 * field is not found.
 	 */
-	public FieldDescriptor getFieldIgnoreCase(final String fieldToSearch) {
+	protected FieldDescriptor getFieldIgnoreCase(final String fieldToSearch) {
 
 		for (final String fieldName : nameToFieldMap.keySet())
 			if (fieldToSearch.equalsIgnoreCase(fieldName))
@@ -343,34 +327,24 @@ public class ClassDescriptor implements GraphElement {
 		return null;
 	}
 
+	protected String getFullyQualifiedName() {
+		return fullyQualifiedName;
+	}
+
 	@Override
 	public String getGraphId() {
 		final String result = "class_"
-				+ classFullyQualifiedName.replace('.', '_').replace(";", "")
-						.replace("[L", "").replace('$', '_');
+				+ fullyQualifiedName.replace('.', '_').replace(";", "")
+				.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
-	public String getInterfaceColor() {
+	private String getInterfaceColor() {
 		if (interfaceColor == null)
 			interfaceColor = Utils.getNextDarkColor();
 
 		return interfaceColor;
 	}
-
-	// public String getReadableName() {
-	//
-	// // do not print full class name for well known system classes
-	// final String packageName = getPackageName();
-	//
-	// if (packageName.equals("java.util"))
-	// return getClassName();
-	//
-	// if (packageName.equals("java.lang"))
-	// return getClassName();
-	//
-	// return fullyQualifiedName;
-	// }
 
 	private FieldDescriptor getOrCreateFieldDescriptor(final Field field) {
 
@@ -411,19 +385,19 @@ public class ClassDescriptor implements GraphElement {
 		return result;
 	}
 
-	public String getPackageName() {
+	private String getPackageName() {
 
-		final int i = classFullyQualifiedName.lastIndexOf('.');
+		final int i = fullyQualifiedName.lastIndexOf('.');
 
 		if (i == -1)
 			return "";
 
-		return classFullyQualifiedName.substring(0, i).replace("[L", "");
+		return fullyQualifiedName.substring(0, i).replace("[L", "");
 	}
 
-	public String getParentClassesName() {
-		int i = classFullyQualifiedName.lastIndexOf('.');
-		final String fullClassName = classFullyQualifiedName.substring(i + 1);
+	private String getParentClassesName() {
+		int i = fullyQualifiedName.lastIndexOf('.');
+		final String fullClassName = fullyQualifiedName.substring(i + 1);
 
 		i = fullClassName.lastIndexOf('$');
 		if (i == -1)
@@ -432,7 +406,7 @@ public class ClassDescriptor implements GraphElement {
 		return parentClassesName.replace('$', '.');
 	}
 
-	public String getSuperClassColor() {
+	private String getSuperClassColor() {
 		if (superClassColor == null)
 			superClassColor = Utils.getNextLightColor();
 
@@ -443,7 +417,7 @@ public class ClassDescriptor implements GraphElement {
 	 * Checks if class has field with given name (case is ignored). Returns
 	 * <code>true</code> if such field is found.
 	 */
-	public boolean hasFieldIgnoreCase(final String fieldToSearch) {
+	protected boolean hasFieldIgnoreCase(final String fieldToSearch) {
 
 		for (final String fieldName : nameToFieldMap.keySet())
 			if (fieldToSearch.equalsIgnoreCase(fieldName))
@@ -452,11 +426,11 @@ public class ClassDescriptor implements GraphElement {
 		return false;
 	}
 
-	public void hide() {
+	private void hide() {
 		isShown = false;
 	}
 
-	public void hideClassIfNoReferences() {
+	protected void hideClassIfNoReferences() {
 		if (!isVisible())
 			return;
 
@@ -471,7 +445,7 @@ public class ClassDescriptor implements GraphElement {
 		return;
 	}
 
-	public void indexFields(final Field[] fields) {
+	private void indexFields(final Field[] fields) {
 		for (final Field field : fields)
 			getOrCreateFieldDescriptor(field);
 	}
@@ -491,19 +465,18 @@ public class ClassDescriptor implements GraphElement {
 	@Override
 	public boolean isVisible() {
 
-		if (Utils.isSystemDataType(classFullyQualifiedName))
+		if (Utils.isSystemDataType(fullyQualifiedName))
 			return false;
 
-		if (Utils.isSystemPackage(classFullyQualifiedName))
+		if (Utils.isSystemPackage(fullyQualifiedName))
 			return false;
 
-		if (!getClassGraph().getFilter().isClassShown(classFullyQualifiedName))
+		if (!getClassGraph().getFilter().isClassShown(fullyQualifiedName))
 			return false;
 
 		if (isArray)
 			if (arrayComponent != null)
-				if (Utils
-						.isSystemDataType(arrayComponent.classFullyQualifiedName))
+				if (Utils.isSystemDataType(arrayComponent.fullyQualifiedName))
 					// Do not show references to primitive data types in arrays.
 					// That is: there is no point to show reference to byte when
 					// we have class with byte array field.
@@ -515,19 +488,16 @@ public class ClassDescriptor implements GraphElement {
 	/**
 	 * Register event when another class is extending this one.
 	 */
-	public void registerExtension() {
+	protected void registerExtension() {
 		extensionsCount++;
 	}
 
-	public void registerImplementation() {
+	protected void registerImplementation() {
 		implementationsCount++;
 	}
 
-	public void registerReference() {
+	protected void registerReference() {
 		referencesCount++;
 	}
 
-	public void setDistinctiveColor(final String distinctiveColor) {
-		distinctiveReferenceColor = distinctiveColor;
-	}
 }

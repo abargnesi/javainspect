@@ -39,7 +39,7 @@ public class MethodDescriptor implements GraphElement,
 	public void analyze(final Method method) {
 
 		if (!method.getDeclaringClass().getName()
-				.equals(parentClass.classFullyQualifiedName))
+				.equals(parentClass.getFullyQualifiedName()))
 			isInherited = true;
 
 		returnType = parentClass.getClassGraph().getOrCreateClassDescriptor(
@@ -167,7 +167,7 @@ public class MethodDescriptor implements GraphElement,
 			final FieldDescriptor field = parentClass
 					.getFieldIgnoreCase(methodName.substring(2));
 			if (field != null)
-				if ("boolean".equals(field.getType().classFullyQualifiedName))
+				if ("boolean".equals(field.getType().getFullyQualifiedName()))
 					return false;
 		}
 

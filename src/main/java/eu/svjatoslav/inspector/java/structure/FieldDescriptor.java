@@ -35,7 +35,7 @@ public class FieldDescriptor implements GraphElement {
 	public void analyzeField(final Field field) {
 
 		if (!field.getDeclaringClass().getName()
-				.equals(parentClass.classFullyQualifiedName))
+				.equals(parentClass.getFullyQualifiedName()))
 			isInherited = true;
 
 		// if (field.getType().isArray())
