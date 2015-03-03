@@ -24,8 +24,7 @@ public class RenderJavaInspect {
 		graph.addProject(".");
 
 		// Blacklist example classes from being shown on the graph
-		graph.getFilter().blacklistClassPattern(
-				"eu.svjatoslav.inspector.java.structure.example.*");
+		graph.blacklistClassPattern("eu.svjatoslav.inspector.java.structure.example.*");
 
 		// do not show single classes with no relationships on the graph
 		graph.hideOrphanedClasses();

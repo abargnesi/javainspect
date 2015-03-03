@@ -12,10 +12,13 @@ package eu.svjatoslav.inspector.java.structure;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.svjatoslav.commons.file.CommonPathResolver;
+import eu.svjatoslav.commons.string.WildCardMatcher;
 import eu.svjatoslav.inspector.java.methods.Clazz;
 import eu.svjatoslav.inspector.java.methods.ProjectScanner;
 
@@ -26,7 +29,9 @@ public class ClassGraph {
 	 */
 	private final Map<String, ClassDescriptor> fullyQualifiedNameToClassMap = new HashMap<String, ClassDescriptor>();
 
-	private final Filter filter = new Filter();
+	private final List<String> blacklistClassPatterns = new ArrayList<String>();
+
+	private final List<String> whitelistClassPatterns = new ArrayList<String>();
 
 	public ClassGraph() {
 	}
@@ -67,6 +72,10 @@ public class ClassGraph {
 				System.out.println("cannot add class: "
 						+ exception.getMessage());
 			}
+	}
+
+	public void blacklistClassPattern(final String pattern) {
+		blacklistClassPatterns.add(pattern);
 	}
 
 	/**
@@ -132,8 +141,8 @@ public class ClassGraph {
 			// execute GraphViz to visualize graph
 			try {
 				Runtime.getRuntime()
-						.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
-								imageFilePath }).waitFor();
+				.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
+						imageFilePath }).waitFor();
 			} catch (final InterruptedException e) {
 			} finally {
 			}
@@ -163,10 +172,6 @@ public class ClassGraph {
 
 		final String resultStr = result.toString();
 		return resultStr;
-	}
-
-	public Filter getFilter() {
-		return filter;
 	}
 
 	/**
@@ -203,6 +208,25 @@ public class ClassGraph {
 				.values())
 			classDescriptor.hideClassIfNoReferences();
 
+	}
+
+	public boolean isClassShown(final String className) {
+		for (final String pattern : blacklistClassPatterns)
+			if (WildCardMatcher.match(className, pattern))
+				return false;
+
+		if (!whitelistClassPatterns.isEmpty()) {
+			for (final String pattern : whitelistClassPatterns)
+				if (WildCardMatcher.match(className, pattern))
+					return true;
+			return false;
+		}
+
+		return true;
+	}
+
+	public void whitelistClassPattern(final String pattern) {
+		whitelistClassPatterns.add(pattern);
 	}
 
 }

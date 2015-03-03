@@ -335,7 +335,7 @@ public class ClassDescriptor implements GraphElement {
 	public String getGraphId() {
 		final String result = "class_"
 				+ fullyQualifiedName.replace('.', '_').replace(";", "")
-				.replace("[L", "").replace('$', '_');
+						.replace("[L", "").replace('$', '_');
 		return result;
 	}
 
@@ -471,7 +471,7 @@ public class ClassDescriptor implements GraphElement {
 		if (Utils.isSystemPackage(fullyQualifiedName))
 			return false;
 
-		if (!getClassGraph().getFilter().isClassShown(fullyQualifiedName))
+		if (!getClassGraph().isClassShown(fullyQualifiedName))
 			return false;
 
 		if (isArray)
