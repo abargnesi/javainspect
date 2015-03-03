@@ -15,20 +15,17 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class corresponds to single method within a java class.
+ */
 public class MethodDescriptor implements GraphElement,
 		Comparable<MethodDescriptor> {
 
-	/**
-	 * This class corresponds to single method within a java class.
-	 */
-
-	public String methodName;
-	public ClassDescriptor returnType;
+	private final String methodName;
+	private ClassDescriptor returnType;
 	private final ClassDescriptor parentClass;
-
-	List<ClassDescriptor> argumentTypes = new ArrayList<ClassDescriptor>();
-
-	boolean isInherited;
+	private final List<ClassDescriptor> argumentTypes = new ArrayList<ClassDescriptor>();
+	private boolean isInherited;
 
 	public MethodDescriptor(final ClassDescriptor parent,
 			final String methodName) {
@@ -125,11 +122,11 @@ public class MethodDescriptor implements GraphElement,
 		return parentClass.getGraphId() + ":" + methodName;
 	}
 
-	public String getMethodLabel() {
+	private String getMethodLabel() {
 		return methodName;
 	}
 
-	public int getOutsideVisibleReferencesCount() {
+	protected int getOutsideVisibleReferencesCount() {
 		int result = 0;
 
 		if (returnType.isVisible())
