@@ -119,10 +119,9 @@ public class ClassGraph {
 			} finally {
 			}
 
-			if (!keepDotFile) {
+			if (!keepDotFile)
 				// delete dot file
 				new File(dotFilePath).delete();
-			}
 		} catch (final IOException e) {
 			System.err.println(e);
 		}
@@ -173,12 +172,13 @@ public class ClassGraph {
 	/**
 	 * Hide orphaned class that have no references
 	 */
-	public void hideOrphanedClasses() {
+	public ClassGraph hideOrphanedClasses() {
 
 		for (final ClassDescriptor classDescriptor : fullyQualifiedNameToClassMap
 				.values())
 			classDescriptor.hideClassIfNoReferences();
 
+		return this;
 	}
 
 	protected boolean isClassShown(final String className) {
