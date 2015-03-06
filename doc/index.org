@@ -141,33 +141,37 @@ graph.generateGraph("JavaInspect full project");
 Result:
     - Generated PNG image: [[file:JavaInspect%20full%20project.png][JavaInspect full project.png]]
 
+** example 3: GraphViz embedded in another project
+1. Download project Sixth [[http://www2.svjatoslav.eu/gitweb/?p=sixth.git;a=snapshot;h=HEAD;sf=tgz][code snapshot]].
+2. Inspect and run *DataGraph.java*.
+
 * Embedding JavaInspect in your Maven project
 
 Declare JavaInspect as dependency:
 #+BEGIN_SRC xml
-    <dependencies>
-        ...
-        <dependency>
-            <groupId>eu.svjatoslav</groupId>
-            <artifactId>javainspect</artifactId>
-            <version>1.5-SNAPSHOT</version>
-        </dependency>
-        ...
-    </dependencies>
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.svjatoslav</groupId>
+        <artifactId>javainspect</artifactId>
+        <version>1.5-SNAPSHOT</version>
+    </dependency>
+    ...
+</dependencies>
 #+END_SRC
 
 
 Add Maven repository to retrieve artifact from:
 #+BEGIN_SRC xml
-    <repositories>
-        ...
-        <repository>
-            <id>svjatoslav.eu</id>
-            <name>Svjatoslav repository</name>
-            <url>http://www2.svjatoslav.eu/maven/</url>
-        </repository>
-        ...
-    </repositories>
+<repositories>
+    ...
+    <repository>
+        <id>svjatoslav.eu</id>
+        <name>Svjatoslav repository</name>
+        <url>http://www2.svjatoslav.eu/maven/</url>
+    </repository>
+    ...
+</repositories>
 #+END_SRC
 
 * Requirements
