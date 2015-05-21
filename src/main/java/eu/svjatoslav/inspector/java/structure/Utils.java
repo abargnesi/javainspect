@@ -16,6 +16,8 @@ public class Utils {
 
 	/**
 	 * retrieves colors from predefined palette
+	 *
+	 * @return next available dark color name
 	 */
 	protected static String getNextDarkColor() {
 		lastChosenDarkColor++;
@@ -27,6 +29,8 @@ public class Utils {
 
 	/**
 	 * retrieves colors from predefined palette
+	 *
+	 * @return next available light color name
 	 */
 	protected static String getNextLightColor() {
 		lastChosenLightColor++;

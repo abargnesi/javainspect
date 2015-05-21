@@ -44,6 +44,8 @@ public class ClassGraph {
 	/**
 	 * @param objects
 	 *            objects that shall be added to graph
+	 *
+	 * @return this {@link ClassGraph}
 	 */
 	public ClassGraph add(final Object... objects) {
 
@@ -84,17 +86,11 @@ public class ClassGraph {
 	}
 
 	/**
-	 * @param targetDirectory
-	 *            target directory name
-	 *
 	 * @param resultFileName
 	 *            file name for the generated graph. File extension will be
 	 *            added automatically. Existing file with the same name will be
 	 *            overwritten.
 	 *
-	 * @param keepDotFile
-	 *            if set to <code>true</code> then intermediary GraphViz DOT
-	 *            file will be kept.
 	 */
 
 	public void generateGraph(final String resultFileName) {
@@ -113,8 +109,8 @@ public class ClassGraph {
 			// execute GraphViz to visualize graph
 			try {
 				Runtime.getRuntime()
-				.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
-						imageFilePath }).waitFor();
+						.exec(new String[] { "dot", "-Tpng", dotFilePath, "-o",
+								imageFilePath }).waitFor();
 			} catch (final InterruptedException e) {
 			} finally {
 			}
@@ -147,6 +143,8 @@ public class ClassGraph {
 	/**
 	 * @param clazz
 	 *            class that shall be added to graph
+	 *
+	 * @return {@link ClassDescriptor} corresponding to given {@link Class}
 	 */
 	protected ClassDescriptor getOrCreateClassDescriptor(final Class clazz) {
 
@@ -171,6 +169,8 @@ public class ClassGraph {
 
 	/**
 	 * Hide orphaned class that have no references
+	 *
+	 * @return this {@link ClassGraph}
 	 */
 	public ClassGraph hideOrphanedClasses() {
 

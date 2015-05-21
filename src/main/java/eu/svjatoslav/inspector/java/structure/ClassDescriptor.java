@@ -317,6 +317,10 @@ public class ClassDescriptor implements GraphElement {
 	/**
 	 * Returns field with given name (case is ignored). Or <code>null</code> if
 	 * field is not found.
+	 *
+	 * @param fieldToSearch
+	 *            field name (case is ignored)
+	 * @return field matching given name
 	 */
 	protected FieldDescriptor getFieldIgnoreCase(final String fieldToSearch) {
 
@@ -416,6 +420,11 @@ public class ClassDescriptor implements GraphElement {
 	/**
 	 * Checks if class has field with given name (case is ignored). Returns
 	 * <code>true</code> if such field is found.
+	 *
+	 * @param fieldToSearch
+	 *            field to search for (case is ignored)
+	 *
+	 * @return <code>true</code> if field is found.
 	 */
 	protected boolean hasFieldIgnoreCase(final String fieldToSearch) {
 
