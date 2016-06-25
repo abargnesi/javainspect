@@ -19,157 +19,178 @@ import java.util.List;
  * This class corresponds to single method within a java class.
  */
 public class MethodDescriptor implements GraphElement,
-		Comparable<MethodDescriptor> {
+        Comparable<MethodDescriptor> {
 
-	private final String methodName;
-	private ClassDescriptor returnType;
-	private final ClassDescriptor parentClass;
-	private final List<ClassDescriptor> argumentTypes = new ArrayList<ClassDescriptor>();
-	private boolean isInherited;
+    private final String methodName;
+    private final ClassDescriptor parentClass;
+    private final List<ClassDescriptor> argumentTypes = new ArrayList<ClassDescriptor>();
+    private ClassDescriptor returnType;
+    private boolean isInherited;
 
-	public MethodDescriptor(final ClassDescriptor parent,
-			final String methodName) {
-		parentClass = parent;
-		this.methodName = methodName;
-	}
+    public MethodDescriptor(final ClassDescriptor parent,
+                            final String methodName) {
+        parentClass = parent;
+        this.methodName = methodName;
+    }
 
-	public void analyze(final Method method) {
+    public void analyze(final Method method) {
 
-		if (!method.getDeclaringClass().getName()
-				.equals(parentClass.getFullyQualifiedName()))
-			isInherited = true;
+        if (!method.getDeclaringClass().getName()
+                .equals(parentClass.getFullyQualifiedName()))
+            isInherited = true;
 
-		returnType = parentClass.getClassGraph().getOrCreateClassDescriptor(
-				method.getReturnType());
-		returnType.registerReference();
+        returnType = parentClass.getClassGraph().getOrCreateClassDescriptor(
+                method.getReturnType());
+        returnType.registerReference();
 
-		final Type genericType = method.getGenericReturnType();
-		if (genericType instanceof ParameterizedType) {
-			final ParameterizedType pt = (ParameterizedType) genericType;
-			for (final Type t : pt.getActualTypeArguments())
-				if (t instanceof Class) {
-					final Class cl = (Class) t;
-					final ClassDescriptor classDescriptor = parentClass
-							.getClassGraph().getOrCreateClassDescriptor(cl);
-					classDescriptor.registerReference();
-					argumentTypes.add(classDescriptor);
-				}
+        final Type genericType = method.getGenericReturnType();
+        if (genericType instanceof ParameterizedType) {
+            final ParameterizedType pt = (ParameterizedType) genericType;
+            for (final Type t : pt.getActualTypeArguments())
+                if (t instanceof Class) {
+                    final Class cl = (Class) t;
+                    final ClassDescriptor classDescriptor = parentClass
+                            .getClassGraph().getOrCreateClassDescriptor(cl);
+                    classDescriptor.registerReference();
+                    argumentTypes.add(classDescriptor);
+                }
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public int compareTo(final MethodDescriptor o) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MethodDescriptor)) return false;
 
-		final int nameComparisonResult = methodName.compareTo(o.methodName);
-		if (nameComparisonResult != 0)
-			return nameComparisonResult;
+        MethodDescriptor that = (MethodDescriptor) o;
 
-		return toString().compareTo(o.toString());
-	}
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
+        if (parentClass != null ? !parentClass.equals(that.parentClass) : that.parentClass != null) return false;
+        return argumentTypes != null ? argumentTypes.equals(that.argumentTypes) : that.argumentTypes == null;
 
-	@Override
-	public String getDot() {
+    }
 
-		if (!isVisible())
-			return "";
 
-		final StringBuffer result = new StringBuffer();
+    @Override
+    public int hashCode() {
+        int result = methodName != null ? methodName.hashCode() : 0;
+        result = 31 * result + (parentClass != null ? parentClass.hashCode() : 0);
+        result = 31 * result + (argumentTypes != null ? argumentTypes.hashCode() : 0);
+        return result;
+    }
 
-		// describe associated types
-		for (final ClassDescriptor classDescriptor : argumentTypes)
-			if (classDescriptor.isVisible())
-				if (classDescriptor.areReferencesShown())
-					result.append("    " + getGraphId() + " -> "
-							+ classDescriptor.getGraphId() + "[label=\""
-							+ methodName + "\", color=\""
-							+ classDescriptor.getColor()
-							+ "\", style=\"dotted, bold\"];\n");
+    @Override
+    public String getDot() {
 
-		if (!returnType.isVisible())
-			return result.toString();
+        if (!isVisible())
+            return "";
 
-		// main type
-		if (returnType.areReferencesShown())
-			result.append("    " + getGraphId() + " -> "
-					+ returnType.getGraphId() + "[label=\"" + methodName
-					+ "\"," + " color=\"" + returnType.getColor()
-					+ "\", style=\"dotted, bold\"];\n");
+        final StringBuffer result = new StringBuffer();
 
-		return result.toString();
-	}
+        // describe associated types
+        for (final ClassDescriptor classDescriptor : argumentTypes)
+            if (classDescriptor.isVisible())
+                if (classDescriptor.areReferencesShown())
+                    result.append("    " + getGraphId() + " -> "
+                            + classDescriptor.getGraphId() + "[label=\""
+                            + methodName + "\", color=\""
+                            + classDescriptor.getColor()
+                            + "\", style=\"dotted, bold\"];\n");
 
-	@Override
-	public String getEmbeddedDot() {
-		if (!isVisible())
-			return "";
+        if (!returnType.isVisible())
+            return result.toString();
 
-		final StringBuffer result = new StringBuffer();
+        // main type
+        if (returnType.areReferencesShown())
+            result.append("    " + getGraphId() + " -> "
+                    + returnType.getGraphId() + "[label=\"" + methodName
+                    + "\"," + " color=\"" + returnType.getColor()
+                    + "\", style=\"dotted, bold\"];\n");
 
-		result.append("        // " + methodName + "\n");
+        return result.toString();
+    }
 
-		result.append("        <TR><td ALIGN=\"right\">"
-				+ "<FONT POINT-SIZE=\"8.0\">" + returnType.getClassName(true)
-				+ "</FONT>" + "</td><TD PORT=\"" + getMethodLabel()
-				+ "\" ALIGN=\"left\"><FONT COLOR =\"red\" POINT-SIZE=\"11.0\">"
-				+ getMethodLabel() + "</FONT></TD></TR>\n");
+    @Override
+    public String getEmbeddedDot() {
+        if (!isVisible())
+            return "";
 
-		return result.toString();
-	}
+        final StringBuffer result = new StringBuffer();
 
-	@Override
-	public String getGraphId() {
-		return parentClass.getGraphId() + ":" + methodName;
-	}
+        result.append("        // " + methodName + "\n");
 
-	private String getMethodLabel() {
-		return methodName;
-	}
+        result.append("        <TR><td ALIGN=\"right\">"
+                + "<FONT POINT-SIZE=\"8.0\">" + returnType.getClassName(true)
+                + "</FONT>" + "</td><TD PORT=\"" + getMethodLabel()
+                + "\" ALIGN=\"left\"><FONT COLOR =\"red\" POINT-SIZE=\"11.0\">"
+                + getMethodLabel() + "</FONT></TD></TR>\n");
 
-	protected int getOutsideVisibleReferencesCount() {
-		int result = 0;
+        return result.toString();
+    }
 
-		if (returnType.isVisible())
-			result++;
+    @Override
+    public String getGraphId() {
+        return parentClass.getGraphId() + ":" + methodName;
+    }
 
-		for (final ClassDescriptor classDescriptor : argumentTypes)
-			if (classDescriptor.isVisible())
-				result++;
+    private String getMethodLabel() {
+        return methodName;
+    }
 
-		return result;
-	}
+    protected int getOutsideVisibleReferencesCount() {
+        int result = 0;
 
-	@Override
-	public boolean isVisible() {
+        if (returnType.isVisible())
+            result++;
 
-		// hide inherited methods
-		if (isInherited)
-			return false;
+        for (final ClassDescriptor classDescriptor : argumentTypes)
+            if (classDescriptor.isVisible())
+                result++;
 
-		// hide common object methods
-		if (Utils.isCommonObjectMethod(methodName))
-			return false;
+        return result;
+    }
 
-		// hide common Enumeration methods
-		if (parentClass.isEnum && Utils.isEnumMethod(methodName))
-			return false;
+    @Override
+    public boolean isVisible() {
 
-		// hide get/set methods for the field of the same name
-		if (methodName.startsWith("get") || methodName.startsWith("set"))
-			if (parentClass.hasFieldIgnoreCase(methodName.substring(3)))
-				return false;
+        // hide inherited methods
+        if (isInherited)
+            return false;
 
-		// hide is methods for the boolean field of the same name
-		if (methodName.startsWith("is")) {
-			final FieldDescriptor field = parentClass
-					.getFieldIgnoreCase(methodName.substring(2));
-			if (field != null)
-				if ("boolean".equals(field.getType().getFullyQualifiedName()))
-					return false;
-		}
+        // hide common object methods
+        if (Utils.isCommonObjectMethod(methodName))
+            return false;
 
-		return true;
+        // hide common Enumeration methods
+        if (parentClass.isEnum && Utils.isEnumMethod(methodName))
+            return false;
 
-	}
+        // hide get/set methods for the field of the same name
+        if (methodName.startsWith("get") || methodName.startsWith("set"))
+            if (parentClass.hasFieldIgnoreCase(methodName.substring(3)))
+                return false;
 
+        // hide is methods for the boolean field of the same name
+        if (methodName.startsWith("is")) {
+            final FieldDescriptor field = parentClass
+                    .getFieldIgnoreCase(methodName.substring(2));
+            if (field != null)
+                if ("boolean".equals(field.getType().getFullyQualifiedName()))
+                    return false;
+        }
+
+        return true;
+
+    }
+
+    @Override
+    public int compareTo(MethodDescriptor that) {
+        if (this == that) return 0;
+
+        int comparisonResult = methodName.compareTo(that.methodName);
+        if (comparisonResult != 0) return comparisonResult;
+
+        return parentClass.compareTo(that.parentClass);
+    }
 }

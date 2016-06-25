@@ -14,6 +14,6 @@ import java.util.Map;
 
 public class Project {
 
-	Map<String, Package> packages = new HashMap<String, Package>();
+    Map<String, Package> packages = new HashMap<String, Package>();
 
 }

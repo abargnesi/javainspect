@@ -11,502 +11,500 @@ package eu.svjatoslav.inspector.java.structure;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Describes single class instance
  */
-public class ClassDescriptor implements GraphElement {
+public class ClassDescriptor implements GraphElement, Comparable<ClassDescriptor> {
+
+    private static final int MAX_REFERECNES_COUNT = 10;
+    private final Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
+    private final SortedSet<MethodDescriptor> methods = new TreeSet<MethodDescriptor>();
+    private final ClassGraph classGraph;
+    boolean isEnum;
+    boolean isInterface;
+    boolean isArray;
+    List<ClassDescriptor> interfaces = new ArrayList<ClassDescriptor>();
+    ClassDescriptor superClass;
+    private String fullyQualifiedName;
+    /**
+     * Incoming arrows will have this color.
+     */
+    private String distinctiveReferenceColor;
+    private String interfaceColor;
+    private String superClassColor;
+    private boolean isShown = true;
+    /**
+     * Amount of field and method references pointing to this class.
+     */
+    private int referencesCount = 0;
+
+    // for interface, counts amount of found implementations
+    private int implementationsCount = 0;
+
+    // counts amount of times this class is extended
+    private int extensionsCount = 0;
+
+    private ClassDescriptor arrayComponent;
+
+    public ClassDescriptor(final ClassGraph classGraph) {
+        this.classGraph = classGraph;
+    }
+
+    protected void analyzeClass(final Class<? extends Object> clazz) {
+
+        fullyQualifiedName = clazz.getName();
+
+        isArray = clazz.isArray();
+
+        if (isArray) {
+            final Class<?> componentType = clazz.getComponentType();
+            arrayComponent = getClassGraph().getOrCreateClassDescriptor(
+                    componentType);
+        }
+
+        // System.out.println("class: " + fullyQualifiedName);
+
+        isEnum = clazz.isEnum();
+
+        isInterface = clazz.isInterface();
+
+        if (!isVisible())
+            return;
+
+        indexFields(clazz.getDeclaredFields());
+        indexFields(clazz.getFields());
+
+        indexMethods(clazz);
+
+        for (final Class interfaceClass : clazz.getInterfaces()) {
+            final ClassDescriptor interfaceClassDescriptor = getClassGraph()
+                    .getOrCreateClassDescriptor(interfaceClass);
+            interfaceClassDescriptor.registerImplementation();
+            interfaces.add(interfaceClassDescriptor);
+        }
+
+        superClass = getClassGraph().getOrCreateClassDescriptor(
+                clazz.getSuperclass());
+        if (superClass != null)
+            superClass.registerExtension();
+
+    }
+
+    protected boolean areReferencesShown() {
+        return referencesCount <= MAX_REFERECNES_COUNT;
+    }
+
+    private void enlistFieldReferences(final StringBuffer result) {
+        if (nameToFieldMap.isEmpty())
+            return;
+
+        result.append("\n");
+        result.append("    // field references to other classes\n");
+        for (final Map.Entry<String, FieldDescriptor> entry : nameToFieldMap
+                .entrySet())
+            result.append(entry.getValue().getDot());
+    }
+
+    private void enlistFields(final StringBuffer result) {
+        if (nameToFieldMap.isEmpty())
+            return;
+
+        result.append("\n");
+        result.append("    // fields:\n");
+
+        // enlist fields
+        for (final Map.Entry<String, FieldDescriptor> entry : nameToFieldMap
+                .entrySet())
+            result.append(entry.getValue().getEmbeddedDot());
+    }
 
-	private static final int MAX_REFERECNES_COUNT = 10;
+    private void enlistImplementedInterfaces(final StringBuffer result) {
+        if (interfaces.isEmpty())
+            return;
+
+        result.append("\n");
+        result.append("    // interfaces implemented by class: "
+                + fullyQualifiedName + "\n");
+
+        for (final ClassDescriptor interfaceDescriptor : interfaces) {
+            if (!interfaceDescriptor.isVisible())
+                continue;
+
+            if (!interfaceDescriptor.areReferencesShown())
+                continue;
+
+            result.append("    " + interfaceDescriptor.getGraphId() + " -> "
+                    + getGraphId() + "[style=\"dotted\", color=\""
+                    + interfaceDescriptor.getInterfaceColor()
+                    + "\", penwidth=10, dir=\"forward\"];\n");
+        }
+    }
+
+    private void enlistMethodReferences(final StringBuffer result) {
+        if (methods.isEmpty())
+            return;
+
+        result.append("\n");
+        result.append("    // method references to other classes\n");
+        for (final MethodDescriptor methodDescriptor : methods)
+            result.append(methodDescriptor.getDot());
+    }
+
+    private void enlistMethods(final StringBuffer result) {
+        if (methods.isEmpty())
+            return;
+
+        result.append("\n");
+        result.append("    // methods:\n");
+
+        // enlist methods
+        for (final MethodDescriptor methodDescriptor : methods)
+            result.append(methodDescriptor.getEmbeddedDot());
+    }
+
+    private void enlistSuperClass(final StringBuffer result) {
+        if (superClass == null)
+            return;
+
+        if (!superClass.isVisible())
+            return;
+
+        if (!superClass.areReferencesShown())
+            return;
+
+        result.append("\n");
+        result.append("    // super class for: " + fullyQualifiedName + "\n");
+
+        result.append("    " + superClass.getGraphId() + " -> " + getGraphId()
+                + "[ color=\"" + superClass.getSuperClassColor()
+                + "\", penwidth=10, dir=\"forward\"];\n");
+    }
 
-	private String fullyQualifiedName;
+    private void generateDotHeader(final StringBuffer result) {
+        result.append("\n");
+        result.append("// Class: " + fullyQualifiedName + "\n");
 
-	private final Map<String, FieldDescriptor> nameToFieldMap = new TreeMap<String, FieldDescriptor>();
+        result.append("    " + getGraphId() + "[label=<<TABLE "
+                + getBackgroundColor() + " BORDER=\"" + getBorderWidth()
+                + "\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n");
 
-	private final SortedSet<MethodDescriptor> methods = new TreeSet<MethodDescriptor>();
+        result.append("\n");
+        result.append("    // class descriptor header\n");
+        result.append("    <TR><TD colspan=\"2\" PORT=\"f0\">"
+                + "<FONT POINT-SIZE=\"8.0\" >" + getPackageName()
+                + "</FONT><br/>");
 
-	/**
-	 * Incoming arrows will have this color.
-	 */
-	private String distinctiveReferenceColor;
+        final String parentClassesName = getParentClassesName();
+        if (parentClassesName.length() > 0)
+            result.append("<FONT POINT-SIZE=\"12.0\"><B>" + parentClassesName
+                    + "</B></FONT><br/>\n");
 
-	private String interfaceColor;
+        result.append("<FONT POINT-SIZE=\"25.0\"><B>" + getClassName(false)
+                + "</B></FONT>" + "</TD></TR>\n");
+    }
 
-	private String superClassColor;
+    private String getBackgroundColor() {
+        String bgColor = "";
 
-	boolean isEnum;
+        if (isEnum)
+            bgColor = "bgcolor=\"navajowhite2\"";
 
-	boolean isInterface;
+        if (isInterface)
+            bgColor = "bgcolor=\"darkslategray1\"";
 
-	boolean isArray;
+        return bgColor;
+    }
 
-	private boolean isShown = true;
+    private String getBorderWidth() {
 
-	private final ClassGraph classGraph;
+        if (!areReferencesShown())
+            return "4";
+        return "1";
+    }
 
-	List<ClassDescriptor> interfaces = new ArrayList<ClassDescriptor>();
+    protected ClassGraph getClassGraph() {
+        return classGraph;
+    }
 
-	ClassDescriptor superClass;
+    protected String getClassName(final boolean differentiateArray) {
+        // this is needed for nested classes
+        final String actualClassName = fullyQualifiedName.replace('$', '.');
 
-	/**
-	 * Amount of field and method references pointing to this class.
-	 */
-	private int referencesCount = 0;
+        String result;
+        if (isArray) {
+            // for arrays use array component instead of array class name
+            result = arrayComponent.fullyQualifiedName;
+            if (result.contains(".")) {
+                final int i = result.lastIndexOf('.');
+                result = result.substring(i + 1);
+            }
+        } else {
+            final int i = actualClassName.lastIndexOf('.');
+            result = actualClassName.substring(i + 1);
+        }
 
-	// for interface, counts amount of found implementations
-	private int implementationsCount = 0;
+        if (differentiateArray)
+            if (isArray)
+                result += " []";
 
-	// counts amount of times this class is extended
-	private int extensionsCount = 0;
+        // this is needed for nested classes
+        // result = result.replace('$', '.');
+        return result;
+    }
 
-	private ClassDescriptor arrayComponent;
+    protected String getColor() {
+        if (distinctiveReferenceColor == null)
+            distinctiveReferenceColor = Utils.getNextDarkColor();
 
-	public ClassDescriptor(final ClassGraph classGraph) {
-		this.classGraph = classGraph;
-	}
+        return distinctiveReferenceColor;
+    }
 
-	protected void analyzeClass(final Class<? extends Object> clazz) {
+    @Override
+    public String getDot() {
+        if (!isVisible())
+            return "";
 
-		fullyQualifiedName = clazz.getName();
+        if (isArray)
+            return "";
 
-		isArray = clazz.isArray();
+        final StringBuffer result = new StringBuffer();
 
-		if (isArray) {
-			final Class<?> componentType = clazz.getComponentType();
-			arrayComponent = getClassGraph().getOrCreateClassDescriptor(
-					componentType);
-		}
+        generateDotHeader(result);
 
-		// System.out.println("class: " + fullyQualifiedName);
+        enlistFields(result);
 
-		isEnum = clazz.isEnum();
+        enlistMethods(result);
 
-		isInterface = clazz.isInterface();
+        result.append("    </TABLE>>, shape=\"none\"];\n");
 
-		if (!isVisible())
-			return;
+        enlistFieldReferences(result);
 
-		indexFields(clazz.getDeclaredFields());
-		indexFields(clazz.getFields());
+        enlistMethodReferences(result);
 
-		indexMethods(clazz);
+        enlistImplementedInterfaces(result);
 
-		for (final Class interfaceClass : clazz.getInterfaces()) {
-			final ClassDescriptor interfaceClassDescriptor = getClassGraph()
-					.getOrCreateClassDescriptor(interfaceClass);
-			interfaceClassDescriptor.registerImplementation();
-			interfaces.add(interfaceClassDescriptor);
-		}
+        enlistSuperClass(result);
 
-		superClass = getClassGraph().getOrCreateClassDescriptor(
-				clazz.getSuperclass());
-		if (superClass != null)
-			superClass.registerExtension();
+        return result.toString();
+    }
 
-	};
+    @Override
+    public String getEmbeddedDot() {
+        return null;
+    }
 
-	protected boolean areReferencesShown() {
-		return referencesCount <= MAX_REFERECNES_COUNT;
-	}
+    /**
+     * Returns field with given name (case is ignored). Or <code>null</code> if
+     * field is not found.
+     *
+     * @param fieldToSearch field name (case is ignored)
+     * @return field matching given name
+     */
+    protected FieldDescriptor getFieldIgnoreCase(final String fieldToSearch) {
 
-	private void enlistFieldReferences(final StringBuffer result) {
-		if (nameToFieldMap.isEmpty())
-			return;
+        for (final String fieldName : nameToFieldMap.keySet())
+            if (fieldToSearch.equalsIgnoreCase(fieldName))
+                return nameToFieldMap.get(fieldName);
 
-		result.append("\n");
-		result.append("    // field references to other classes\n");
-		for (final Map.Entry<String, FieldDescriptor> entry : nameToFieldMap
-				.entrySet())
-			result.append(entry.getValue().getDot());
-	}
-
-	private void enlistFields(final StringBuffer result) {
-		if (nameToFieldMap.isEmpty())
-			return;
-
-		result.append("\n");
-		result.append("    // fields:\n");
-
-		// enlist fields
-		for (final Map.Entry<String, FieldDescriptor> entry : nameToFieldMap
-				.entrySet())
-			result.append(entry.getValue().getEmbeddedDot());
-	}
-
-	private void enlistImplementedInterfaces(final StringBuffer result) {
-		if (interfaces.isEmpty())
-			return;
-
-		result.append("\n");
-		result.append("    // interfaces implemented by class: "
-				+ fullyQualifiedName + "\n");
-
-		for (final ClassDescriptor interfaceDescriptor : interfaces) {
-			if (!interfaceDescriptor.isVisible())
-				continue;
-
-			if (!interfaceDescriptor.areReferencesShown())
-				continue;
-
-			result.append("    " + interfaceDescriptor.getGraphId() + " -> "
-					+ getGraphId() + "[style=\"dotted\", color=\""
-					+ interfaceDescriptor.getInterfaceColor()
-					+ "\", penwidth=10, dir=\"forward\"];\n");
-		}
-	}
-
-	private void enlistMethodReferences(final StringBuffer result) {
-		if (methods.isEmpty())
-			return;
-
-		result.append("\n");
-		result.append("    // method references to other classes\n");
-		for (final MethodDescriptor methodDescriptor : methods)
-			result.append(methodDescriptor.getDot());
-	}
-
-	private void enlistMethods(final StringBuffer result) {
-		if (methods.isEmpty())
-			return;
-
-		result.append("\n");
-		result.append("    // methods:\n");
-
-		// enlist methods
-		for (final MethodDescriptor methodDescriptor : methods)
-			result.append(methodDescriptor.getEmbeddedDot());
-	}
-
-	private void enlistSuperClass(final StringBuffer result) {
-		if (superClass == null)
-			return;
-
-		if (!superClass.isVisible())
-			return;
-
-		if (!superClass.areReferencesShown())
-			return;
-
-		result.append("\n");
-		result.append("    // super class for: " + fullyQualifiedName + "\n");
-
-		result.append("    " + superClass.getGraphId() + " -> " + getGraphId()
-				+ "[ color=\"" + superClass.getSuperClassColor()
-				+ "\", penwidth=10, dir=\"forward\"];\n");
-	}
+        return null;
+    }
 
-	private void generateDotHeader(final StringBuffer result) {
-		result.append("\n");
-		result.append("// Class: " + fullyQualifiedName + "\n");
+    protected String getFullyQualifiedName() {
+        return fullyQualifiedName;
+    }
 
-		result.append("    " + getGraphId() + "[label=<<TABLE "
-				+ getBackgroundColor() + " BORDER=\"" + getBorderWidth()
-				+ "\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n");
+    @Override
+    public String getGraphId() {
+        final String result = "class_"
+                + fullyQualifiedName.replace('.', '_').replace(";", "")
+                .replace("[L", "").replace('$', '_');
+        return result;
+    }
 
-		result.append("\n");
-		result.append("    // class descriptor header\n");
-		result.append("    <TR><TD colspan=\"2\" PORT=\"f0\">"
-				+ "<FONT POINT-SIZE=\"8.0\" >" + getPackageName()
-				+ "</FONT><br/>");
+    private String getInterfaceColor() {
+        if (interfaceColor == null)
+            interfaceColor = Utils.getNextDarkColor();
 
-		final String parentClassesName = getParentClassesName();
-		if (parentClassesName.length() > 0)
-			result.append("<FONT POINT-SIZE=\"12.0\"><B>" + parentClassesName
-					+ "</B></FONT><br/>\n");
+        return interfaceColor;
+    }
 
-		result.append("<FONT POINT-SIZE=\"25.0\"><B>" + getClassName(false)
-				+ "</B></FONT>" + "</TD></TR>\n");
-	}
-
-	private String getBackgroundColor() {
-		String bgColor = "";
-
-		if (isEnum)
-			bgColor = "bgcolor=\"navajowhite2\"";
+    private FieldDescriptor getOrCreateFieldDescriptor(final Field field) {
 
-		if (isInterface)
-			bgColor = "bgcolor=\"darkslategray1\"";
+        final String fieldName = field.getName();
 
-		return bgColor;
-	}
+        if (nameToFieldMap.containsKey(fieldName))
+            return nameToFieldMap.get(fieldName);
 
-	private String getBorderWidth() {
+        final FieldDescriptor newFieldDescriptor = new FieldDescriptor(this);
+        nameToFieldMap.put(fieldName, newFieldDescriptor);
 
-		if (!areReferencesShown())
-			return "4";
-		return "1";
-	}
-
-	protected ClassGraph getClassGraph() {
-		return classGraph;
-	}
-
-	protected String getClassName(final boolean differentiateArray) {
-		// this is needed for nested classes
-		final String actualClassName = fullyQualifiedName.replace('$', '.');
-
-		String result;
-		if (isArray) {
-			// for arrays use array component instead of array class name
-			result = arrayComponent.fullyQualifiedName;
-			if (result.contains(".")) {
-				final int i = result.lastIndexOf('.');
-				result = result.substring(i + 1);
-			}
-		} else {
-			final int i = actualClassName.lastIndexOf('.');
-			result = actualClassName.substring(i + 1);
-		}
+        newFieldDescriptor.analyzeField(field);
 
-		if (differentiateArray)
-			if (isArray)
-				result += " []";
+        return newFieldDescriptor;
+    }
 
-		// this is needed for nested classes
-		// result = result.replace('$', '.');
-		return result;
-	}
+    private int getOutgoingReferencesCount() {
+        int result = 0;
 
-	protected String getColor() {
-		if (distinctiveReferenceColor == null)
-			distinctiveReferenceColor = Utils.getNextDarkColor();
+        // count method references
+        for (final MethodDescriptor methodDescriptor : methods)
+            result += methodDescriptor.getOutsideVisibleReferencesCount();
 
-		return distinctiveReferenceColor;
-	}
+        // count field references
+        for (final FieldDescriptor fieldDescriptor : nameToFieldMap.values())
+            result += fieldDescriptor.getOutsideVisibleReferencesCount();
 
-	@Override
-	public String getDot() {
-		if (!isVisible())
-			return "";
+        // count implemented interfaces
+        for (final ClassDescriptor classDescriptor : interfaces)
+            if (classDescriptor.isVisible())
+                result++;
 
-		if (isArray)
-			return "";
+        // count superclass
+        if (superClass != null)
+            if (superClass.isVisible())
+                result++;
 
-		final StringBuffer result = new StringBuffer();
+        return result;
+    }
 
-		generateDotHeader(result);
+    private String getPackageName() {
 
-		enlistFields(result);
+        final int i = fullyQualifiedName.lastIndexOf('.');
 
-		enlistMethods(result);
+        if (i == -1)
+            return "";
 
-		result.append("    </TABLE>>, shape=\"none\"];\n");
+        return fullyQualifiedName.substring(0, i).replace("[L", "");
+    }
 
-		enlistFieldReferences(result);
+    private String getParentClassesName() {
+        int i = fullyQualifiedName.lastIndexOf('.');
+        final String fullClassName = fullyQualifiedName.substring(i + 1);
 
-		enlistMethodReferences(result);
+        i = fullClassName.lastIndexOf('$');
+        if (i == -1)
+            return "";
+        final String parentClassesName = fullClassName.substring(0, i);
+        return parentClassesName.replace('$', '.');
+    }
 
-		enlistImplementedInterfaces(result);
+    private String getSuperClassColor() {
+        if (superClassColor == null)
+            superClassColor = Utils.getNextLightColor();
 
-		enlistSuperClass(result);
+        return superClassColor;
+    }
 
-		return result.toString();
-	}
+    /**
+     * Checks if class has field with given name (case is ignored). Returns
+     * <code>true</code> if such field is found.
+     *
+     * @param fieldToSearch field to search for (case is ignored)
+     * @return <code>true</code> if field is found.
+     */
+    protected boolean hasFieldIgnoreCase(final String fieldToSearch) {
 
-	@Override
-	public String getEmbeddedDot() {
-		return null;
-	}
+        for (final String fieldName : nameToFieldMap.keySet())
+            if (fieldToSearch.equalsIgnoreCase(fieldName))
+                return true;
 
-	/**
-	 * Returns field with given name (case is ignored). Or <code>null</code> if
-	 * field is not found.
-	 *
-	 * @param fieldToSearch
-	 *            field name (case is ignored)
-	 * @return field matching given name
-	 */
-	protected FieldDescriptor getFieldIgnoreCase(final String fieldToSearch) {
+        return false;
+    }
 
-		for (final String fieldName : nameToFieldMap.keySet())
-			if (fieldToSearch.equalsIgnoreCase(fieldName))
-				return nameToFieldMap.get(fieldName);
+    private void hide() {
+        isShown = false;
+    }
 
-		return null;
-	}
+    protected void hideClassIfNoReferences() {
+        if (!isVisible())
+            return;
 
-	protected String getFullyQualifiedName() {
-		return fullyQualifiedName;
-	}
+        final int totalReferencesCount = getOutgoingReferencesCount()
+                + referencesCount + extensionsCount + implementationsCount;
 
-	@Override
-	public String getGraphId() {
-		final String result = "class_"
-				+ fullyQualifiedName.replace('.', '_').replace(";", "")
-						.replace("[L", "").replace('$', '_');
-		return result;
-	}
+        if (totalReferencesCount == 0) {
+            hide();
+            return;
+        }
 
-	private String getInterfaceColor() {
-		if (interfaceColor == null)
-			interfaceColor = Utils.getNextDarkColor();
+        return;
+    }
 
-		return interfaceColor;
-	}
+    private void indexFields(final Field[] fields) {
+        for (final Field field : fields)
+            getOrCreateFieldDescriptor(field);
+    }
 
-	private FieldDescriptor getOrCreateFieldDescriptor(final Field field) {
+    private void indexMethods(final Class<? extends Object> clazz) {
+        for (final Method method : clazz.getMethods()) {
+            final MethodDescriptor methodDescriptor = new MethodDescriptor(
+                    this, method.getName());
 
-		final String fieldName = field.getName();
+            methods.add(methodDescriptor);
 
-		if (nameToFieldMap.containsKey(fieldName))
-			return nameToFieldMap.get(fieldName);
+            methodDescriptor.analyze(method);
+        }
 
-		final FieldDescriptor newFieldDescriptor = new FieldDescriptor(this);
-		nameToFieldMap.put(fieldName, newFieldDescriptor);
+    }
 
-		newFieldDescriptor.analyzeField(field);
+    @Override
+    public boolean isVisible() {
 
-		return newFieldDescriptor;
-	}
+        if (Utils.isSystemDataType(fullyQualifiedName))
+            return false;
 
-	private int getOutgoingReferencesCount() {
-		int result = 0;
+        if (Utils.isSystemPackage(fullyQualifiedName))
+            return false;
 
-		// count method references
-		for (final MethodDescriptor methodDescriptor : methods)
-			result += methodDescriptor.getOutsideVisibleReferencesCount();
+        if (!getClassGraph().isClassShown(fullyQualifiedName))
+            return false;
 
-		// count field references
-		for (final FieldDescriptor fieldDescriptor : nameToFieldMap.values())
-			result += fieldDescriptor.getOutsideVisibleReferencesCount();
+        if (isArray)
+            if (arrayComponent != null)
+                if (Utils.isSystemDataType(arrayComponent.fullyQualifiedName))
+                    // Do not show references to primitive data types in arrays.
+                    // That is: there is no point to show reference to byte when
+                    // we have class with byte array field.
+                    return false;
 
-		// count implemented interfaces
-		for (final ClassDescriptor classDescriptor : interfaces)
-			if (classDescriptor.isVisible())
-				result++;
+        return isShown;
+    }
 
-		// count superclass
-		if (superClass != null)
-			if (superClass.isVisible())
-				result++;
+    /**
+     * Register event when another class is extending this one.
+     */
+    protected void registerExtension() {
+        extensionsCount++;
+    }
 
-		return result;
-	}
+    protected void registerImplementation() {
+        implementationsCount++;
+    }
 
-	private String getPackageName() {
+    protected void registerReference() {
+        referencesCount++;
+    }
 
-		final int i = fullyQualifiedName.lastIndexOf('.');
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ClassDescriptor)) return false;
 
-		if (i == -1)
-			return "";
+        ClassDescriptor that = (ClassDescriptor) o;
 
-		return fullyQualifiedName.substring(0, i).replace("[L", "");
-	}
+        return getFullyQualifiedName().equals(that.getFullyQualifiedName());
 
-	private String getParentClassesName() {
-		int i = fullyQualifiedName.lastIndexOf('.');
-		final String fullClassName = fullyQualifiedName.substring(i + 1);
+    }
 
-		i = fullClassName.lastIndexOf('$');
-		if (i == -1)
-			return "";
-		final String parentClassesName = fullClassName.substring(0, i);
-		return parentClassesName.replace('$', '.');
-	}
+    @Override
+    public int hashCode() {
+        return getFullyQualifiedName().hashCode();
+    }
 
-	private String getSuperClassColor() {
-		if (superClassColor == null)
-			superClassColor = Utils.getNextLightColor();
-
-		return superClassColor;
-	}
-
-	/**
-	 * Checks if class has field with given name (case is ignored). Returns
-	 * <code>true</code> if such field is found.
-	 *
-	 * @param fieldToSearch
-	 *            field to search for (case is ignored)
-	 *
-	 * @return <code>true</code> if field is found.
-	 */
-	protected boolean hasFieldIgnoreCase(final String fieldToSearch) {
-
-		for (final String fieldName : nameToFieldMap.keySet())
-			if (fieldToSearch.equalsIgnoreCase(fieldName))
-				return true;
-
-		return false;
-	}
-
-	private void hide() {
-		isShown = false;
-	}
-
-	protected void hideClassIfNoReferences() {
-		if (!isVisible())
-			return;
-
-		final int totalReferencesCount = getOutgoingReferencesCount()
-				+ referencesCount + extensionsCount + implementationsCount;
-
-		if (totalReferencesCount == 0) {
-			hide();
-			return;
-		}
-
-		return;
-	}
-
-	private void indexFields(final Field[] fields) {
-		for (final Field field : fields)
-			getOrCreateFieldDescriptor(field);
-	}
-
-	private void indexMethods(final Class<? extends Object> clazz) {
-		for (final Method method : clazz.getMethods()) {
-			final MethodDescriptor methodDescriptor = new MethodDescriptor(
-					this, method.getName());
-
-			methods.add(methodDescriptor);
-
-			methodDescriptor.analyze(method);
-		}
-
-	}
-
-	@Override
-	public boolean isVisible() {
-
-		if (Utils.isSystemDataType(fullyQualifiedName))
-			return false;
-
-		if (Utils.isSystemPackage(fullyQualifiedName))
-			return false;
-
-		if (!getClassGraph().isClassShown(fullyQualifiedName))
-			return false;
-
-		if (isArray)
-			if (arrayComponent != null)
-				if (Utils.isSystemDataType(arrayComponent.fullyQualifiedName))
-					// Do not show references to primitive data types in arrays.
-					// That is: there is no point to show reference to byte when
-					// we have class with byte array field.
-					return false;
-
-		return isShown;
-	}
-
-	/**
-	 * Register event when another class is extending this one.
-	 */
-	protected void registerExtension() {
-		extensionsCount++;
-	}
-
-	protected void registerImplementation() {
-		implementationsCount++;
-	}
-
-	protected void registerReference() {
-		referencesCount++;
-	}
-
+    @Override
+    public int compareTo(ClassDescriptor o) {
+        return fullyQualifiedName.compareTo(o.fullyQualifiedName);
+    }
 }

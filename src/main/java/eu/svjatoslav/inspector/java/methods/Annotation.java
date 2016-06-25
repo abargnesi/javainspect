@@ -15,32 +15,32 @@ import eu.svjatoslav.commons.string.tokenizer.TokenizerMatch;
 
 public class Annotation {
 
-	private String name;
+    private String name;
 
-	public Annotation(final Tokenizer tokenizer) throws InvalidSyntaxException {
+    public Annotation(final Tokenizer tokenizer) throws InvalidSyntaxException {
 
-		name = tokenizer.getNextToken().token;
+        name = tokenizer.getNextToken().token;
 
-		if (!tokenizer.probeNextToken("("))
-			return;
+        if (!tokenizer.probeNextToken("("))
+            return;
 
-		int depth = 1;
+        int depth = 1;
 
-		while (true) {
-			final TokenizerMatch token = tokenizer.getNextToken();
+        while (true) {
+            final TokenizerMatch token = tokenizer.getNextToken();
 
-			if (token == null)
-				return;
+            if (token == null)
+                return;
 
-			if ("(".equals(token.token))
-				depth++;
-			if (")".equals(token.token))
-				depth--;
+            if ("(".equals(token.token))
+                depth++;
+            if (")".equals(token.token))
+                depth--;
 
-			if (depth == 0)
-				return;
-		}
+            if (depth == 0)
+                return;
+        }
 
-	}
+    }
 
 }

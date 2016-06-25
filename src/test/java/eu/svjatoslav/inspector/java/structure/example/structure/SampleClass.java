@@ -2,10 +2,10 @@ package eu.svjatoslav.inspector.java.structure.example.structure;
 
 public class SampleClass extends SampleSuperClass {
 
-	ObjectVisibleAsClassField sampleClassField;
+    ObjectVisibleAsClassField sampleClassField;
 
-	public ObjectReturnedByMethod sampleMethod() {
-		return new ObjectReturnedByMethod();
-	}
+    public ObjectReturnedByMethod sampleMethod() {
+        return new ObjectReturnedByMethod();
+    }
 
 }

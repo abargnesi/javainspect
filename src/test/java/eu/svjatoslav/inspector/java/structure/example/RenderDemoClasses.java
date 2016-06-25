@@ -15,10 +15,10 @@ import eu.svjatoslav.inspector.java.structure.example.structure.SampleClass2;
 
 public class RenderDemoClasses {
 
-	public static void main(final String[] args) {
+    public static void main(final String[] args) {
 
-		new ClassGraph().add(SampleClass.class, SampleClass2.class)
-				.generateGraph("example");
-	}
+        new ClassGraph().add(SampleClass.class, SampleClass2.class)
+                .generateGraph("example");
+    }
 
 }

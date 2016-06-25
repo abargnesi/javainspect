@@ -14,6 +14,6 @@ import java.util.Map;
 
 public class Package {
 
-	Map<String, Clazz> classes = new HashMap<String, Clazz>();
+    Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
 }

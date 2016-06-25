@@ -11,39 +11,39 @@ package eu.svjatoslav.inspector.java.methods;
 
 public class EnumerationBuffer {
 
-	private final String enumerationDelimiter;
+    private final String enumerationDelimiter;
 
-	private final StringBuffer buffer = new StringBuffer();
+    private final StringBuffer buffer = new StringBuffer();
 
-	public int enumeratedEntitiesCount = 0;
+    public int enumeratedEntitiesCount = 0;
 
-	public EnumerationBuffer() {
-		this(", ");
-	}
+    public EnumerationBuffer() {
+        this(", ");
+    }
 
-	public EnumerationBuffer(final String enumerationDelimiter) {
-		this.enumerationDelimiter = enumerationDelimiter;
-	}
+    public EnumerationBuffer(final String enumerationDelimiter) {
+        this.enumerationDelimiter = enumerationDelimiter;
+    }
 
-	public void append(final String value) {
-		buffer.append(value);
-	}
+    public void append(final String value) {
+        buffer.append(value);
+    }
 
-	public void appendEnumeration(final String value) {
-		if (enumeratedEntitiesCount > 0)
-			buffer.append(enumerationDelimiter);
+    public void appendEnumeration(final String value) {
+        if (enumeratedEntitiesCount > 0)
+            buffer.append(enumerationDelimiter);
 
-		buffer.append(value);
-		enumeratedEntitiesCount++;
-	}
+        buffer.append(value);
+        enumeratedEntitiesCount++;
+    }
 
-	public void resetEnumeration() {
-		enumeratedEntitiesCount = 0;
-	}
+    public void resetEnumeration() {
+        enumeratedEntitiesCount = 0;
+    }
 
-	@Override
-	public String toString() {
-		return buffer.toString();
-	}
+    @Override
+    public String toString() {
+        return buffer.toString();
+    }
 
 }

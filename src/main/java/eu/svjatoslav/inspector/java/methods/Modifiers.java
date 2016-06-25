@@ -11,74 +11,71 @@ package eu.svjatoslav.inspector.java.methods;
 
 public class Modifiers {
 
-	public enum Access {
-		PUBLIC("public"), PROTECTED("protected"), DEFAULT(""), PRIVATE(
-				"private");
+    Access access = Access.DEFAULT;
+    boolean isStatic = false;
+    boolean isFinal = false;
+    boolean isAbstract = false;
 
-		public final String name;
+    public boolean parseModifier(final String string) {
+        for (final Access access : Access.values())
+            if (access.name.equals(string)) {
+                this.access = access;
+                return true;
+            }
 
-		Access(final String name) {
-			this.name = name;
-		};
-	}
+        if ("static".equals(string)) {
+            isStatic = true;
+            return true;
+        }
 
-	Access access = Access.DEFAULT;
+        if ("final".equals(string)) {
+            isFinal = true;
+            return true;
+        }
 
-	boolean isStatic = false;;
+        if ("abstract".equals(string)) {
+            isAbstract = true;
+            return true;
+        }
 
-	boolean isFinal = false;
+        return false;
+    }
 
-	boolean isAbstract = false;
+    public void reset() {
+        isStatic = false;
+        isFinal = false;
+        access = Access.DEFAULT;
+    }
 
-	public boolean parseModifier(final String string) {
-		for (final Access access : Access.values())
-			if (access.name.equals(string)) {
-				this.access = access;
-				return true;
-			}
+    @Override
+    public String toString() {
+        final StringBuffer result = new StringBuffer();
 
-		if ("static".equals(string)) {
-			isStatic = true;
-			return true;
-		}
+        result.append(access.name);
 
-		if ("final".equals(string)) {
-			isFinal = true;
-			return true;
-		}
+        if (isStatic) {
+            if (result.length() > 0)
+                result.append(" ");
+            result.append("static");
+        }
 
-		if ("abstract".equals(string)) {
-			isAbstract = true;
-			return true;
-		}
+        if (isFinal) {
+            if (result.length() > 0)
+                result.append(" ");
+            result.append("final");
+        }
 
-		return false;
-	}
+        return result.toString();
+    }
 
-	public void reset() {
-		isStatic = false;
-		isFinal = false;
-		access = Access.DEFAULT;
-	}
+    public enum Access {
+        PUBLIC("public"), PROTECTED("protected"), DEFAULT(""), PRIVATE(
+                "private");
 
-	@Override
-	public String toString() {
-		final StringBuffer result = new StringBuffer();
+        public final String name;
 
-		result.append(access.name);
-
-		if (isStatic) {
-			if (result.length() > 0)
-				result.append(" ");
-			result.append("static");
-		}
-
-		if (isFinal) {
-			if (result.length() > 0)
-				result.append(" ");
-			result.append("final");
-		}
-
-		return result.toString();
-	}
+        Access(final String name) {
+            this.name = name;
+        }
+    }
 }

@@ -11,12 +11,12 @@ package eu.svjatoslav.inspector.java.structure;
 
 public interface GraphElement {
 
-	public String getDot();
+    String getDot();
 
-	public String getEmbeddedDot();
+    String getEmbeddedDot();
 
-	public String getGraphId();
+    String getGraphId();
 
-	public boolean isVisible();
+    boolean isVisible();
 
 }

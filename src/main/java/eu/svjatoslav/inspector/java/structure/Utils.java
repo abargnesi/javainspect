@@ -14,136 +14,129 @@ import java.util.List;
 
 public class Utils {
 
-	/**
-	 * retrieves colors from predefined palette
-	 *
-	 * @return next available dark color name
-	 */
-	protected static String getNextDarkColor() {
-		lastChosenDarkColor++;
-		if (lastChosenDarkColor >= darkColors.size())
-			lastChosenDarkColor = 0;
+    private static final List<String> systemDataTypes = new ArrayList<String>();
+    private static final List<String> commonObjectMethods = new ArrayList<String>();
+    private static final List<String> systemPackages = new ArrayList<String>();
+    private static final List<String> darkColors = new ArrayList<String>();
+    private static final List<String> lightColors = new ArrayList<String>();
+    private static final List<String> enumMethods = new ArrayList<String>();
+    private static int lastChosenDarkColor = -1;
+    private static int lastChosenLightColor = -1;
 
-		return darkColors.get(lastChosenDarkColor);
-	}
+    static {
+        initEnumMethods();
+        initSystemDataTypes();
+        initDarkColors();
+        initLightColors();
+        initCommonObjectMethods();
+        initSystemPackages();
+    }
 
-	/**
-	 * retrieves colors from predefined palette
-	 *
-	 * @return next available light color name
-	 */
-	protected static String getNextLightColor() {
-		lastChosenLightColor++;
-		if (lastChosenLightColor >= lightColors.size())
-			lastChosenLightColor = 0;
+    /**
+     * retrieves colors from predefined palette
+     *
+     * @return next available dark color name
+     */
+    protected static String getNextDarkColor() {
+        lastChosenDarkColor++;
+        if (lastChosenDarkColor >= darkColors.size())
+            lastChosenDarkColor = 0;
 
-		return lightColors.get(lastChosenLightColor);
-	}
+        return darkColors.get(lastChosenDarkColor);
+    }
 
-	private static void initCommonObjectMethods() {
-		commonObjectMethods.add("wait");
-		commonObjectMethods.add("equals");
-		commonObjectMethods.add("toString");
-		commonObjectMethods.add("hashCode");
-		commonObjectMethods.add("notify");
-		commonObjectMethods.add("notifyAll");
-		commonObjectMethods.add("getClass");
-	}
+    /**
+     * retrieves colors from predefined palette
+     *
+     * @return next available light color name
+     */
+    protected static String getNextLightColor() {
+        lastChosenLightColor++;
+        if (lastChosenLightColor >= lightColors.size())
+            lastChosenLightColor = 0;
 
-	protected static void initDarkColors() {
-		darkColors.add("antiquewhite4");
-		darkColors.add("blueviolet");
-		darkColors.add("brown4");
-		darkColors.add("chartreuse4");
-		darkColors.add("cyan4");
-		darkColors.add("deeppink1");
-		darkColors.add("deepskyblue3");
-		darkColors.add("firebrick1");
-		darkColors.add("goldenrod3");
-		darkColors.add("gray0");
-	}
+        return lightColors.get(lastChosenLightColor);
+    }
 
-	private static void initEnumMethods() {
-		enumMethods.add("values");
-		enumMethods.add("valueOf");
-		enumMethods.add("name");
-		enumMethods.add("compareTo");
-		enumMethods.add("valueOf");
-		enumMethods.add("getDeclaringClass");
-		enumMethods.add("ordinal");
-	}
+    private static void initCommonObjectMethods() {
+        commonObjectMethods.add("wait");
+        commonObjectMethods.add("equals");
+        commonObjectMethods.add("toString");
+        commonObjectMethods.add("hashCode");
+        commonObjectMethods.add("notify");
+        commonObjectMethods.add("notifyAll");
+        commonObjectMethods.add("getClass");
+    }
 
-	private static void initLightColors() {
-		lightColors.add("olivedrab2");
-		lightColors.add("peachpuff2");
-		lightColors.add("seagreen1");
-		lightColors.add("violet");
-		lightColors.add("aqua");
-		lightColors.add("orange");
-	}
+    protected static void initDarkColors() {
+        darkColors.add("antiquewhite4");
+        darkColors.add("blueviolet");
+        darkColors.add("brown4");
+        darkColors.add("chartreuse4");
+        darkColors.add("cyan4");
+        darkColors.add("deeppink1");
+        darkColors.add("deepskyblue3");
+        darkColors.add("firebrick1");
+        darkColors.add("goldenrod3");
+        darkColors.add("gray0");
+    }
 
-	private static void initSystemDataTypes() {
-		systemDataTypes.add("void");
-		systemDataTypes.add("int");
-		systemDataTypes.add("long");
-		systemDataTypes.add("float");
-		systemDataTypes.add("double");
-		systemDataTypes.add("boolean");
-		systemDataTypes.add("char");
-		systemDataTypes.add("short");
-		systemDataTypes.add("byte");
-	}
+    private static void initEnumMethods() {
+        enumMethods.add("values");
+        enumMethods.add("valueOf");
+        enumMethods.add("name");
+        enumMethods.add("compareTo");
+        enumMethods.add("valueOf");
+        enumMethods.add("getDeclaringClass");
+        enumMethods.add("ordinal");
+    }
 
-	private static void initSystemPackages() {
-		systemPackages.add("java.");
-		systemPackages.add("javax.");
-		systemPackages.add("sun.");
-	}
+    private static void initLightColors() {
+        lightColors.add("olivedrab2");
+        lightColors.add("peachpuff2");
+        lightColors.add("seagreen1");
+        lightColors.add("violet");
+        lightColors.add("aqua");
+        lightColors.add("orange");
+    }
 
-	protected static boolean isCommonObjectMethod(final String name) {
-		return commonObjectMethods.contains(name);
-	}
+    private static void initSystemDataTypes() {
+        systemDataTypes.add("void");
+        systemDataTypes.add("int");
+        systemDataTypes.add("long");
+        systemDataTypes.add("float");
+        systemDataTypes.add("double");
+        systemDataTypes.add("boolean");
+        systemDataTypes.add("char");
+        systemDataTypes.add("short");
+        systemDataTypes.add("byte");
+    }
 
-	protected static boolean isEnumMethod(final String name) {
-		return enumMethods.contains(name);
-	}
+    private static void initSystemPackages() {
+        systemPackages.add("java.");
+        systemPackages.add("javax.");
+        systemPackages.add("sun.");
+    }
 
-	protected static boolean isSystemDataType(final String name) {
-		return systemDataTypes.contains(name);
-	}
+    protected static boolean isCommonObjectMethod(final String name) {
+        return commonObjectMethods.contains(name);
+    }
 
-	protected static boolean isSystemPackage(final String name) {
+    protected static boolean isEnumMethod(final String name) {
+        return enumMethods.contains(name);
+    }
 
-		for (final String packagePrefix : systemPackages)
-			if (name.startsWith(packagePrefix))
-				return true;
+    protected static boolean isSystemDataType(final String name) {
+        return systemDataTypes.contains(name);
+    }
 
-		return false;
-	}
+    protected static boolean isSystemPackage(final String name) {
 
-	private static final List<String> systemDataTypes = new ArrayList<String>();
+        for (final String packagePrefix : systemPackages)
+            if (name.startsWith(packagePrefix))
+                return true;
 
-	private static final List<String> commonObjectMethods = new ArrayList<String>();
-
-	private static final List<String> systemPackages = new ArrayList<String>();
-
-	private static final List<String> darkColors = new ArrayList<String>();
-
-	private static final List<String> lightColors = new ArrayList<String>();
-
-	private static final List<String> enumMethods = new ArrayList<String>();
-
-	private static int lastChosenDarkColor = -1;
-
-	private static int lastChosenLightColor = -1;
-
-	static {
-		initEnumMethods();
-		initSystemDataTypes();
-		initDarkColors();
-		initLightColors();
-		initCommonObjectMethods();
-		initSystemPackages();
-	}
+        return false;
+    }
 
 }

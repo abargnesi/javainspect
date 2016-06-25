@@ -9,184 +9,177 @@
 
 package eu.svjatoslav.inspector.java.methods;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.svjatoslav.commons.string.tokenizer.InvalidSyntaxException;
 import eu.svjatoslav.commons.string.tokenizer.Tokenizer;
 import eu.svjatoslav.commons.string.tokenizer.TokenizerMatch;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class JavaFile {
 
-	private final List<Import> imports = new ArrayList<Import>();
+    public static final String UTF_8 = "UTF-8";
+    private final List<Import> imports = new ArrayList<Import>();
+    private final File file;
+    public List<Clazz> classes = new ArrayList<Clazz>();
+    StringBuffer contents = new StringBuffer();
+    private String packageName;
 
-	private String packageName;
+    public JavaFile(final File file) throws IOException, InvalidSyntaxException {
+        this.file = file;
+        parse();
+    }
 
-	private final File file;
+    public void parse() throws IOException, InvalidSyntaxException {
+        System.out.println("java file: " + file);
 
-	StringBuffer contents = new StringBuffer();
+        readFile();
 
-	public List<Clazz> classes = new ArrayList<Clazz>();
+        final Tokenizer tokenizer = new Tokenizer(contents.toString());
 
-	public JavaFile(final File file) throws IOException, InvalidSyntaxException {
-		this.file = file;
-		parse();
-	}
+        // empty space
+        tokenizer.addTerminator(" ", true);
+        tokenizer.addTerminator("\t", true);
+        tokenizer.addTerminator("\n", true);
 
-	public void parse() throws IOException, InvalidSyntaxException {
-		System.out.println("java file: " + file);
+        tokenizer.addTerminator(";", false);
+        tokenizer.addTerminator("{", false);
+        tokenizer.addTerminator("}", false);
+        tokenizer.addTerminator("(", false);
+        tokenizer.addTerminator(")", false);
+        tokenizer.addTerminator("[", false);
+        tokenizer.addTerminator("]", false);
+        tokenizer.addTerminator("<", false);
+        tokenizer.addTerminator(">", false);
+        tokenizer.addTerminator(",", false);
+        tokenizer.addTerminator("@", false);
 
-		readFile();
+        // comments
+        tokenizer.addTerminator("//", "\n", true);
+        tokenizer.addTerminator("/*", "*/", true);
 
-		final Tokenizer tokenizer = new Tokenizer(contents.toString());
+        final Modifiers modifiers = new Modifiers();
 
-		// empty space
-		tokenizer.addTerminator(" ", true);
-		tokenizer.addTerminator("\t", true);
-		tokenizer.addTerminator("\n", true);
+        while (true) {
+            final TokenizerMatch match = tokenizer.getNextToken();
+            if (match == null)
+                break;
 
-		tokenizer.addTerminator(";", false);
-		tokenizer.addTerminator("{", false);
-		tokenizer.addTerminator("}", false);
-		tokenizer.addTerminator("(", false);
-		tokenizer.addTerminator(")", false);
-		tokenizer.addTerminator("[", false);
-		tokenizer.addTerminator("]", false);
-		tokenizer.addTerminator("<", false);
-		tokenizer.addTerminator(">", false);
-		tokenizer.addTerminator(",", false);
-		tokenizer.addTerminator("@", false);
+            if (match.token.equals("package")) {
+                parsePackage(tokenizer);
+                continue;
+            }
 
-		// comments
-		tokenizer.addTerminator("//", "\n", true);
-		tokenizer.addTerminator("/*", "*/", true);
+            if (match.token.equals("import")) {
+                parseImport(tokenizer);
+                continue;
+            }
 
-		final Modifiers modifiers = new Modifiers();
+            final boolean wasModifier = modifiers.parseModifier(match.token);
+            if (wasModifier)
+                continue;
 
-		while (true) {
-			final TokenizerMatch match = tokenizer.getNextToken();
-			if (match == null)
-				break;
+            if ("class".equals(match.token)) {
+                parseClass(tokenizer);
+                continue;
+            }
 
-			if (match.token.equals("package")) {
-				parsePackage(tokenizer);
-				continue;
-			}
+            if ("interface".equals(match.token)) {
+                parseInterface(tokenizer);
+                continue;
+            }
 
-			if (match.token.equals("import")) {
-				parseImport(tokenizer);
-				continue;
-			}
+            if ("@".equals(match.token)) {
+                new Annotation(tokenizer);
+                continue;
+            }
 
-			final boolean wasModifier = modifiers.parseModifier(match.token);
-			if (wasModifier)
-				continue;
+            System.out.println("    " + modifiers.toString() + " "
+                    + match.token);
+            modifiers.reset();
+            skipUntilSemicolon(tokenizer);
+        }
 
-			if ("class".equals(match.token)) {
-				parseClass(tokenizer);
-				continue;
-			}
+    }
 
-			if ("interface".equals(match.token)) {
-				parseInterface(tokenizer);
-				continue;
-			}
+    private void parseClass(final Tokenizer tokenizer)
+            throws InvalidSyntaxException {
 
-			if ("@".equals(match.token)) {
-				final Annotation annotation = new Annotation(tokenizer);
-				continue;
-			}
+        final TokenizerMatch match = tokenizer.getNextToken();
+        final Clazz clazz = new Clazz(packageName, match.token, tokenizer,
+                false);
+        // System.out.println(clazz.toString());
+        classes.add(clazz);
 
-			System.out.println("    " + modifiers.toString() + " "
-					+ match.token);
-			modifiers.reset();
-			skipUntilSemicolon(tokenizer);
-		}
+    }
 
-	}
+    private void parseImport(final Tokenizer tokenizer)
+            throws InvalidSyntaxException {
 
-	private void parseClass(final Tokenizer tokenizer)
-			throws InvalidSyntaxException {
+        final Import imp = new Import();
 
-		final TokenizerMatch match = tokenizer.getNextToken();
-		final Clazz clazz = new Clazz(packageName, match.token, tokenizer,
-				false);
-		// System.out.println(clazz.toString());
-		classes.add(clazz);
+        final TokenizerMatch match = tokenizer.getNextToken();
 
-	}
+        if (match.token.equals("static")) {
+            imp.isStatic = true;
+            imp.path = tokenizer.getNextToken().token;
+        } else
+            imp.path = match.token;
 
-	private void parseImport(final Tokenizer tokenizer)
-			throws InvalidSyntaxException {
+        imports.add(imp);
 
-		final Import imp = new Import();
+        tokenizer.expectNextToken(";");
+    }
 
-		final TokenizerMatch match = tokenizer.getNextToken();
+    private void parseInterface(final Tokenizer tokenizer)
+            throws InvalidSyntaxException {
 
-		if (match.token.equals("static")) {
-			imp.isStatic = true;
-			imp.path = tokenizer.getNextToken().token;
-		} else
-			imp.path = match.token;
+        final TokenizerMatch match = tokenizer.getNextToken();
+        final Clazz clazz = new Clazz(packageName, match.token, tokenizer, true);
+        // System.out.println(clazz.toString());
+        classes.add(clazz);
+    }
 
-		imports.add(imp);
+    private void parsePackage(final Tokenizer tokenizer)
+            throws InvalidSyntaxException {
 
-		tokenizer.expectNextToken(";");
-	}
+        final TokenizerMatch match = tokenizer.getNextToken();
 
-	private void parseInterface(final Tokenizer tokenizer)
-			throws InvalidSyntaxException {
+        packageName = match.token;
 
-		final TokenizerMatch match = tokenizer.getNextToken();
-		final Clazz clazz = new Clazz(packageName, match.token, tokenizer, true);
-		// System.out.println(clazz.toString());
-		classes.add(clazz);
-	}
+        tokenizer.expectNextToken(";");
+    }
 
-	private void parsePackage(final Tokenizer tokenizer)
-			throws InvalidSyntaxException {
+    private void readFile() throws IOException {
+        InputStreamReader inputStream = new InputStreamReader(new FileInputStream(file), UTF_8);
 
-		final TokenizerMatch match = tokenizer.getNextToken();
+        final BufferedReader bufferedReader = new BufferedReader(inputStream);
 
-		packageName = match.token;
+        while (true) {
+            final String line = bufferedReader.readLine();
 
-		tokenizer.expectNextToken(";");
-	}
+            if (line == null)
+                break;
 
-	private void readFile() throws FileNotFoundException, IOException {
-		final FileReader fileReader = new FileReader(file);
+            contents.append(line);
+            contents.append("\n");
+        }
 
-		final BufferedReader bufferedReader = new BufferedReader(fileReader);
+        bufferedReader.close();
+        inputStream.close();
+    }
 
-		while (true) {
-			final String line = bufferedReader.readLine();
+    public void skipUntilSemicolon(final Tokenizer tokenizer) {
+        while (true) {
+            final TokenizerMatch token = tokenizer.getNextToken();
 
-			if (line == null)
-				break;
+            if (token == null)
+                return;
 
-			contents.append(line);
-			contents.append("\n");
-		}
-
-		bufferedReader.close();
-		fileReader.close();
-	}
-
-	public void skipUntilSemicolon(final Tokenizer tokenizer) {
-		while (true) {
-			final TokenizerMatch token = tokenizer.getNextToken();
-
-			if (token == null)
-				return;
-
-			if (token.token.equals(";"))
-				return;
-		}
-	}
+            if (token.token.equals(";"))
+                return;
+        }
+    }
 
 }
