@@ -42,6 +42,6 @@ file will be prefixed with *myproject*.
 
 ### Output example
 
-![alt text](https://github.com/abargnesi/javainspect/raw/master/myproject.svg "MyProject Example")
+![MyProject output](https://github.com/abargnesi/javainspect/raw/master/myproject.png)
 
 The [dot](https://github.com/abargnesi/javainspect/raw/master/myproject.dot) file is also saved.
