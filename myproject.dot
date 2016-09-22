@@ -1,0 +1,34 @@
+digraph Java {
+graph [rankdir=LR, overlap = false, concentrate=true];
+
+// Class: com.myproject.NumberTranslator
+    class_com_myproject_NumberTranslator[label=<<TABLE  BORDER="1" CELLBORDER="1" CELLSPACING="0">
+
+    // class descriptor header
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >com.myproject</FONT><br/><FONT POINT-SIZE="25.0"><B>NumberTranslator</B></FONT></TD></TR>
+
+    // methods:
+        // translate
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="translate" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">translate</FONT></TD></TR>
+    </TABLE>>, shape="none"];
+
+    // method references to other classes
+
+    // interfaces implemented by class: com.myproject.NumberTranslator
+    class_com_myproject_Behavior -> class_com_myproject_NumberTranslator[style="dotted", color="antiquewhite4", penwidth=10, dir="forward"];
+
+// Class: com.myproject.Behavior
+    class_com_myproject_Behavior[label=<<TABLE bgcolor="darkslategray1" BORDER="1" CELLBORDER="1" CELLSPACING="0">
+
+    // class descriptor header
+    <TR><TD colspan="2" PORT="f0"><FONT POINT-SIZE="8.0" >com.myproject</FONT><br/><FONT POINT-SIZE="25.0"><B>Behavior</B></FONT></TD></TR>
+
+    // methods:
+        // serialize
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="serialize" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">serialize</FONT></TD></TR>
+        // translate
+        <TR><td ALIGN="right"><FONT POINT-SIZE="8.0">String</FONT></td><TD PORT="translate" ALIGN="left"><FONT COLOR ="red" POINT-SIZE="11.0">translate</FONT></TD></TR>
+    </TABLE>>, shape="none"];
+
+    // method references to other classes
+}

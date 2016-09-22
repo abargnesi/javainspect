@@ -31,12 +31,17 @@ Minor enhancements:
 
 ```bash
 java \
-  -cp .:/path/to/your/classes.jar:./target/javainspect-{VERSION}.jar \
+  -cp .:./example/target/myproject-0.0.jar:./target/javainspect-1.6-SNAPSHOT.jar \
   eu.svjatoslav.inspector.java.methods.Main \
-  /home/user/work/myproject/src/main/java/ com.myproject.* myproject
+  ./example/src/main/java/ com.myproject.* myproject
 ```
 
 Here we want to visualize _com.myproject.*_ classes found in
-*/home/user/work/myproject/src/main/java/*. The resulting *dot* and *svg*
+*./example/src/main/java/*. The resulting *dot* and *svg*
 file will be prefixed with *myproject*.
 
+### Output example
+
+![alt text](https://github.com/abargnesi/javainspect/raw/master/myproject.svg "MyProject Example")
+
+The [dot](https://github.com/abargnesi/javainspect/raw/master/myproject.dot) file is also saved.
