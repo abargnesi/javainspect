@@ -93,7 +93,7 @@ public class ClassGraph {
     public void generateGraph(final String resultFileName) {
 
         final String dotFilePath = targetDirectory + resultFileName + ".dot";
-        final String imageFilePath = targetDirectory + resultFileName + ".png";
+        final String imageFilePath = targetDirectory + resultFileName + ".svg";
 
         System.out.println("Dot file path:" + dotFilePath);
 
@@ -106,7 +106,7 @@ public class ClassGraph {
             // execute GraphViz to visualize graph
             try {
                 Runtime.getRuntime()
-                        .exec(new String[]{"dot", "-Tpng", dotFilePath, "-o",
+                        .exec(new String[]{"dot", "-Tsvg", dotFilePath, "-o",
                                 imageFilePath}).waitFor();
             } catch (final InterruptedException ignored) {
             }
